@@ -1,0 +1,91 @@
+/* 引入共享样式 */
+@import "../../styles/shared.wxss";
+
+.container {
+  padding: 20rpx;
+  padding-bottom: 120rpx;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 30rpx;
+  margin-bottom: 30rpx;
+}
+
+.action-buttons .btn {
+  padding: 24rpx 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-arrow-down::before {
+  content: "\e7a5";
+  font-family: "weui";
+  margin-right: 10rpx;
+}
+
+.icon-arrow-up::before {
+  content: "\e7a4";
+  font-family: "weui";
+  margin-right: 10rpx;
+}
+
+.overview-card {
+  margin-bottom: 30rpx;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20rpx;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.view-all {
+  font-size: 28rpx;
+  color: #1989fa;
+}
+
+.record-section {
+  margin-bottom: 30rpx;
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #666;
+  margin-bottom: 16rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 6rpx;
+  display: inline-block;
+}
+
+.inbound-title {
+  background-color: #e6f7ff;
+  color: #1890ff;
+  border-left: 6rpx solid #1890ff;
+}
+
+.outbound-title {
+  background-color: #fff7e6;
+  color: #fa8c16;
+  border-left: 6rpx solid #fa8c16;
+}
+
+.list-time {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.list-arrow::after {
+  content: "\e7eb";
+  font-family: "weui";
+  color: #1989fa;
+}

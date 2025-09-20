@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>产品列表 - 商品库存管理</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css">
+    <link rel="stylesheet" href="shared.css">
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto pb-16">
+        <!-- 顶部导航栏 -->
+        <div class="navbar">
+            <div class="navbar-back" onclick="window.location.href='profile.html'">
+                <i class="ri-arrow-left-s-line"></i>
+            </div>
+            <div class="navbar-title">产品列表</div>
+            <div class="navbar-action">
+                <!-- 移除了导出Excel按钮 -->
+            </div>
+        </div>
+        
+        <!-- 搜索区域 -->
+        <div class="p-4">
+            <div class="card mb-4">
+                <div class="grid grid-cols-2 gap-3 mb-3">
+                    <div>
+                        <label for="productCategory" class="block text-sm font-medium text-gray-700 mb-1">产品类别</label>
+                        <select id="productCategory" class="form-control">
+                            <option value="">全部类别</option>
+                            <option value="1">手机配件</option>
+                            <option value="2">数码配件</option>
+                            <option value="3">电脑周边</option>
+                            <option value="4">智能设备</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="productName" class="block text-sm font-medium text-gray-700 mb-1">产品名称</label>
+                        <input type="text" id="productName" class="form-control" placeholder="请输入产品名称">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="productCode" class="block text-sm font-medium text-gray-700 mb-1">产品编码</label>
+                    <div class="flex">
+                        <input type="text" id="productCode" class="form-control rounded-r-none" placeholder="请输入产品编码">
+                        <button type="button" class="bg-blue-600 text-white px-3 rounded-r-md flex items-center">
+                            <i class="ri-qr-scan-line"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="flex justify-center">
+                    <button type="button" class="btn btn-primary px-8" onclick="searchProducts()">
+                        <i class="ri-search-line mr-1"></i> 查询
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 产品列表标题和导出按钮 -->
+            <div class="flex justify-between items-center mb-3">
+                <h3 class="text-lg font-medium">查询结果</h3>
+                <button class="btn btn-outline-primary text-sm px-3 py-1 flex items-center" onclick="exportToExcel()">
+                    <i class="ri-file-excel-2-line mr-1"></i> 导出Excel
+                </button>
+            </div>
+            
+            <!-- 产品列表 -->
+            <div id="productList">
+                <!-- 产品项 -->
+                <div class="card mb-3 product-item" onclick="window.location.href='product_detail.html'">
+                    <div class="flex">
+                        <div class="w-16 h-16 bg-gray-200 rounded-md overflow-hidden mr-3">
+                            <img src="https://via.placeholder.com/64" alt="产品图片" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex justify-between items-start">
+                                <div class="font-medium">无线充电器</div>
+                                <div class="text-xs text-white bg-blue-500 px-1.5 py-0.5 rounded">手机配件</div>
+                            </div>
+                            <div class="text-sm text-gray-500 mt-1">编码: SP20230001</div>
+                            <div class="flex justify-between items-center mt-1">
+                                <div class="text-sm">库存: <span class="text-blue-600 font-medium">128</span></div>
+                                <div class="text-sm text-red-500">¥ 59.00</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mb-3 product-item" onclick="window.location.href='product_detail.html'">
+                    <div class="flex">
+                        <div class="w-16 h-16 bg-gray-200 rounded-md overflow-hidden mr-3">
+                            <img src="https://via.placeholder.com/64" alt="产品图片" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex justify-between items-start">
+                                <div class="font-medium">Type-C数据线</div>
+                                <div class="text-xs text-white bg-blue-500 px-1.5 py-0.5 rounded">手机配件</div>
+                            </div>
+                            <div class="text-sm text-gray-500 mt-1">编码: SP20230002</div>
+                            <div class="flex justify-between items-center mt-1">
+                                <div class="text-sm">库存: <span class="text-blue-600 font-medium">256</span></div>
+                                <div class="text-sm text-red-500">¥ 29.00</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mb-3 product-item" onclick="window.location.href='product_detail.html'">
+                    <div class="flex">
+                        <div class="w-16 h-16 bg-gray-200 rounded-md overflow-hidden mr-3">
+                            <img src="https://via.placeholder.com/64" alt="产品图片" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex justify-between items-start">
+                                <div class="font-medium">蓝牙耳机</div>
+                                <div class="text-xs text-white bg-green-500 px-1.5 py-0.5 rounded">数码配件</div>
+                            </div>
+                            <div class="text-sm text-gray-500 mt-1">编码: SP20230003</div>
+                            <div class="flex justify-between items-center mt-1">
+                                <div class="text-sm">库存: <span class="text-blue-600 font-medium">64</span></div>
+                                <div class="text-sm text-red-500">¥ 129.00</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mb-3 product-item" onclick="window.location.href='product_detail.html'">
+                    <div class="flex">
+                        <div class="w-16 h-16 bg-gray-200 rounded-md overflow-hidden mr-3">
+                            <img src="https://via.placeholder.com/64" alt="产品图片" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex justify-between items-start">
+                                <div class="font-medium">手机壳</div>
+                                <div class="text-xs text-white bg-blue-500 px-1.5 py-0.5 rounded">手机配件</div>
+                            </div>
+                            <div class="text-sm text-gray-500 mt-1">编码: SP20230004</div>
+                            <div class="flex justify-between items-center mt-1">
+                                <div class="text-sm">库存: <span class="text-blue-600 font-medium">320</span></div>
+                                <div class="text-sm text-red-500">¥ 19.00</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 新增产品浮动按钮 -->
+        <div class="fixed right-4 bottom-20 z-10">
+            <button class="w-14 h-14 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-lg" onclick="window.location.href='product_detail.html'">
+                <i class="ri-add-line text-2xl"></i>
+            </button>
+        </div>
+        
+        <!-- 导出成功提示 -->
+        <div id="exportSuccessToast" class="fixed inset-x-0 bottom-20 flex justify-center items-center transform translate-y-16 opacity-0 transition-all duration-300 z-50">
+            <div class="bg-green-500 text-white px-4 py-2 rounded-full shadow-lg flex items-center">
+                <i class="ri-check-line mr-2"></i>
+                <span>导出成功</span>
+            </div>
+        </div>
+        
+        <!-- 底部标签栏 -->
+        <div class="tab-bar">
+            <div class="tab-item" onclick="window.location.href='home.html'">
+                <i class="ri-home-5-line tab-icon"></i>
+                <span>首页</span>
+            </div>
+            <div class="tab-item" onclick="window.location.href='documents.html'">
+                <i class="ri-file-list-3-line tab-icon"></i>
+                <span>单据</span>
+            </div>
+            <div class="tab-item" onclick="window.location.href='statistics.html'">
+                <i class="ri-bar-chart-2-line tab-icon"></i>
+                <span>统计</span>
+            </div>
+            <div class="tab-item active" onclick="window.location.href='profile.html'">
+                <i class="ri-user-3-line tab-icon"></i>
+                <span>我的</span>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 搜索产品
+        function searchProducts() {
+            const category = document.getElementById('productCategory').value;
+            const name = document.getElementById('productName').value;
+            const code = document.getElementById('productCode').value;
+            
+            // 这里应该是实际的搜索逻辑，现在只是模拟
+            console.log('搜索条件:', { category, name, code });
+            
+            // 模拟搜索结果展示
+            alert('搜索成功，共找到4条记录');
+        }
+        
+        // 导出Excel
+        function exportToExcel() {
+            // 显示导出中状态
+            const exportBtn = document.querySelector('.navbar-action');
+            const originalIcon = exportBtn.innerHTML;
+            exportBtn.innerHTML = '<i class="ri-loader-2-line animate-spin"></i>';
+            
+            // 模拟导出过程
+            setTimeout(() => {
+                // 恢复按钮状态
+                exportBtn.innerHTML = originalIcon;
+                
+                // 显示导出成功提示
+                const toast = document.getElementById('exportSuccessToast');
+                toast.classList.remove('translate-y-16', 'opacity-0');
+                toast.classList.add('translate-y-0', 'opacity-100');
+                
+                // 3秒后隐藏提示
+                setTimeout(() => {
+                    toast.classList.add('translate-y-16', 'opacity-0');
+                    toast.classList.remove('translate-y-0', 'opacity-100');
+                }, 3000);
+            }, 1500);
+        }
+    </script>
+</body>
+</html>

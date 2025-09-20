@@ -1,0 +1,73 @@
+<!-- 顶部导航栏 -->
+<!-- <view class="navbar">
+  <view class="navbar-title">库存管理</view>
+</view> -->
+
+<!-- 主要内容区域 -->
+<view class="container">
+    <!-- 今日统计 -->
+    <view class="card overview-card">
+    <view class="card-title">今日概览</view>
+    <view class="stat-grid">
+      <view class="stat-card">
+        <view class="stat-title">今日入库</view>
+        <view class="stat-value">{{todayStats.inbound.count}}笔</view>
+        <view class="stat-subtitle">¥{{todayStats.inbound.amount}}</view>
+      </view>
+      <view class="stat-card">
+        <view class="stat-title">今日出库</view>
+        <view class="stat-value">{{todayStats.outbound.count}}笔</view>
+        <view class="stat-subtitle">¥{{todayStats.outbound.amount}}</view>
+      </view>
+    </view>
+  </view>
+  <!-- 出入库按钮 -->
+  <view class="action-buttons">
+    <button class="btn btn-primary flex-1" bindtap="navigateToInbound">
+      <text class="icon-arrow-down"></text> 入库登记
+    </button>
+    <button class="btn btn-primary flex-1" bindtap="navigateToOutbound">
+      <text class="icon-arrow-up"></text> 出库登记
+    </button>
+  </view>
+  
+
+  
+  <!-- 最近记录 -->
+  <view class="card">
+    <view class="card-header">
+      <view class="card-title">最近记录</view>
+      <view class="view-all" bindtap="navigateToBills">查看全部</view>
+    </view>
+    
+    <!-- 入库记录 -->
+    <view class="record-section">
+      <view class="section-title inbound-title">入库记录</view>
+      <view class="list">
+        <view class="list-item" wx:for="{{recentRecords.inbound}}" wx:key="id" bindtap="viewBillDetail" data-id="{{item.id}}" data-type="inbound">
+          <view class="list-content">
+            <view class="list-title">{{item.productName}}</view>
+            <view class="list-subtitle">{{item.type}} · {{item.quantity}}{{item.unit}} · ¥{{item.amount}}</view>
+            <view class="list-time">{{item.time}}</view>
+          </view>
+          <view class="list-arrow"></view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 出库记录 -->
+    <view class="record-section">
+      <view class="section-title outbound-title">出库记录</view>
+      <view class="list">
+        <view class="list-item" wx:for="{{recentRecords.outbound}}" wx:key="id" bindtap="viewBillDetail" data-id="{{item.id}}" data-type="outbound">
+          <view class="list-content">
+            <view class="list-title">{{item.productName}}</view>
+            <view class="list-subtitle">{{item.type}} · {{item.quantity}}{{item.unit}} · ¥{{item.amount}}</view>
+            <view class="list-time">{{item.time}}</view>
+          </view>
+          <view class="list-arrow"></view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

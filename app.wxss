@@ -1,0 +1,135 @@
+/**app.wxss**/
+page {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: #f5f7fa;
+  color: #333;
+}
+
+.container {
+  max-width: 100%;
+  padding: 0;
+  padding-bottom: 120rpx;
+}
+
+/* 顶部导航栏 */
+.navbar {
+  background-color: #0052d9;
+  color: white;
+  padding: 20rpx;
+  text-align: center;
+  position: relative;
+}
+
+.navbar-title {
+  font-size: 36rpx;
+  font-weight: bold;
+}
+
+/* 底部标签栏 */
+.tab-bar {
+  display: flex;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: white;
+  border-top: 1px solid #e0e0e0;
+  height: 120rpx;
+}
+
+.tab-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-size: 24rpx;
+  padding: 10rpx 0;
+}
+
+.tab-item.active {
+  color: #0052d9;
+}
+
+.tab-icon {
+  font-size: 48rpx;
+  margin-bottom: 5rpx;
+}
+
+/* 卡片样式 */
+.card {
+  background-color: white;
+  border-radius: 16rpx;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+}
+
+/* 按钮样式 */
+.btn {
+  display: inline-block;
+  font-weight: 400;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  border: 1px solid transparent;
+  padding: 16rpx 30rpx;
+  font-size: 30rpx;
+  line-height: 1.5;
+  border-radius: 8rpx;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #0052d9;
+  border-color: #0052d9;
+}
+
+/* 列表项样式 */
+.list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.list-item:last-child {
+  border-bottom: none;
+}
+
+.list-content {
+  flex: 1;
+}
+
+.list-title {
+  font-size: 30rpx;
+  font-weight: 500;
+  margin-bottom: 6rpx;
+}
+
+.list-subtitle {
+  font-size: 26rpx;
+  color: #666;
+  margin-bottom: 6rpx;
+}
+
+/* 统计卡片 */
+.stat-card {
+  background-color: #f9f9f9;
+  border-radius: 12rpx;
+  padding: 20rpx;
+}
+
+.stat-title {
+  font-size: 26rpx;
+  color: #666;
+  margin-bottom: 10rpx;
+}
+
+.stat-value {
+  font-size: 36rpx;
+  font-weight: bold;
+  margin-bottom: 6rpx;
+}

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>入库登记 - 商品库存管理</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css">
+    <link rel="stylesheet" href="shared.css">
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto pb-16">
+        <!-- 顶部导航栏 -->
+        <div class="navbar">
+            <a href="home.html" class="back-button text-white">
+                <i class="ri-arrow-left-line"></i>
+            </a>
+            <div class="navbar-title">入库登记</div>
+        </div>
+        
+        <!-- 主要内容区域 -->
+        <div class="p-4">
+            <form class="card">
+                <!-- 单据号 -->
+                <div class="form-group">
+                    <label class="form-label">单据号</label>
+                    <input type="text" class="form-control bg-gray-100" value="RK20230915001" readonly>
+                    <div class="text-xs text-gray-500 mt-1">系统自动生成</div>
+                </div>
+                
+                <!-- 入库类型 -->
+                <div class="form-group">
+                    <label class="form-label">入库类型 <span class="text-red-500">*</span></label>
+                    <select class="form-control">
+                        <option value="">请选择入库类型</option>
+                        <option value="1">采购入库</option>
+                        <option value="2">退货入库</option>
+                        <option value="3">调拨入库</option>
+                    </select>
+                </div>
+                
+                <!-- 入库日期 -->
+                <div class="form-group">
+                    <label class="form-label">入库日期 <span class="text-red-500">*</span></label>
+                    <input type="date" class="form-control" value="2023-09-15">
+                </div>
+                
+                <!-- 供应商 -->
+                <div class="form-group">
+                    <label class="form-label">供应商</label>
+                    <select class="form-control">
+                        <option value="">请选择供应商</option>
+                        <option value="1">广州电子科技有限公司</option>
+                        <option value="2">深圳数码配件厂</option>
+                        <option value="3">东莞塑胶制品有限公司</option>
+                    </select>
+                </div>
+                
+                <!-- 产品信息 -->
+                <div class="bg-gray-50 p-3 rounded-lg mb-4">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="text-base font-medium">产品信息</h3>
+                        <button type="button" class="text-blue-600 text-sm flex items-center">
+                            <i class="ri-add-line mr-1"></i> 添加产品
+                        </button>
+                    </div>
+                    
+                    <div class="bg-white p-3 rounded-lg mb-3 border border-gray-200">
+                        <!-- 产品名称 -->
+                        <div class="form-group">
+                            <label class="form-label">产品名称 <span class="text-red-500">*</span></label>
+                            <div class="flex">
+                                <select class="form-control flex-1 rounded-r-none">
+                                    <option value="">请选择产品</option>
+                                    <option value="1">苹果手机壳</option>
+                                    <option value="2">Type-C数据线</option>
+                                    <option value="3">无线充电器</option>
+                                </select>
+                                <button type="button" class="bg-gray-200 px-3 rounded-r-md flex items-center">
+                                    <i class="ri-barcode-line"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 入库数量 -->
+                        <div class="form-group">
+                            <label class="form-label">入库数量 <span class="text-red-500">*</span></label>
+                            <input type="number" class="form-control" placeholder="请输入数量">
+                        </div>
+                        
+                        <!-- 入库单价 -->
+                        <div class="form-group">
+                            <label class="form-label">入库单价 <span class="text-red-500">*</span></label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-2">¥</span>
+                                <input type="number" class="form-control pl-8" placeholder="请输入单价">
+                            </div>
+                        </div>
+                        
+                        <!-- 删除按钮 -->
+                        <div class="text-right">
+                            <button type="button" class="text-red-500 text-sm">
+                                <i class="ri-delete-bin-line"></i> 删除
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 备注 -->
+                <div class="form-group">
+                    <label class="form-label">备注</label>
+                    <textarea class="form-control" rows="3" placeholder="请输入备注信息"></textarea>
+                </div>
+                
+                <!-- 提交按钮 -->
+                <div class="mt-6">
+                    <button type="submit" class="btn btn-primary w-full py-3">
+                        确认入库
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

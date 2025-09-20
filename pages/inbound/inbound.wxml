@@ -1,0 +1,117 @@
+<!-- 主要内容区域 -->
+<view class="container">
+  <form bindsubmit="submitForm">
+    <view class="card">
+      <!-- 单据号 -->
+      <view class="form-group">
+        <view class="form-label">单据号</view>
+        <view class="form-control-wrapper">
+          <input class="form-control bg-gray" value="{{billNo}}" disabled name="billNo" style="height: 88rpx; line-height: 88rpx;" />
+        </view>
+        <view class="form-hint">系统自动生成</view>
+      </view>
+      
+      <!-- 入库类型 -->
+      <view class="form-group">
+        <view class="form-label">入库类型 <text class="required">*</text></view>
+        <picker bindchange="bindTypeChange" value="{{typeIndex}}" range="{{typeOptions}}">
+          <view class="form-control picker">
+            {{typeIndex > -1 ? typeOptions[typeIndex] : '请选择入库类型'}}
+          </view>
+        </picker>
+      </view>
+      
+      <!-- 入库日期 -->
+      <view class="form-group">
+        <view class="form-label">入库日期 <text class="required">*</text></view>
+        <picker mode="date" bindchange="bindDateChange" value="{{date}}">
+          <view class="form-control picker">{{date}}</view>
+        </picker>
+      </view>
+      
+      <!-- 供应商 -->
+      <view class="form-group">
+        <view class="form-label">供应商</view>
+        <picker bindchange="bindSupplierChange" value="{{supplierIndex}}" range="{{supplierOptions}}">
+          <view class="form-control picker">
+            {{supplierIndex > -1 ? supplierOptions[supplierIndex] : '请选择供应商'}}
+          </view>
+        </picker>
+      </view>
+    </view>
+    
+    <!-- 产品信息 -->
+    <view class="card">
+      <view class="card-header">
+        <view class="card-title">产品信息</view>
+        <view class="btn-text" bindtap="addProduct">
+          <text class="icon-add"></text> 添加产品
+        </view>
+      </view>
+      
+      <block wx:for="{{products}}" wx:key="index">
+        <view class="product-card">
+          <!-- 产品名称 -->
+          <view class="form-group">
+            <view class="form-label">产品名称 <text class="required">*</text></view>
+            <view class="form-row">
+              <picker bindchange="bindProductChange" data-index="{{index}}" value="{{item.productIndex}}" range="{{productOptions}}">
+                <view class="form-control picker flex-grow">
+                  {{item.productIndex > -1 ? productOptions[item.productIndex] : '请选择产品'}}
+                </view>
+              </picker>
+              <view class="btn-icon" bindtap="scanCode" data-index="{{index}}">
+                <text class="icon-scan"></text>
+              </view>
+            </view>
+          </view>
+          
+          <!-- 入库数量 -->
+          <view class="form-group">
+            <view class="form-label">入库数量 <text class="required">*</text></view>
+            <input class="form-control" type="number" placeholder="请输入数量" value="{{item.quantity}}" bindinput="inputQuantity" data-index="{{index}}" />
+          </view>
+          
+          <!-- 入库单价 -->
+          <view class="form-group">
+            <view class="form-label">入库单价 <text class="required">*</text></view>
+            <view class="price-input">
+              <text class="price-symbol">¥</text>
+              <input class="form-control" type="digit" placeholder="请输入单价" value="{{item.price}}" bindinput="inputPrice" data-index="{{index}}" />
+            </view>
+          </view>
+          
+          <!-- 删除按钮 -->
+          <view class="delete-btn" bindtap="removeProduct" data-index="{{index}}">
+            <text class="icon-delete"></text> 删除
+          </view>
+        </view>
+      </block>
+    </view>
+    
+    <!-- 备注 -->
+    <view class="card">
+      <view class="form-group">
+        <view class="form-label">备注</view>
+        <textarea class="form-textarea" placeholder="请输入备注信息" name="remark" value="{{remark}}" />
+      </view>
+    </view>
+    
+    <!-- 总计 -->
+    <view class="card total-card">
+      <view class="total-row">
+        <text>总数量</text>
+        <text>{{totalQuantity}} 件</text>
+      </view>
+      <view class="total-row">
+        <text>总金额</text>
+        <text class="total-amount">¥ {{totalAmount}}</text>
+      </view>
+    </view>
+    
+    <!-- 提交按钮 -->
+    <view class="btn-area">
+      <button class="btn btn-primary" form-type="submit">确认入库</button>
+    </view>
+  </form>
+</view>

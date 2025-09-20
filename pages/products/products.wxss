@@ -1,0 +1,191 @@
+/* 引入共享样式 */
+@import "../../styles/shared.wxss";
+
+.container {
+  padding-bottom: 120rpx;
+}
+
+.search-area {
+  padding: 20rpx;
+}
+
+.search-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.search-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-label {
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.form-row {
+  display: flex;
+  align-items: center;
+}
+
+.flex-grow {
+  flex-grow: 1;
+}
+
+.btn-icon {
+  width: 80rpx;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5f7fa;
+  border-radius: 0 8rpx 8rpx 0;
+  margin-left: -2rpx;
+}
+
+.icon-scan::before {
+  content: "\e62a";
+  font-family: "weui";
+}
+
+.icon-search::before {
+  content: "\e61c";
+  font-family: "weui";
+  margin-right: 8rpx;
+}
+
+.icon-excel::before {
+  content: "\e63f";
+  font-family: "weui";
+  margin-right: 8rpx;
+}
+
+.btn-center {
+  display: flex;
+  justify-content: center;
+}
+
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.list-title {
+  font-size: 32rpx;
+  font-weight: 500;
+}
+
+.btn-sm {
+  font-size: 24rpx;
+  padding: 8rpx 16rpx;
+}
+
+.product-list {
+  margin-bottom: 20rpx;
+}
+
+.product-item {
+  margin-bottom: 20rpx;
+}
+
+.product-content {
+  display: flex;
+}
+
+.product-image {
+  width: 128rpx;
+  height: 128rpx;
+  background-color: #f5f7fa;
+  border-radius: 8rpx;
+  overflow: hidden;
+  margin-right: 20rpx;
+}
+
+.product-image image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-info {
+  flex: 1;
+}
+
+.product-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.product-name {
+  font-size: 30rpx;
+  font-weight: 500;
+}
+
+.product-category {
+  font-size: 22rpx;
+  color: #fff;
+  background-color: #1989fa;
+  padding: 4rpx 12rpx;
+  border-radius: 4rpx;
+}
+
+.product-code {
+  font-size: 26rpx;
+  color: #999;
+  margin-top: 10rpx;
+}
+
+.product-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10rpx;
+}
+
+.product-stock {
+  font-size: 26rpx;
+}
+
+.stock-num {
+  color: #1989fa;
+  font-weight: 500;
+}
+
+.product-price {
+  font-size: 26rpx;
+  color: #ee0a24;
+}
+
+.no-data {
+  text-align: center;
+  padding: 40rpx 0;
+  color: #999;
+}
+
+.float-btn {
+  position: fixed;
+  right: 30rpx;
+  bottom: 140rpx;
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  background-color: #1989fa;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.15);
+}
+
+.icon-add::before {
+  content: "\e606";
+  font-family: "weui";
+  font-size: 40rpx;
+}

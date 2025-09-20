@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的 - 商品库存管理</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css">
+    <link rel="stylesheet" href="shared.css">
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto pb-16">
+        <!-- 顶部导航栏 -->
+        <div class="navbar">
+            <div class="navbar-title">我的</div>
+        </div>
+        
+        <!-- 用户信息 -->
+        <div class="p-4">
+            <div class="flex items-center mb-6">
+                <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center text-white text-2xl mr-4">
+                    <i class="ri-wechat-fill"></i>
+                </div>
+                <div>
+                    <div class="text-lg font-medium">微信昵称: 小明同学</div>
+                    <div class="text-sm text-gray-500">微信ID: wxid_abc123456</div>
+                </div>
+            </div>
+            
+            <!-- 功能菜单 -->
+            <div class="card mb-4">
+                <div class="menu-item" onclick="window.location.href='product_list.html'">
+                    <i class="ri-shopping-bag-line menu-icon"></i>
+                    <span>产品管理</span>
+                    <i class="ri-arrow-right-s-line text-gray-400"></i>
+                </div>
+                <div class="menu-item">
+                    <i class="ri-price-tag-3-line menu-icon"></i>
+                    <span>产品类别</span>
+                    <i class="ri-arrow-right-s-line text-gray-400"></i>
+                </div>
+                <div class="menu-item">
+                    <i class="ri-logout-box-line menu-icon"></i>
+                    <span>出库类型</span>
+                    <i class="ri-arrow-right-s-line text-gray-400"></i>
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="menu-item">
+                    <i class="ri-login-box-line menu-icon"></i>
+                    <span>入库类型</span>
+                    <i class="ri-arrow-right-s-line text-gray-400"></i>
+                </div>
+                <div class="menu-item">
+                    <i class="ri-user-star-line menu-icon"></i>
+                    <span>供应商管理</span>
+                    <i class="ri-arrow-right-s-line text-gray-400"></i>
+                </div>
+            </div>
+            
+            <!-- 版本信息 -->
+            <div class="text-center text-gray-400 text-xs mt-8">
+                <div>商品库存管理小程序</div>
+                <div class="mt-1">版本 1.0.0</div>
+            </div>
+            
+            <!-- 退出登录按钮 -->
+            <div class="mt-6">
+                <button class="w-full py-3 bg-white text-red-500 rounded-md border border-gray-200 font-medium">
+                    退出登录
+                </button>
+            </div>
+        </div>
+        
+        <!-- 底部标签栏 -->
+        <div class="tab-bar">
+            <div class="tab-item">
+                <i class="ri-home-5-line tab-icon"></i>
+                <span>首页</span>
+            </div>
+            <div class="tab-item">
+                <i class="ri-file-list-3-line tab-icon"></i>
+                <span>单据</span>
+            </div>
+            <div class="tab-item">
+                <i class="ri-bar-chart-2-line tab-icon"></i>
+                <span>统计</span>
+            </div>
+            <div class="tab-item active">
+                <i class="ri-user-3-line tab-icon"></i>
+                <span>我的</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

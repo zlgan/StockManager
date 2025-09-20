@@ -1,0 +1,43 @@
+<!-- 用户信息 -->
+<view class="p-4">
+  <view class="user-info">
+    <view class="avatar">
+      <text class="avatar-icon">微</text>
+    </view>
+    <view class="user-details">
+      <view class="username">微信昵称: 小明同学</view>
+      <view class="user-id">微信ID: wxid_abc123456</view>
+    </view>
+  </view>
+  
+  <!-- 功能菜单 -->
+  <view class="card mb-4">
+    <view class="menu-item" bindtap="navigateTo" data-url="/pages/products/products">
+      <text class="menu-icon ri-shopping-bag-line"></text>
+      <text>产品管理</text>
+      <text class="arrow-icon"></text>
+    </view>
+    <view class="menu-item" bindtap="navigateTo" data-url="/pages/categories/categories">
+      <text class="menu-icon ri-price-tag-3-line"></text>
+      <text>产品类别</text>
+      <text class="arrow-icon"></text>
+    </view>
+
+    <view class="menu-item" bindtap="navigateTo" data-url="/pages/suppliers/suppliers">
+      <text class="menu-icon ri-user-star-line"></text>
+      <text>供应商管理</text>
+      <text class="arrow-icon"></text>
+    </view>
+  </view>
+  
+  <!-- 版本信息 -->
+  <view class="version-info">
+    <view>商品库存管理小程序</view>
+    <view class="version-number">版本 1.0.0</view>
+  </view>
+  
+  <!-- 退出登录按钮 -->
+  <view class="logout-btn-container">
+    <button class="logout-btn" bindtap="logout">退出登录</button>
+  </view>
+</view>

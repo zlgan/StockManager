@@ -1,0 +1,197 @@
+/* 共享样式文件 */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f7fa;
+    color: #333;
+}
+
+.container {
+    max-width: 100%;
+    padding: 0;
+}
+
+/* 顶部导航栏 */
+.navbar {
+    background-color: #0052d9;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+    position: relative;
+}
+
+.navbar-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.back-button {
+    position: absolute;
+    left: 1rem;
+    top: 1rem;
+}
+
+/* 底部标签栏 */
+.tab-bar {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: white;
+    border-top: 1px solid #e0e0e0;
+    height: 60px;
+}
+
+.tab-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    font-size: 0.8rem;
+    padding: 0.5rem 0;
+}
+
+.tab-item.active {
+    color: #0052d9;
+}
+
+.tab-icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.25rem;
+}
+
+/* 卡片样式 */
+.card {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+/* 按钮样式 */
+.btn {
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    user-select: none;
+    border: 1px solid transparent;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: 0.25rem;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #0052d9;
+    border-color: #0052d9;
+}
+
+.btn-outline {
+    color: #0052d9;
+    background-color: transparent;
+    border-color: #0052d9;
+}
+
+/* 表单样式 */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.form-control {
+    display: block;
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+/* 统计卡片 */
+.stat-card {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-title {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #0052d9;
+}
+
+/* 列表样式 */
+.list-item {
+    display: flex;
+    padding: 1rem;
+    border-bottom: 1px solid #e0e0e0;
+    background-color: white;
+}
+
+.list-content {
+    flex: 1;
+}
+
+.list-title {
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.list-subtitle {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* 标签页 */
+.tabs {
+    display: flex;
+    background-color: white;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.tab {
+    flex: 1;
+    text-align: center;
+    padding: 0.75rem 0;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.tab.active {
+    color: #0052d9;
+    border-bottom: 2px solid #0052d9;
+}
+
+/* 图标 */
+.icon {
+    font-size: 1.2rem;
+}

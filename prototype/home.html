@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>首页 - 商品库存管理</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css">
+    <link rel="stylesheet" href="shared.css">
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto pb-16">
+        <!-- 顶部导航栏 -->
+        <div class="navbar">
+            <div class="navbar-title">库存管理</div>
+        </div>
+        
+        <!-- 主要内容区域 -->
+        <div class="p-4">
+            <!-- 出入库按钮 -->
+            <div class="flex gap-4 mb-6">
+                <button class="btn btn-primary flex-1 py-3 flex items-center justify-center">
+                    <i class="ri-arrow-down-line mr-2"></i> 入库登记
+                </button>
+                <button class="btn btn-primary flex-1 py-3 flex items-center justify-center">
+                    <i class="ri-arrow-up-line mr-2"></i> 出库登记
+                </button>
+            </div>
+            
+            <!-- 今日统计 -->
+            <div class="card mb-6">
+                <h2 class="text-lg font-medium mb-3">今日概览</h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="stat-card">
+                        <div class="stat-title">今日入库</div>
+                        <div class="stat-value">12笔</div>
+                        <div class="text-sm text-gray-500">¥8,560.00</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">今日出库</div>
+                        <div class="stat-value">8笔</div>
+                        <div class="text-sm text-gray-500">¥5,280.00</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 最近记录 -->
+            <div class="card">
+                <div class="flex justify-between items-center mb-3">
+                    <h2 class="text-lg font-medium">最近记录</h2>
+                    <a href="#" class="text-blue-600 text-sm">查看全部</a>
+                </div>
+                
+                <!-- 入库记录 -->
+                <div class="mb-4">
+                    <h3 class="text-base font-medium mb-2 text-gray-600">入库记录</h3>
+                    <div class="list-item">
+                        <div class="list-content">
+                            <div class="list-title">苹果手机壳</div>
+                            <div class="list-subtitle">采购入库 · 100个 · ¥1,500.00</div>
+                            <div class="text-xs text-gray-500">2023-09-15 10:30</div>
+                        </div>
+                        <div class="text-blue-600">
+                            <i class="ri-arrow-right-s-line"></i>
+                        </div>
+                    </div>
+                    <div class="list-item">
+                        <div class="list-content">
+                            <div class="list-title">Type-C数据线</div>
+                            <div class="list-subtitle">采购入库 · 200个 · ¥2,000.00</div>
+                            <div class="text-xs text-gray-500">2023-09-15 09:15</div>
+                        </div>
+                        <div class="text-blue-600">
+                            <i class="ri-arrow-right-s-line"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 出库记录 -->
+                <div>
+                    <h3 class="text-base font-medium mb-2 text-gray-600">出库记录</h3>
+                    <div class="list-item">
+                        <div class="list-content">
+                            <div class="list-title">苹果手机壳</div>
+                            <div class="list-subtitle">销售出库 · 20个 · ¥400.00</div>
+                            <div class="text-xs text-gray-500">2023-09-15 14:20</div>
+                        </div>
+                        <div class="text-blue-600">
+                            <i class="ri-arrow-right-s-line"></i>
+                        </div>
+                    </div>
+                    <div class="list-item">
+                        <div class="list-content">
+                            <div class="list-title">Type-C数据线</div>
+                            <div class="list-subtitle">销售出库 · 50个 · ¥750.00</div>
+                            <div class="text-xs text-gray-500">2023-09-15 13:45</div>
+                        </div>
+                        <div class="text-blue-600">
+                            <i class="ri-arrow-right-s-line"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 底部标签栏 -->
+        <div class="tab-bar">
+            <div class="tab-item active">
+                <i class="ri-home-5-line tab-icon"></i>
+                <span>首页</span>
+            </div>
+            <div class="tab-item">
+                <i class="ri-file-list-3-line tab-icon"></i>
+                <span>单据</span>
+            </div>
+            <div class="tab-item">
+                <i class="ri-bar-chart-2-line tab-icon"></i>
+                <span>统计</span>
+            </div>
+            <div class="tab-item">
+                <i class="ri-user-3-line tab-icon"></i>
+                <span>我的</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

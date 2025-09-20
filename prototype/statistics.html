@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>统计报表 - 商品库存管理</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css">
+    <link rel="stylesheet" href="shared.css">
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto pb-16">
+        <!-- 顶部导航栏 -->
+        <div class="navbar">
+            <div class="navbar-title">统计报表</div>
+        </div>
+        
+        <!-- 标签页 -->
+        <div class="tabs">
+            <div class="tab active" id="tab-profit">收益分析</div>
+            <div class="tab" id="tab-inventory">库存盘点</div>
+        </div>
+        
+        <!-- 主要内容区域 -->
+        <div class="p-4">
+            <!-- 收益分析内容 -->
+            <div id="profit-content">
+                <!-- 筛选条件 -->
+                <div class="mb-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="text-lg font-medium">2023年度</div>
+                        <select class="border border-gray-300 rounded px-2 py-1 text-sm">
+                            <option value="2023">2023年</option>
+                            <option value="2022">2022年</option>
+                            <option value="2021">2021年</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- 汇总信息 -->
+                <div class="grid grid-cols-3 gap-3 mb-4">
+                    <div class="stat-card">
+                        <div class="stat-title">总利润</div>
+                        <div class="stat-value">¥125,680</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">入库总额</div>
+                        <div class="stat-value">¥358,920</div>
+                        <div class="text-xs text-gray-500">共 256 笔</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">出库总额</div>
+                        <div class="stat-value">¥484,600</div>
+                        <div class="text-xs text-gray-500">共 312 笔</div>
+                    </div>
+                </div>
+                
+                <!-- 月度明细 -->
+                <div class="card">
+                    <h3 class="text-base font-medium mb-3">月度明细</h3>
+                    
+                    <!-- 图表占位 -->
+                    <div class="bg-gray-200 h-48 mb-4 rounded flex items-center justify-center">
+                        <div class="text-gray-500">月度收益趋势图</div>
+                    </div>
+                    
+                    <!-- 月度数据表格 -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="bg-gray-50">
+                                    <th class="py-2 px-3 text-left">月份</th>
+                                    <th class="py-2 px-3 text-right">入库金额</th>
+                                    <th class="py-2 px-3 text-right">出库金额</th>
+                                    <th class="py-2 px-3 text-right">利润</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-t border-gray-200">
+                                    <td class="py-2 px-3">2023-09</td>
+                                    <td class="py-2 px-3 text-right">¥42,560</td>
+                                    <td class="py-2 px-3 text-right">¥58,320</td>
+                                    <td class="py-2 px-3 text-right text-green-600">¥15,760</td>
+                                </tr>
+                                <tr class="border-t border-gray-200">
+                                    <td class="py-2 px-3">2023-08</td>
+                                    <td class="py-2 px-3 text-right">¥38,750</td>
+                                    <td class="py-2 px-3 text-right">¥52,480</td>
+                                    <td class="py-2 px-3 text-right text-green-600">¥13,730</td>
+                                </tr>
+                                <tr class="border-t border-gray-200">
+                                    <td class="py-2 px-3">2023-07</td>
+                                    <td class="py-2 px-3 text-right">¥45,320</td>
+                                    <td class="py-2 px-3 text-right">¥61,250</td>
+                                    <td class="py-2 px-3 text-right text-green-600">¥15,930</td>
+                                </tr>
+                                <tr class="border-t border-gray-200">
+                                    <td class="py-2 px-3">2023-06</td>
+                                    <td class="py-2 px-3 text-right">¥36,480</td>
+                                    <td class="py-2 px-3 text-right">¥49,850</td>
+                                    <td class="py-2 px-3 text-right text-green-600">¥13,370</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 库存盘点内容 -->
+            <div id="inventory-content" class="hidden">
+                <div class="flex justify-between items-center mb-3">
+                    <div>
+                        <div class="text-lg font-medium">库存盘点</div>
+                        <div class="text-sm text-gray-500">共 35 种产品，库存总额 ¥128,560</div>
+                    </div>
+                    <div>
+                        <button class="text-blue-600 text-sm flex items-center">
+                            <i class="ri-alert-line mr-1"></i> 预警库存
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <div class="flex">
+                        <input type="text" class="form-control rounded-r-none" placeholder="搜索产品名称/编码">
+                        <button class="bg-blue-600 text-white px-4 rounded-r-md">
+                            <i class="ri-search-line"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 库存分类统计 -->
+                <div class="card mb-4">
+                    <h3 class="text-base font-medium mb-3">库存分类统计</h3>
+                    <div class="grid grid-cols-3 gap-3 mb-2">
+                        <div class="text-center">
+                            <div class="text-sm text-gray-500">手机配件</div>
+                            <div class="font-medium">¥56,800</div>
+                            <div class="text-xs text-gray-500">12 种产品</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-sm text-gray-500">数码配件</div>
+                            <div class="font-medium">¥42,360</div>
+                            <div class="text-xs text-gray-500">15 种产品</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-sm text-gray-500">其他</div>
+                            <div class="font-medium">¥29,400</div>
+                            <div class="text-xs text-gray-500">8 种产品</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 产品列表 -->
+                <div class="card mb-3">
+                    <div class="flex">
+                        <div class="w-16 h-16 bg-gray-200 rounded flex-shrink-0 mr-3"></div>
+                        <div class="flex-1">
+                            <div class="flex justify-between">
+                                <div class="font-medium">苹果手机壳</div>
+                                <div class="text-blue-600" onclick="showProductDetail()">详情</div>
+                            </div>
+                            <div class="text-sm text-gray-500 mb-1">手机配件</div>
+                            <div class="flex justify-between">
+                                <div>库存: <span class="text-blue-600 font-medium">280</span></div>
+                                <div>均价: <span class="font-medium">¥15.00</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mb-3">
+                    <div class="flex">
+                        <div class="w-16 h-16 bg-gray-200 rounded flex-shrink-0 mr-3"></div>
+                        <div class="flex-1">
+                            <div class="flex justify-between">
+                                <div class="font-medium">Type-C数据线</div>
+                                <div class="text-blue-600" onclick="showProductDetail()">详情</div>
+                            </div>
+                            <div class="text-sm text-gray-500 mb-1">数码配件</div>
+                            <div class="flex justify-between">
+                                <div>库存: <span class="text-blue-600 font-medium">450</span></div>
+                                <div>均价: <span class="font-medium">¥10.00</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mb-3">
+                    <div class="flex">
+                        <div class="w-16 h-16 bg-gray-200 rounded flex-shrink-0 mr-3"></div>
+                        <div class="flex-1">
+                            <div class="flex justify-between">
+                                <div class="font-medium">无线充电器</div>
+                                <div class="text-blue-600" onclick="showProductDetail()">详情</div>
+                            </div>
+                            <div class="text-sm text-gray-500 mb-1">数码配件</div>
+                            <div class="flex justify-between">
+                                <div>库存: <span class="text-blue-600 font-medium">120</span></div>
+                                <div>均价: <span class="font-medium">¥35.00</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 产品详情弹窗 (默认隐藏) -->
+                <div id="product-detail" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div class="bg-white rounded-lg w-11/12 max-w-md">
+                        <div class="p-4 border-b">
+                            <div class="flex justify-between items-center">
+                                <div class="font-medium text-lg">产品详情</div>
+                                <div class="text-gray-500" onclick="hideProductDetail()">
+                                    <i class="ri-close-line text-xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <div class="flex mb-4">
+                                <div class="w-20 h-20 bg-gray-200 rounded flex-shrink-0 mr-3"></div>
+                                <div>
+                                    <div class="font-medium text-lg">苹果手机壳</div>
+                                    <div class="text-sm text-gray-500">手机配件</div>
+                                    <div class="text-sm text-gray-500">编码: SP20230001</div>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-3 mb-4">
+                                <div>
+                                    <div class="text-sm text-gray-500">当前库存</div>
+                                    <div class="font-medium">280</div>
+                                </div>
+                                <div>
+                                    <div class="text-sm text-gray-500">库存金额</div>
+                                    <div class="font-medium">¥4,200</div>
+                                </div>
+                                <div>
+                                    <div class="text-sm text-gray-500">平均成本</div>
+                                    <div class="font-medium">¥15.00</div>
+                                </div>
+                                <div>
+                                    <div class="text-sm text-gray-500">最近入库</div>
+                                    <div class="font-medium">2023-09-15</div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <div class="text-sm font-medium mb-2">库存变动记录</div>
+                                <div class="text-xs text-gray-600 border-t border-gray-200 py-2 flex justify-between">
+                                    <div>2023-09-15</div>
+                                    <div class="text-blue-600">+100</div>
+                                    <div>采购入库</div>
+                                </div>
+                                <div class="text-xs text-gray-600 border-t border-gray-200 py-2 flex justify-between">
+                                    <div>2023-09-15</div>
+                                    <div class="text-orange-600">-20</div>
+                                    <div>销售出库</div>
+                                </div>
+                                <div class="text-xs text-gray-600 border-t border-gray-200 py-2 flex justify-between">
+                                    <div>2023-09-10</div>
+                                    <div class="text-blue-600">+200</div>
+                                    <div>采购入库</div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex gap-2">
+                                <button class="btn btn-primary flex-1">
+                                    <i class="ri-add-line mr-1"></i> 入库
+                                </button>
+                                <button class="btn btn-outline flex-1">
+                                    <i class="ri-subtract-line mr-1"></i> 出库
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <script>
+            // 产品详情弹窗控制
+            function showProductDetail() {
+                document.getElementById('product-detail').classList.remove('hidden');
+            }
+            
+            function hideProductDetail() {
+                document.getElementById('product-detail').classList.add('hidden');
+            }
+            
+            // 标签页切换
+            document.getElementById('tab-profit').addEventListener('click', function() {
+                // 激活当前标签
+                document.getElementById('tab-profit').classList.add('active');
+                document.getElementById('tab-inventory').classList.remove('active');
+                
+                // 显示对应内容
+                document.getElementById('profit-content').classList.remove('hidden');
+                document.getElementById('inventory-content').classList.add('hidden');
+            });
+            
+            document.getElementById('tab-inventory').addEventListener('click', function() {
+                // 激活当前标签
+                document.getElementById('tab-inventory').classList.add('active');
+                document.getElementById('tab-profit').classList.remove('active');
+                
+                // 显示对应内容
+                document.getElementById('inventory-content').classList.remove('hidden');
+                document.getElementById('profit-content').classList.add('hidden');
+            });
+        </script>
+        
+        <!-- 底部标签栏 -->
+        <div class="tab-bar">
+            <div class="tab-item">
+                <i class="ri-home-5-line tab-icon"></i>
+                <span>首页</span>
+            </div>
+            <div class="tab-item">
+                <i class="ri-file-list-3-line tab-icon"></i>
+                <span>单据</span>
+            </div>
+            <div class="tab-item active">
+                <i class="ri-bar-chart-2-line tab-icon"></i>
+                <span>统计</span>
+            </div>
+            <div class="tab-item">
+                <i class="ri-user-3-line tab-icon"></i>
+                <span>我的</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

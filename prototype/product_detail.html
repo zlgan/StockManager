@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>产品管理 - 商品库存管理</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css">
+    <link rel="stylesheet" href="shared.css">
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto pb-16">
+        <!-- 顶部导航栏 -->
+        <div class="navbar">
+            <div class="navbar-back" onclick="window.location.href='profile.html'">
+                <i class="ri-arrow-left-s-line"></i>
+            </div>
+            <div class="navbar-title">产品管理</div>
+            <div class="navbar-action">
+                <i class="ri-add-line"></i>
+            </div>
+        </div>
+        
+        <!-- 产品详情表单 -->
+        <div class="p-4">
+            <form id="productForm">
+                <!-- 产品图片上传 -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">产品图片</label>
+                    <div class="flex items-center">
+                        <div class="w-24 h-24 bg-gray-200 rounded-md flex items-center justify-center mr-3 relative overflow-hidden" id="imagePreview">
+                            <i class="ri-image-add-line text-2xl text-gray-400"></i>
+                            <img id="previewImg" class="absolute inset-0 w-full h-full object-cover hidden">
+                        </div>
+                        <div>
+                            <input type="file" id="productImage" accept="image/*" class="hidden">
+                            <button type="button" class="btn btn-outline text-sm px-3 py-1" onclick="document.getElementById('productImage').click()">
+                                上传图片
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 产品名称 -->
+                <div class="mb-4">
+                    <label for="productName" class="block text-sm font-medium text-gray-700 mb-2">产品名称 <span class="text-red-500">*</span></label>
+                    <input type="text" id="productName" class="form-control" placeholder="请输入产品名称" required>
+                </div>
+                
+                <!-- 产品编号 -->
+                <div class="mb-4">
+                    <label for="productCode" class="block text-sm font-medium text-gray-700 mb-2">产品编号</label>
+                    <div class="flex">
+                        <input type="text" id="productCode" class="form-control rounded-r-none" placeholder="支持扫码或手工录入">
+                        <button type="button" class="bg-blue-600 text-white px-3 rounded-r-md flex items-center">
+                            <i class="ri-qr-scan-line"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 产品类别 -->
+                <div class="mb-4">
+                    <label for="productCategory" class="block text-sm font-medium text-gray-700 mb-2">产品类别</label>
+                    <select id="productCategory" class="form-control">
+                        <option value="">请选择产品类别</option>
+                        <option value="1">手机配件</option>
+                        <option value="2">数码配件</option>
+                        <option value="3">电脑周边</option>
+                        <option value="4">智能设备</option>
+                    </select>
+                </div>
+                
+                <!-- 产品单位 -->
+                <div class="mb-4">
+                    <label for="productUnit" class="block text-sm font-medium text-gray-700 mb-2">产品单位</label>
+                    <select id="productUnit" class="form-control">
+                        <option value="">请选择产品单位</option>
+                        <option value="个">个</option>
+                        <option value="件">件</option>
+                        <option value="套">套</option>
+                        <option value="盒">盒</option>
+                        <option value="箱">箱</option>
+                    </select>
+                </div>
+                
+                <!-- 规格名称 -->
+                <div class="mb-4">
+                    <label for="productSpec" class="block text-sm font-medium text-gray-700 mb-2">规格名称</label>
+                    <input type="text" id="productSpec" class="form-control" placeholder="请输入规格名称">
+                </div>
+                
+                <!-- 供应商 -->
+                <div class="mb-4">
+                    <label for="supplier" class="block text-sm font-medium text-gray-700 mb-2">供应商</label>
+                    <select id="supplier" class="form-control">
+                        <option value="">请选择供应商</option>
+                        <option value="1">广州数码科技有限公司</option>
+                        <option value="2">深圳电子配件批发商</option>
+                        <option value="3">东莞手机配件厂</option>
+                    </select>
+                </div>
+                
+                <!-- 价格信息 -->
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <div>
+                        <label for="inboundPrice" class="block text-sm font-medium text-gray-700 mb-2">入库单价</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">¥</span>
+                            <input type="number" id="inboundPrice" class="form-control pl-8" placeholder="0.00" step="0.01">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="outboundPrice" class="block text-sm font-medium text-gray-700 mb-2">出库单价</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">¥</span>
+                            <input type="number" id="outboundPrice" class="form-control pl-8" placeholder="0.00" step="0.01">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 库存预警 -->
+                <div class="mb-4">
+                    <label for="minStock" class="block text-sm font-medium text-gray-700 mb-2">库存预警</label>
+                    <input type="number" id="minStock" class="form-control" placeholder="最低库存数量">
+                </div>
+                
+                <!-- 启用状态 -->
+                <div class="mb-4 flex items-center justify-between">
+                    <label class="text-sm font-medium text-gray-700">启用状态</label>
+                    <div class="relative inline-block w-10 mr-2 align-middle select-none">
+                        <input type="checkbox" id="enableStatus" class="toggle-checkbox" checked>
+                        <label for="enableStatus" class="toggle-label"></label>
+                    </div>
+                </div>
+                
+                <!-- 备注 -->
+                <div class="mb-6">
+                    <label for="remark" class="block text-sm font-medium text-gray-700 mb-2">备注</label>
+                    <textarea id="remark" class="form-control" rows="3" placeholder="请输入备注信息"></textarea>
+                </div>
+                
+                <!-- 提交按钮 -->
+                <div class="flex gap-3">
+                    <button type="button" class="btn btn-outline flex-1" onclick="window.location.href='profile.html'">取消</button>
+                    <button type="submit" class="btn btn-primary flex-1">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // 图片预览功能
+        document.getElementById('productImage').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const previewImg = document.getElementById('previewImg');
+                    previewImg.src = event.target.result;
+                    previewImg.classList.remove('hidden');
+                    document.querySelector('#imagePreview i').classList.add('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        // 表单提交处理
+        document.getElementById('productForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // 表单验证
+            const productName = document.getElementById('productName').value;
+            if (!productName) {
+                alert('请输入产品名称');
+                return;
+            }
+            
+            // 模拟保存成功
+            alert('产品信息保存成功');
+            window.location.href = 'profile.html';
+        });
+    </script>
+    
+    <style>
+        /* 开关样式 */
+        .toggle-checkbox {
+            position: absolute;
+            opacity: 0;
+            z-index: -1;
+        }
+        
+        .toggle-label {
+            display: block;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid #e2e8f0;
+            border-radius: 20px;
+            height: 20px;
+        }
+        
+        .toggle-label:before {
+            content: '';
+            display: block;
+            width: 16px;
+            height: 16px;
+            margin: 0;
+            background: #e2e8f0;
+            position: absolute;
+            top: 2px;
+            bottom: 0;
+            left: 2px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #3b82f6;
+            border-color: #3b82f6;
+        }
+        
+        .toggle-checkbox:checked + .toggle-label:before {
+            transform: translateX(20px);
+            background-color: white;
+        }
+    </style>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<view class="container">
+  <!-- 搜索区域 -->
+  <view class="search-area">
+    <view class="card mb-4">
+      <view class="search-input-box">
+        <text class="iconfont icon-search"></text>
+        <input type="text" class="form-control" placeholder="搜索产品名称/单据号/制单人" model:value="{{searchKeyword}}" />
+      </view>
+      
+      <view class="form-item">
+        <view class="form-label">日期范围</view>
+        <view class="date-picker-box" bindtap="showDatePicker">
+          <input type="text" class="form-control" placeholder="选择日期范围" disabled value="{{dateRange}}" />
+          <text class="iconfont icon-calendar"></text>
+        </view>
+      </view>
+      
+      <view class="form-grid">
+        <view class="form-item">
+          <view class="form-label">单据类型</view>
+          <picker bindchange="bindBillTypeChange" value="{{billTypeIndex}}" range="{{billTypes}}">
+            <view class="form-control picker">
+              {{billTypes[billTypeIndex]}}
+            </view>
+          </picker>
+        </view>
+        <view class="form-item">
+          <view class="form-label">供应商/客户</view>
+          <picker bindchange="bindSupplierChange" value="{{supplierIndex}}" range="{{suppliers}}">
+            <view class="form-control picker">
+              {{suppliers[supplierIndex]}}
+            </view>
+          </picker>
+        </view>
+      </view>
+      
+      <view class="btn-group">
+        <button class="btn btn-primary" bindtap="search">搜索</button>
+        <button class="btn btn-outline" bindtap="reset">重置</button>
+      </view>
+    </view>
+    
+    <!-- 统计信息 -->
+    <view class="stats-bar">
+      <view class="stats-count">共 {{totalCount}} 笔记录</view>
+      <view class="export-btn" bindtap="exportToExcel">
+        <text class="iconfont icon-download"></text> 导出Excel
+      </view>
+    </view>
+    
+    <!-- 单据列表 -->
+    <view class="bill-list" wx:if="{{bills.length > 0}}">
+      <block wx:for="{{bills}}" wx:key="id">
+        <!-- 入库单 -->
+        <view class="card bill-card" wx:if="{{item.type === 'inbound'}}" bindtap="viewBillDetail" data-id="{{item.id}}">
+          <view class="bill-header">
+            <view class="bill-number inbound">入库单: {{item.billNumber}}</view>
+            <view class="bill-date">{{item.date}}</view>
+          </view>
+          <view class="bill-product" wx:for="{{item.products}}" wx:for-item="product" wx:key="index">
+            <view class="product-name">{{product.name}}</view>
+            <view class="product-quantity inbound">+{{product.quantity}}</view>
+          </view>
+          <view class="bill-info">
+            <view class="bill-type">{{item.billTypeName}}</view>
+            <view class="bill-amount">¥{{item.totalAmount}}</view>
+          </view>
+          <view class="bill-footer">
+            制单人: {{item.creator}} | 制单时间: {{item.createTime}}
+          </view>
+        </view>
+        
+        <!-- 出库单 -->
+        <view class="card bill-card" wx:if="{{item.type === 'outbound'}}" bindtap="viewBillDetail" data-id="{{item.id}}">
+          <view class="bill-header">
+            <view class="bill-number outbound">出库单: {{item.billNumber}}</view>
+            <view class="bill-date">{{item.date}}</view>
+          </view>
+          <view class="bill-product" wx:for="{{item.products}}" wx:for-item="product" wx:key="index">
+            <view class="product-name">{{product.name}}</view>
+            <view class="product-quantity outbound">-{{product.quantity}}</view>
+          </view>
+          <view class="bill-info">
+            <view class="bill-type">{{item.billTypeName}}</view>
+            <view class="bill-amount">¥{{item.totalAmount}}</view>
+          </view>
+          <view class="bill-footer">
+            制单人: {{item.creator}} | 制单时间: {{item.createTime}}
+          </view>
+        </view>
+      </block>
+    </view>
+    
+    <!-- 无数据提示 -->
+    <view class="empty-tip" wx:if="{{bills.length === 0}}">
+      <image src="/images/empty.png" mode="aspectFit" class="empty-image"></image>
+      <view class="empty-text">暂无单据数据</view>
+    </view>
+  </view>
+  
+  <!-- 导出成功提示 -->
+  <view class="modal" wx:if="{{showExportSuccess}}">
+    <view class="modal-content">
+      <view class="success-icon">
+        <text class="iconfont icon-success"></text>
+      </view>
+      <view class="modal-title">导出成功</view>
+      <view class="modal-message">文件已保存至"我的文档"</view>
+      <button class="btn btn-primary" bindtap="hideExportSuccess">确定</button>
+    </view>
+  </view>
+</view>

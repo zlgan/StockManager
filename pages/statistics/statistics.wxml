@@ -1,0 +1,187 @@
+<view class="container">
+  <!-- 标签页 -->
+  <view class="tabs">
+    <view class="tab {{activeTab === 'profit' ? 'active' : ''}}" bindtap="switchTab" data-tab="profit">收益分析</view>
+    <view class="tab {{activeTab === 'inventory' ? 'active' : ''}}" bindtap="switchTab" data-tab="inventory">库存盘点</view>
+  </view>
+  
+  <!-- 主要内容区域 -->
+  <view class="content-area">
+    <!-- 收益分析内容 -->
+    <view class="profit-content" hidden="{{activeTab !== 'profit'}}">
+      <!-- 筛选条件 -->
+      <view class="filter-section">
+        <view class="filter-header">
+          <view class="year-title">{{selectedYear}}年度</view>
+          <picker bindchange="bindYearChange" value="{{yearIndex}}" range="{{years}}">
+            <view class="year-picker">
+              {{years[yearIndex]}}年
+            </view>
+          </picker>
+        </view>
+      </view>
+      
+      <!-- 汇总信息 -->
+      <view class="stats-grid">
+        <view class="stat-card">
+          <view class="stat-title">总利润</view>
+          <view class="stat-value">¥{{totalProfit}}</view>
+        </view>
+        <view class="stat-card">
+          <view class="stat-title">入库总额</view>
+          <view class="stat-value">¥{{totalInbound}}</view>
+          <view class="stat-count">共 {{inboundCount}} 笔</view>
+        </view>
+        <view class="stat-card">
+          <view class="stat-title">出库总额</view>
+          <view class="stat-value">¥{{totalOutbound}}</view>
+          <view class="stat-count">共 {{outboundCount}} 笔</view>
+        </view>
+      </view>
+      
+      <!-- 月度明细 -->
+      <view class="card">
+        <view class="card-title">月度明细</view>
+        
+        <!-- 图表占位 -->
+        <view class="chart-placeholder">
+          <view class="chart-text">月度收益趋势图</view>
+        </view>
+        
+        <!-- 月度数据表格 -->
+        <view class="table-container">
+          <view class="table-header">
+            <view class="table-cell">月份</view>
+            <view class="table-cell text-right">入库金额</view>
+            <view class="table-cell text-right">出库金额</view>
+            <view class="table-cell text-right">利润</view>
+          </view>
+          <block wx:for="{{monthlyData}}" wx:key="month">
+            <view class="table-row">
+              <view class="table-cell">{{item.month}}</view>
+              <view class="table-cell text-right">¥{{item.inbound}}</view>
+              <view class="table-cell text-right">¥{{item.outbound}}</view>
+              <view class="table-cell text-right profit">¥{{item.profit}}</view>
+            </view>
+          </block>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 库存盘点内容 -->
+    <view class="inventory-content" hidden="{{activeTab !== 'inventory'}}">
+      <view class="inventory-header">
+        <view>
+          <view class="inventory-title">库存盘点</view>
+          <view class="inventory-summary">共 {{productCount}} 种产品，库存总额 ¥{{inventoryValue}}</view>
+        </view>
+        <view class="warning-btn" bindtap="showWarningProducts">
+          <text class="iconfont icon-alert"></text> 预警库存
+        </view>
+      </view>
+      
+      <view class="search-box">
+        <input type="text" class="search-input" placeholder="搜索产品名称/编码" model:value="{{searchKeyword}}" bindinput="onSearchInput"/>
+        <view class="search-btn" bindtap="searchProducts">
+          <text class="iconfont icon-search"></text>
+        </view>
+      </view>
+      
+      <!-- 库存分类统计 -->
+      <view class="card">
+        <view class="card-title">库存分类统计</view>
+        <view class="category-stats">
+          <block wx:for="{{categoryStats}}" wx:key="category">
+            <view class="category-item">
+              <view class="category-name">{{item.category}}</view>
+              <view class="category-value">¥{{item.value}}</view>
+              <view class="category-count">{{item.count}} 种产品</view>
+            </view>
+          </block>
+        </view>
+      </view>
+      
+      <!-- 产品列表 -->
+      <block wx:for="{{products}}" wx:key="id">
+        <view class="card product-card" bindtap="showProductDetail" data-id="{{item.id}}">
+          <view class="product-info">
+            <image class="product-image" src="{{item.image || '/images/placeholder.png'}}" mode="aspectFill"></image>
+            <view class="product-details">
+              <view class="product-header">
+                <view class="product-name">{{item.name}}</view>
+                <view class="detail-btn">详情</view>
+              </view>
+              <view class="product-category">{{item.category}}</view>
+              <view class="product-stats">
+                <view class="stock">库存: <text class="stock-value">{{item.stock}}</text></view>
+                <view class="price">均价: <text class="price-value">¥{{item.averagePrice}}</text></view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </block>
+    </view>
+  </view>
+  
+  <!-- 产品详情弹窗 -->
+  <view class="modal" hidden="{{!showProductModal}}">
+    <view class="modal-mask" bindtap="hideProductDetail"></view>
+    <view class="modal-container">
+      <view class="modal-header">
+        <view class="modal-title">产品详情</view>
+        <view class="modal-close" bindtap="hideProductDetail">
+          <text class="iconfont icon-close"></text>
+        </view>
+      </view>
+      <view class="modal-content">
+        <view class="product-detail-header">
+          <image class="detail-image" src="{{currentProduct.image || '/images/placeholder.png'}}" mode="aspectFill"></image>
+          <view class="detail-info">
+            <view class="detail-name">{{currentProduct.name}}</view>
+            <view class="detail-category">{{currentProduct.category}}</view>
+            <view class="detail-code">编码: {{currentProduct.code}}</view>
+          </view>
+        </view>
+        
+        <view class="detail-stats">
+          <view class="detail-stat-item">
+            <view class="detail-stat-label">当前库存</view>
+            <view class="detail-stat-value">{{currentProduct.stock}}</view>
+          </view>
+          <view class="detail-stat-item">
+            <view class="detail-stat-label">库存金额</view>
+            <view class="detail-stat-value">¥{{currentProduct.stockValue}}</view>
+          </view>
+          <view class="detail-stat-item">
+            <view class="detail-stat-label">平均成本</view>
+            <view class="detail-stat-value">¥{{currentProduct.averagePrice}}</view>
+          </view>
+          <view class="detail-stat-item">
+            <view class="detail-stat-label">最近入库</view>
+            <view class="detail-stat-value">{{currentProduct.lastInbound}}</view>
+          </view>
+        </view>
+        
+        <view class="stock-records">
+          <view class="records-title">库存变动记录</view>
+          <block wx:for="{{currentProduct.records}}" wx:key="index">
+            <view class="record-item">
+              <view class="record-date">{{item.date}}</view>
+              <view class="record-quantity {{item.type === 'in' ? 'in' : 'out'}}">{{item.type === 'in' ? '+' : '-'}}{{item.quantity}}</view>
+              <view class="record-type">{{item.typeName}}</view>
+            </view>
+          </block>
+        </view>
+        
+        <view class="action-buttons">
+          <button class="btn btn-primary" bindtap="goToInbound">
+            <text class="iconfont icon-add"></text> 入库
+          </button>
+          <button class="btn btn-outline" bindtap="goToOutbound">
+            <text class="iconfont icon-subtract"></text> 出库
+          </button>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,88 @@
+<!-- 产品列表页面 -->
+<view class="container">
+  <!-- 顶部导航栏 -->
+  <view class="navbar">
+    <view class="navbar-back" bindtap="navigateBack">
+      <text class="icon-back"></text>
+    </view>
+    <view class="navbar-title">产品列表</view>
+    <view class="navbar-action"></view>
+  </view>
+  
+  <!-- 搜索区域 -->
+  <view class="search-area">
+    <view class="card mb-4">
+      <view class="search-grid">
+        <view class="search-item">
+          <text class="form-label">产品类别</text>
+          <picker bindchange="bindCategoryChange" value="{{categoryIndex}}" range="{{categoryOptions}}">
+            <view class="form-control picker">
+              <text wx:if="{{categoryIndex === -1}}">全部类别</text>
+              <text wx:else>{{categoryOptions[categoryIndex]}}</text>
+            </view>
+          </picker>
+        </view>
+        <view class="search-item">
+          <text class="form-label">产品名称</text>
+          <input class="form-control" placeholder="请输入产品名称" bindinput="inputProductName" value="{{productName}}"/>
+        </view>
+      </view>
+      <view class="mb-3">
+        <text class="form-label">产品编码</text>
+        <view class="form-row">
+          <input class="form-control flex-grow" placeholder="请输入产品编码" bindinput="inputProductCode" value="{{productCode}}"/>
+          <view class="btn-icon" bindtap="scanCode">
+            <text class="icon-scan"></text>
+          </view>
+        </view>
+      </view>
+      <view class="btn-center">
+        <button class="btn btn-primary" bindtap="searchProducts">
+          <text class="icon-search"></text> 查询
+        </button>
+      </view>
+    </view>
+    
+    <!-- 产品列表标题和导出按钮 -->
+    <view class="list-header">
+      <text class="list-title">查询结果</text>
+      <view class="btn btn-outline-primary btn-sm" bindtap="exportToExcel">
+        <text class="icon-excel"></text> 导出Excel
+      </view>
+    </view>
+    
+    <!-- 产品列表 -->
+    <view class="product-list">
+      <block wx:for="{{products}}" wx:key="id">
+        <view class="card product-item" bindtap="navigateToDetail" data-id="{{item.id}}">
+          <view class="product-content">
+            <view class="product-image">
+              <image src="{{item.image || '../../images/product-placeholder.png'}}" mode="aspectFill"></image>
+            </view>
+            <view class="product-info">
+              <view class="product-header">
+                <text class="product-name">{{item.name}}</text>
+                <text class="product-category">{{item.category}}</text>
+              </view>
+              <text class="product-code">编码: {{item.code}}</text>
+              <view class="product-footer">
+                <text class="product-stock">库存: <text class="stock-num">{{item.stock}}</text></text>
+                <text class="product-price">¥ {{item.price}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </block>
+      
+      <!-- 无数据提示 -->
+      <view class="no-data" wx:if="{{products.length === 0}}">
+        <text>暂无产品数据</text>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 新增产品浮动按钮 -->
+  <view class="float-btn" bindtap="navigateToAdd">
+    <text class="icon-add"></text>
+  </view>
+</view>

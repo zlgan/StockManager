@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>单据查询 - 商品库存管理</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css">
+    <link rel="stylesheet" href="shared.css">
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto pb-16">
+        <!-- 顶部导航栏 -->
+        <div class="navbar">
+            <div class="navbar-title">单据查询</div>
+        </div>
+        
+        <!-- 搜索区域 -->
+        <div class="p-4">
+            <div class="card mb-4">
+                <div class="flex items-center mb-3">
+                    <i class="ri-search-line mr-2 text-gray-500"></i>
+                    <input type="text" class="form-control" placeholder="搜索产品名称/单据号/制单人">
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label text-sm">日期范围</label>
+                    <div class="relative">
+                        <input type="text" class="form-control" placeholder="选择日期范围" readonly>
+                        <div class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500">
+                            <i class="ri-calendar-line"></i>
+                        </div>
+                        <!-- 日期范围选择器弹出层 (实际应用中会通过JS控制显示) -->
+                        <div class="hidden absolute top-full left-0 right-0 mt-1 bg-white rounded-md shadow-lg border border-gray-200 p-3 z-10">
+                            <div class="flex justify-between mb-2">
+                                <div class="text-sm font-medium">选择日期范围</div>
+                                <div class="text-blue-600 text-sm cursor-pointer">确定</div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2 text-center">
+                                <div class="text-xs text-gray-500">开始日期</div>
+                                <div class="text-xs text-gray-500">结束日期</div>
+                                <div class="text-sm font-medium">2023-09-01</div>
+                                <div class="text-sm font-medium">2023-09-15</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-3 mb-3">
+                    <div>
+                        <label class="form-label text-sm">单据类型</label>
+                        <select class="form-control">
+                            <option value="">全部</option>
+                            <option value="1">入库单</option>
+                            <option value="2">出库单</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label text-sm">供应商/客户</label>
+                        <select class="form-control">
+                            <option value="">全部</option>
+                            <option value="1">广州电子科技有限公司</option>
+                            <option value="2">北京科技有限公司</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="flex gap-3">
+                    <button class="btn btn-primary flex-1">搜索</button>
+                    <button class="btn btn-outline flex-1">重置</button>
+                </div>
+            </div>
+            
+            <!-- 统计信息 -->
+            <div class="flex justify-between text-sm text-gray-600 mb-3 px-1">
+                <div>共 24 笔记录</div>
+                <div>
+                    <button id="exportBtn" class="text-blue-600 flex items-center" onclick="exportToExcel()">
+                        <i class="ri-download-line mr-1"></i> 导出Excel
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 导出成功提示 (默认隐藏) -->
+            <div id="exportSuccess" class="hidden fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-lg p-4 z-20">
+                <div class="flex items-center text-green-600 mb-2">
+                    <i class="ri-check-line text-xl mr-2"></i>
+                    <span class="font-medium">导出成功</span>
+                </div>
+                <div class="text-sm text-gray-600 mb-3">文件已保存至"我的文档"</div>
+                <button class="w-full bg-blue-600 text-white py-2 rounded-md" onclick="hideExportSuccess()">确定</button>
+            </div>
+            
+            <script>
+                // 模拟导出Excel功能
+                function exportToExcel() {
+                    // 显示导出中状态
+                    document.getElementById('exportBtn').innerHTML = '<i class="ri-loader-2-line animate-spin mr-1"></i> 导出中...';
+                    
+                    // 模拟导出延迟
+                    setTimeout(function() {
+                        // 恢复按钮状态
+                        document.getElementById('exportBtn').innerHTML = '<i class="ri-download-line mr-1"></i> 导出Excel';
+                        
+                        // 显示导出成功提示
+                        document.getElementById('exportSuccess').classList.remove('hidden');
+                    }, 1500);
+                }
+                
+                // 隐藏导出成功提示
+                function hideExportSuccess() {
+                    document.getElementById('exportSuccess').classList.add('hidden');
+                }
+            </script>
+            
+            <!-- 单据列表 -->
+            <div>
+                <!-- 入库单 -->
+                <div class="card mb-3">
+                    <div class="flex justify-between items-center mb-2">
+                        <div class="text-blue-600 font-medium">入库单: RK20230915001</div>
+                        <div class="text-sm text-gray-500">2023-09-15</div>
+                    </div>
+                    <div class="flex justify-between items-center mb-2">
+                        <div>苹果手机壳</div>
+                        <div class="text-blue-600">+100</div>
+                    </div>
+                    <div class="flex justify-between items-center mb-2">
+                        <div class="text-sm text-gray-500">采购入库</div>
+                        <div class="text-sm">¥1,500.00</div>
+                    </div>
+                    <div class="text-xs text-gray-500">
+                        制单人: 张三 | 制单时间: 2023-09-15 10:30
+                    </div>
+                </div>
+                
+                <!-- 出库单 -->
+                <div class="card mb-3">
+                    <div class="flex justify-between items-center mb-2">
+                        <div class="text-orange-600 font-medium">出库单: CK20230915001</div>
+                        <div class="text-sm text-gray-500">2023-09-15</div>
+                    </div>
+                    <div class="flex justify-between items-center mb-2">
+                        <div>苹果手机壳</div>
+                        <div class="text-orange-600">-20</div>
+                    </div>
+                    <div class="flex justify-between items-center mb-2">
+                        <div class="text-sm text-gray-500">销售出库</div>
+                        <div class="text-sm">¥400.00</div>
+                    </div>
+                    <div class="text-xs text-gray-500">
+                        制单人: 李四 | 制单时间: 2023-09-15 14:20
+                    </div>
+                </div>
+                
+                <!-- 入库单 -->
+                <div class="card mb-3">
+                    <div class="flex justify-between items-center mb-2">
+                        <div class="text-blue-600 font-medium">入库单: RK20230915002</div>
+                        <div class="text-sm text-gray-500">2023-09-15</div>
+                    </div>
+                    <div class="flex justify-between items-center mb-2">
+                        <div>Type-C数据线</div>
+                        <div class="text-blue-600">+200</div>
+                    </div>
+                    <div class="flex justify-between items-center mb-2">
+                        <div class="text-sm text-gray-500">采购入库</div>
+                        <div class="text-sm">¥2,000.00</div>
+                    </div>
+                    <div class="text-xs text-gray-500">
+                        制单人: 张三 | 制单时间: 2023-09-15 09:15
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 底部标签栏 -->
+        <div class="tab-bar">
+            <div class="tab-item">
+                <i class="ri-home-5-line tab-icon"></i>
+                <span>首页</span>
+            </div>
+            <div class="tab-item active">
+                <i class="ri-file-list-3-line tab-icon"></i>
+                <span>单据</span>
+            </div>
+            <div class="tab-item">
+                <i class="ri-bar-chart-2-line tab-icon"></i>
+                <span>统计</span>
+            </div>
+            <div class="tab-item">
+                <i class="ri-user-3-line tab-icon"></i>
+                <span>我的</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
