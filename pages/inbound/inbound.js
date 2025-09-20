@@ -6,13 +6,19 @@ Page({
     inboundType: '',
     supplier: '',
     remark: '',
+    typeIndex: -1,
+    supplierIndex: -1,
+    typeOptions: ['采购入库', '退货入库', '调拨入库'],
+    supplierOptions: ['广州电子科技有限公司', '深圳数码配件厂', '东莞塑胶制品有限公司'],
+    productOptions: ['苹果手机壳', 'Type-C数据线', '无线充电器'],
     products: [
       {
         id: 1,
         name: '',
         quantity: 1,
         price: '',
-        amount: 0
+        amount: 0,
+        productIndex: -1
       }
     ],
     totalQuantity: 1,
@@ -41,18 +47,20 @@ Page({
   // 选择入库类型
   bindTypeChange: function(e) {
     const index = e.detail.value;
-    const type = this.data.inboundTypes[index].name;
+    const type = this.data.typeOptions[index];
     this.setData({
-      inboundType: type
+      inboundType: type,
+      typeIndex: index
     });
   },
 
   // 选择供应商
   bindSupplierChange: function(e) {
     const index = e.detail.value;
-    const supplier = this.data.suppliers[index].name;
+    const supplier = this.data.supplierOptions[index];
     this.setData({
-      supplier: supplier
+      supplier: supplier,
+      supplierIndex: index
     });
   },
 
@@ -60,10 +68,11 @@ Page({
   bindProductChange: function(e) {
     const { index } = e.currentTarget.dataset;
     const productIndex = e.detail.value;
-    const productName = this.data.productList[productIndex].name;
+    const productName = this.data.productOptions[productIndex];
     
     const products = this.data.products;
     products[index].name = productName;
+    products[index].productIndex = productIndex;
     
     this.setData({
       products: products
