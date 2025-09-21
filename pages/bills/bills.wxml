@@ -5,7 +5,7 @@
       <view class="search-input-box">
         <input type="text" class="form-control" placeholder="搜索产品名称/单据号/制单人" model:value="{{searchKeyword}}" style="height: 88rpx; line-height: 88rpx; width: 100%;" />
         <view class="btn-icon" bindtap="scanCode">
-          <text class="iconfont icon-scan scan-text">扫一扫</text>
+          <image class="scan-image" src="/images/scan.png" mode="aspectFit"></image>
         </view>
       </view>
       

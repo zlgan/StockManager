@@ -41,11 +41,10 @@
       
       <!-- 月度明细 -->
       <view class="card">
-        <view class="card-title">月度明细</view>
-        
-        <!-- 图表占位 -->
-        <view class="chart-placeholder">
-          <view class="chart-text">月度收益趋势图</view>
+        <!-- 月度收益趋势图 -->
+        <view class="chart-container">
+          <view class="chart-title">月度收益趋势图</view>
+          <ec-canvas id="monthlyTrendChart" canvas-id="monthlyTrendChart" ec="{{ monthlyChart }}"></ec-canvas>
         </view>
         
         <!-- 月度数据表格 -->

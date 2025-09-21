@@ -1,4 +1,97 @@
 // pages/statistics/statistics.js
+import * as echarts from '../../components/ec-canvas/echarts';
+
+// 初始化图表
+function initChart(canvas, width, height, dpr) {
+  const chart = echarts.init(canvas, null, {
+    width: width,
+    height: height,
+    devicePixelRatio: dpr
+  });
+  canvas.setChart(chart);
+
+  return chart;
+}
+
+// 设置图表选项和数据
+function setChartOption(chart, monthlyData) {
+  // 提取月份、入库金额、出库金额和利润数据
+  const months = monthlyData.map(item => item.month);
+  const inboundData = monthlyData.map(item => parseFloat(item.inbound.replace(',', '')));
+  const outboundData = monthlyData.map(item => parseFloat(item.outbound.replace(',', '')));
+  const profitData = monthlyData.map(item => parseFloat(item.profit.replace(',', '')));
+
+  const option = {
+    color: ['#1890ff', '#ff4d4f', '#52c41a'],
+    tooltip: {
+      trigger: 'axis',
+      formatter: function(params) {
+        let result = params[0].name + '<br/>';
+        params.forEach(param => {
+          let value = param.value;
+          if (value >= 10000) {
+            value = (value / 10000).toFixed(2) + '万';
+          } else {
+            value = value.toFixed(2);
+          }
+          result += param.marker + ' ' + param.seriesName + ': ¥' + value + '<br/>';
+        });
+        return result;
+      }
+    },
+    legend: {
+      data: ['入库金额', '出库金额', '利润'],
+      bottom: 0
+    },
+    grid: {
+      left: '3%',
+      right: '4%',
+      bottom: '15%',
+      top: '3%',
+      containLabel: true
+    },
+    xAxis: {
+      type: 'category',
+      boundaryGap: false,
+      data: months
+    },
+    yAxis: {
+      type: 'value',
+      axisLabel: {
+        formatter: function(value) {
+          if (value >= 10000) {
+            return (value / 10000) + '万';
+          }
+          return value;
+        }
+      }
+    },
+    series: [
+      {
+        name: '入库金额',
+        type: 'line',
+        smooth: true,
+        data: inboundData
+      },
+      {
+        name: '出库金额',
+        type: 'line',
+        smooth: true,
+        data: outboundData
+      },
+      {
+        name: '利润',
+        type: 'line',
+        smooth: true,
+        data: profitData
+      }
+    ]
+  };
+
+  chart.setOption(option);
+  return chart;
+}
+
 Page({
   /**
    * 页面的初始数据
@@ -11,11 +104,26 @@ Page({
     yearIndex: 0,
     selectedYear: '2023',
     
+    // 图表配置
+    monthlyChart: {
+      onInit: function(canvas, width, height, dpr) {
+        const chart = initChart(canvas, width, height, dpr);
+        const that = this;
+        // 获取页面实例，以便访问页面数据
+        const page = getCurrentPages()[getCurrentPages().length - 1];
+        // 设置图表数据
+        setChartOption(chart, page.data.monthlyData);
+        // 保存图表实例到页面，以便后续更新
+        page.chart = chart;
+        return chart;
+      }
+    },
+    
     // 收益分析数据
-    totalProfit: '128,560.00',
-    totalInbound: '356,780.00',
+    totalProfit: '128,560.0',
+    totalInbound: '356,780.0',
     inboundCount: 125,
-    totalOutbound: '485,340.00',
+    totalOutbound: '485,340.0',
     outboundCount: 198,
     
     // 月度数据
@@ -186,16 +294,38 @@ Page({
     
     // 模拟数据加载延迟
     setTimeout(() => {
+      let newMonthlyData = [];
+      
       // 模拟不同年份的数据
       if (year === '2022') {
+        newMonthlyData = [
+          { month: '1月', inbound: '25,500.00', outbound: '32,600.00', profit: '7,100.00' },
+          { month: '2月', inbound: '28,400.00', outbound: '35,900.00', profit: '7,500.00' },
+          { month: '3月', inbound: '26,800.00', outbound: '38,300.00', profit: '11,500.00' },
+          { month: '4月', inbound: '27,200.00', outbound: '35,800.00', profit: '8,600.00' },
+          { month: '5月', inbound: '24,600.00', outbound: '32,400.00', profit: '7,800.00' },
+          { month: '6月', inbound: '26,500.00', outbound: '39,200.00', profit: '12,700.00' },
+          { month: '7月', inbound: '28,800.00', outbound: '42,600.00', profit: '13,800.00' },
+          { month: '8月', inbound: '30,200.00', outbound: '45,300.00', profit: '15,100.00' },
+          { month: '9月', inbound: '28,600.00', outbound: '41,800.00', profit: '13,200.00' },
+          { month: '10月', inbound: '24,900.00', outbound: '35,500.00', profit: '10,600.00' },
+          { month: '11月', inbound: '21,600.00', outbound: '28,800.00', profit: '7,200.00' },
+          { month: '12月', inbound: '18,680.00', outbound: '24,140.00', profit: '5,460.00' }
+        ];
+        
         this.setData({
           totalProfit: '98,760.00',
           totalInbound: '286,500.00',
           inboundCount: 105,
           totalOutbound: '385,260.00',
-          outboundCount: 168
-          // 月度数据也应该更新，这里省略
+          outboundCount: 168,
+          monthlyData: newMonthlyData
         });
+        
+        // 更新图表
+        if (this.chart) {
+          setChartOption(this.chart, newMonthlyData);
+        }
       } else if (year === '2021') {
         this.setData({
           totalProfit: '78,320.00',

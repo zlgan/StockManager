@@ -39,6 +39,11 @@
   white-space: nowrap;
 }
 
+.scan-image {
+  width: 78rpx;
+  height: 78rpx;
+}
+
 .date-picker-container {
   display: flex;
   align-items: center;
