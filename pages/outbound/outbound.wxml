@@ -5,7 +5,7 @@
       <!-- 单据号 -->
       <view class="form-group">
         <view class="form-label">单据号</view>
-        <view class="form-control-wrapper">
+        <view class="form-control-wrapper" style="display: flex; align-items: center;">
           <input class="form-control bg-gray" value="{{billNo}}" disabled name="billNo" style="height: 88rpx; line-height: 88rpx;" />
         </view>
         <view class="form-hint">系统自动生成</view>
@@ -85,9 +85,9 @@
           <!-- 出库单价 -->
           <view class="form-group">
             <view class="form-label">出库单价 <text class="required">*</text></view>
-            <view class="price-input">
+            <view class="price-input" style="display: flex; align-items: center; height: 88rpx;">
               <text class="price-symbol">¥</text>
-              <input class="form-control" type="digit" placeholder="请输入单价" value="{{item.price}}" bindinput="inputPrice" data-index="{{index}}" />
+              <input class="form-control" type="digit" placeholder="请输入单价" value="{{item.price}}" bindinput="inputPrice" data-index="{{index}}" style="height: 88rpx; line-height: 88rpx;" />
             </view>
           </view>
           
