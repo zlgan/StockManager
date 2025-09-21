@@ -19,12 +19,29 @@
 .search-item {
   display: flex;
   flex-direction: column;
+  margin-bottom: 20rpx;
 }
 
 .form-label {
   font-size: 28rpx;
   color: #333;
   margin-bottom: 10rpx;
+}
+
+.form-control {
+  height: 80rpx;
+  background-color: #f5f7fa;
+  border-radius: 8rpx;
+  padding: 0 20rpx;
+  font-size: 28rpx;
+  color: #333;
+  line-height: 80rpx;
+}
+
+.input-height {
+  height: 80rpx;
+  line-height: 80rpx;
+  box-sizing: border-box;
 }
 
 .form-row {
@@ -176,12 +193,18 @@
   width: 100rpx;
   height: 100rpx;
   border-radius: 50%;
-  background-color: #1989fa;
   color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.15);
+  background-color:rgb(255, 255, 255);
+  z-index: 100;
+}
+
+.add-btn-image {
+  width: 60rpx;
+  height: 60rpx;
 }
 
 .icon-add::before {

@@ -1,0 +1,128 @@
+<!-- 产品详情页面 -->
+<view class="container">
+  <!-- 顶部导航栏 -->
+  <view class="navbar">
+    <view class="navbar-back" bindtap="navigateBack">
+      <text class="icon-back"></text>
+    </view>
+    <view class="navbar-title">{{mode === 'add' ? '新增产品' : '产品详情'}}</view>
+    <view class="navbar-action"></view>
+  </view>
+  
+  <!-- 产品详情表单 -->
+  <view class="form-container">
+    <form bindsubmit="submitForm">
+      <!-- 产品图片上传 -->
+      <view class="form-group">
+        <text class="form-label">产品图片</text>
+        <view class="image-upload">
+          <view class="image-preview" bindtap="chooseImage">
+            <text class="icon-image" wx:if="{{!tempImagePath}}"></text>
+            <image wx:else src="{{tempImagePath}}" mode="aspectFill"></image>
+          </view>
+          <view>
+            <button class="btn btn-outline btn-sm" bindtap="chooseImage">上传图片</button>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 产品名称 -->
+      <view class="form-group">
+        <text class="form-label">产品名称 <text class="required">*</text></text>
+        <input class="form-control" name="name" placeholder="请输入产品名称" value="{{product.name}}" />
+      </view>
+      
+      <!-- 产品编号 -->
+      <view class="form-group">
+        <text class="form-label">产品编号</text>
+        <view class="form-row">
+          <input class="form-control flex-grow" name="code" placeholder="支持扫码或手工录入" value="{{product.code}}" />
+          <view class="btn-icon" bindtap="scanCode">
+            <text class="icon-scan"></text>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 产品类别 -->
+      <view class="form-group">
+        <text class="form-label">产品类别</text>
+        <picker bindchange="bindCategoryChange" value="{{categoryIndex}}" range="{{categoryOptions}}">
+          <view class="form-control picker">
+            <text wx:if="{{categoryIndex === -1}}">请选择产品类别</text>
+            <text wx:else>{{categoryOptions[categoryIndex]}}</text>
+          </view>
+        </picker>
+      </view>
+      
+      <!-- 产品单位 -->
+      <view class="form-group">
+        <text class="form-label">产品单位</text>
+        <picker bindchange="bindUnitChange" value="{{unitIndex}}" range="{{unitOptions}}">
+          <view class="form-control picker">
+            <text wx:if="{{unitIndex === -1}}">请选择产品单位</text>
+            <text wx:else>{{unitOptions[unitIndex]}}</text>
+          </view>
+        </picker>
+      </view>
+      
+      <!-- 规格名称 -->
+      <view class="form-group">
+        <text class="form-label">规格名称</text>
+        <input class="form-control" name="spec" placeholder="请输入规格名称" value="{{product.spec}}" />
+      </view>
+      
+      <!-- 供应商 -->
+      <view class="form-group">
+        <text class="form-label">供应商</text>
+        <picker bindchange="bindSupplierChange" value="{{supplierIndex}}" range="{{supplierOptions}}">
+          <view class="form-control picker">
+            <text wx:if="{{supplierIndex === -1}}">请选择供应商</text>
+            <text wx:else>{{supplierOptions[supplierIndex]}}</text>
+          </view>
+        </picker>
+      </view>
+      
+      <!-- 价格信息 -->
+      <view class="price-grid">
+        <view class="form-group">
+          <text class="form-label">入库单价</text>
+          <view class="price-input">
+            <text class="price-symbol">¥</text>
+            <input class="form-control" type="digit" name="inboundPrice" placeholder="0.00" value="{{product.inboundPrice}}" />
+          </view>
+        </view>
+        <view class="form-group">
+          <text class="form-label">出库单价</text>
+          <view class="price-input">
+            <text class="price-symbol">¥</text>
+            <input class="form-control" type="digit" name="outboundPrice" placeholder="0.00" value="{{product.outboundPrice}}" />
+          </view>
+        </view>
+      </view>
+      
+      <!-- 库存预警 -->
+      <view class="form-group">
+        <text class="form-label">库存预警</text>
+        <input class="form-control" type="number" name="minStock" placeholder="最低库存数量" value="{{product.minStock}}" />
+      </view>
+      
+      <!-- 启用状态 -->
+      <view class="form-group status-group">
+        <text class="form-label">启用状态</text>
+        <switch checked="{{product.enabled}}" bindchange="switchChange" color="#1989fa" />
+      </view>
+      
+      <!-- 备注 -->
+      <view class="form-group">
+        <text class="form-label">备注</text>
+        <textarea class="form-control" name="remark" placeholder="请输入备注信息" value="{{product.remark}}" />
+      </view>
+      
+      <!-- 提交按钮 -->
+      <view class="btn-group">
+        <button class="btn btn-outline" type="button" bindtap="navigateBack">取消</button>
+        <button class="btn btn-primary" form-type="submit">保存</button>
+      </view>
+    </form>
+  </view>
+</view>

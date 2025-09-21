@@ -1,5 +1,6 @@
 {
   "pages": [
+    "pages/profile/profile",
     "pages/statistics/statistics",
     "pages/bills/bills",
     "pages/index/index",
@@ -7,7 +8,7 @@
     "pages/outbound/outbound",
     "pages/inventory/inventory",
     "pages/products/products",
-    "pages/profile/profile",
+    "pages/product_detail/product_detail",
     "pages/categories/categories",
     "pages/suppliers/suppliers",
     "pages/inbound-types/inbound-types",

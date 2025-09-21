@@ -138,13 +138,13 @@ Page({
   navigateToDetail: function(e) {
     const productId = e.currentTarget.dataset.id;
     wx.navigateTo({
-      url: `/pages/product-detail/product-detail?id=${productId}`
+      url: `/pages/product_detail/product_detail?id=${productId}`
     });
   },
   
   navigateToAdd: function() {
     wx.navigateTo({
-      url: '/pages/product-detail/product-detail?mode=add'
+      url: '/pages/product_detail/product_detail?mode=add'
     });
   }
 });
