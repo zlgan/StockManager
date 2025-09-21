@@ -1,12 +1,12 @@
 {
   "pages": [
+    "pages/statistics/statistics",
+    "pages/bills/bills",
     "pages/index/index",
     "pages/inbound/inbound",
     "pages/outbound/outbound",
     "pages/inventory/inventory",
     "pages/products/products",
-    "pages/bills/bills",
-    "pages/statistics/statistics",
     "pages/profile/profile",
     "pages/categories/categories",
     "pages/suppliers/suppliers",

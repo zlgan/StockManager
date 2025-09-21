@@ -20,9 +20,43 @@
   color: #999;
 }
 
+.btn-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20rpx;
+  color: #007bff;
+  font-size: 28rpx;
+  white-space: nowrap;
+}
+
+.btn-icon .iconfont {
+  margin-right: 10rpx;
+  font-size: 32rpx;
+}
+
+.scan-text {
+  white-space: nowrap;
+}
+
+.date-picker-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.date-picker-item {
+  flex: 1;
+}
+
+.date-separator {
+  padding: 0 10rpx;
+  color: #666;
+}
+
 .date-picker-box {
   position: relative;
-  margin-bottom: 20rpx;
+  margin-bottom: 0;
 }
 
 .date-picker-box .iconfont {

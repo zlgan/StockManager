@@ -6,6 +6,8 @@ Page({
   data: {
     searchKeyword: '',
     dateRange: '',
+    startDate: '',
+    endDate: '',
     billTypes: ['全部', '入库单', '出库单'],
     billTypeIndex: 0,
     suppliers: ['全部', '广州电子科技有限公司', '北京科技有限公司', '深圳数码配件厂'],
@@ -19,6 +21,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    this.initDateRange();
     this.loadBillData();
   },
 
@@ -30,14 +33,87 @@ Page({
   },
 
   /**
-   * 显示日期选择器
+   * 扫码功能
    */
-  showDatePicker: function() {
-    // 实际应用中这里会调用日期选择器组件
-    // 这里简化为直接设置一个固定的日期范围
-    this.setData({
-      dateRange: '2023-09-01 至 2023-09-30'
+  scanCode: function() {
+    wx.scanCode({
+      success: (res) => {
+        // 将扫码结果填充到搜索框
+        this.setData({
+          searchKeyword: res.result
+        });
+        // 可选：自动执行搜索
+        // this.search();
+      },
+      fail: (err) => {
+        wx.showToast({
+          title: '扫码失败',
+          icon: 'none',
+          duration: 2000
+        });
+      }
     });
+  },
+
+  /**
+   * 初始化日期范围
+   */
+  initDateRange: function() {
+    // 获取当前日期
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth() + 1;
+    const day = now.getDate();
+    
+    // 格式化当前日期
+    const today = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    
+    // 计算30天前的日期
+    const thirtyDaysAgo = new Date(now);
+    thirtyDaysAgo.setDate(now.getDate() - 30);
+    const startYear = thirtyDaysAgo.getFullYear();
+    const startMonth = thirtyDaysAgo.getMonth() + 1;
+    const startDay = thirtyDaysAgo.getDate();
+    const startDate = `${startYear}-${String(startMonth).padStart(2, '0')}-${String(startDay).padStart(2, '0')}`;
+    
+    // 设置日期范围
+    this.setData({
+      startDate: startDate,
+      endDate: today,
+      dateRange: `${startDate} 至 ${today}`
+    });
+  },
+  
+  /**
+   * 开始日期变更处理
+   */
+  bindStartDateChange: function(e) {
+    this.setData({
+      startDate: e.detail.value
+    });
+    this.updateDateRange();
+  },
+  
+  /**
+   * 结束日期变更处理
+   */
+  bindEndDateChange: function(e) {
+    this.setData({
+      endDate: e.detail.value
+    });
+    this.updateDateRange();
+  },
+  
+  /**
+   * 更新日期范围显示
+   */
+  updateDateRange: function() {
+    const { startDate, endDate } = this.data;
+    if (startDate && endDate) {
+      this.setData({
+        dateRange: `${startDate} 至 ${endDate}`
+      });
+    }
   },
 
   /**

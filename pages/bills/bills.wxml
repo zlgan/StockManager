@@ -3,15 +3,32 @@
   <view class="search-area">
     <view class="card mb-4">
       <view class="search-input-box">
-        <text class="iconfont icon-search"></text>
-        <input type="text" class="form-control" placeholder="搜索产品名称/单据号/制单人" model:value="{{searchKeyword}}" />
+        <input type="text" class="form-control" placeholder="搜索产品名称/单据号/制单人" model:value="{{searchKeyword}}" style="height: 88rpx; line-height: 88rpx; width: 100%;" />
+        <view class="btn-icon" bindtap="scanCode">
+          <text class="iconfont icon-scan scan-text">扫一扫</text>
+        </view>
       </view>
       
       <view class="form-item">
         <view class="form-label">日期范围</view>
-        <view class="date-picker-box" bindtap="showDatePicker">
-          <input type="text" class="form-control" placeholder="选择日期范围" disabled value="{{dateRange}}" />
-          <text class="iconfont icon-calendar"></text>
+        <view class="date-picker-container">
+          <view class="date-picker-item">
+            <picker mode="date" value="{{startDate}}" bindchange="bindStartDateChange">
+              <view class="date-picker-box">
+                <input type="text" class="form-control" placeholder="开始日期" disabled value="{{startDate}}" style="height: 88rpx; line-height: 88rpx; width: 100%;" />
+                <text class="iconfont icon-calendar"></text>
+              </view>
+            </picker>
+          </view>
+          <view class="date-separator">至</view>
+          <view class="date-picker-item">
+            <picker mode="date" value="{{endDate}}" bindchange="bindEndDateChange">
+              <view class="date-picker-box">
+                <input type="text" class="form-control" placeholder="结束日期" disabled value="{{endDate}}" style="height: 88rpx; line-height: 88rpx; width: 100%;" />
+                <text class="iconfont icon-calendar"></text>
+              </view>
+            </picker>
+          </view>
         </view>
       </view>
       
@@ -66,7 +83,7 @@
             <view class="bill-amount">¥{{item.totalAmount}}</view>
           </view>
           <view class="bill-footer">
-            制单人: {{item.creator}} | 制单时间: {{item.createTime}}
+            制单人: {{item.creator}}
           </view>
         </view>
         
@@ -85,7 +102,7 @@
             <view class="bill-amount">¥{{item.totalAmount}}</view>
           </view>
           <view class="bill-footer">
-            制单人: {{item.creator}} | 制单时间: {{item.createTime}}
+            制单人: {{item.creator}}
           </view>
         </view>
       </block>
