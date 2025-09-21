@@ -1,12 +1,3 @@
-<!-- 顶部导航栏 -->
-<view class="navbar">
-  <view class="nav-left" bindtap="navigateBack">
-    <text class="nav-icon">←</text>
-  </view>
-  <view class="nav-title">出库登记</view>
-  <view class="nav-right"></view>
-</view>
-
 <!-- 主要内容区域 -->
 <view class="container">
   <form bindsubmit="submitForm">
@@ -14,7 +5,9 @@
       <!-- 单据号 -->
       <view class="form-group">
         <view class="form-label">单据号</view>
-        <input class="form-control bg-gray" value="{{billNo}}" disabled name="billNo" />
+        <view class="form-control-wrapper">
+          <input class="form-control bg-gray" value="{{billNo}}" disabled name="billNo" style="height: 88rpx; line-height: 88rpx;" />
+        </view>
         <view class="form-hint">系统自动生成</view>
       </view>
       
@@ -76,13 +69,17 @@
           <!-- 库存数量 -->
           <view class="form-group">
             <view class="form-label">库存数量</view>
-            <input class="form-control bg-gray" value="{{item.stock || 0}}" disabled />
+            <view class="form-control-wrapper">
+              <input class="form-control bg-gray" value="{{item.stock || 0}}" disabled style="height: 88rpx; line-height: 88rpx;" />
+            </view>
           </view>
           
           <!-- 出库数量 -->
           <view class="form-group">
             <view class="form-label">出库数量 <text class="required">*</text></view>
-            <input class="form-control" type="number" placeholder="请输入数量" value="{{item.quantity}}" bindinput="inputQuantity" data-index="{{index}}" />
+            <view class="form-control-wrapper">
+              <input class="form-control" type="number" placeholder="请输入数量" value="{{item.quantity}}" bindinput="inputQuantity" data-index="{{index}}" style="height: 88rpx; line-height: 88rpx;" />
+            </view>
           </view>
           
           <!-- 出库单价 -->
