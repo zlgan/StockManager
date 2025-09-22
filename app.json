@@ -11,6 +11,7 @@
     "pages/product_detail/product_detail",
     "pages/categories/categories",
     "pages/suppliers/suppliers",
+    "pages/supplier_detail/supplier_detail",
     "pages/inbound-types/inbound-types",
     "pages/outbound-types/outbound-types",
     "pages/settings/settings",

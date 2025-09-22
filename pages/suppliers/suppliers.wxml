@@ -1,2 +1,57 @@
-<!--pages/suppliers/suppliers.wxml-->
-<text>pages/suppliers/suppliers.wxml</text>
+<!-- 供应商列表页面 -->
+<view class="container">
+  <!-- 搜索区域 -->
+  <view class="search-area">
+    <view class="card mb-4">
+      <view class="search-item mb-3">
+        <text class="form-label">供应商名称</text>
+        <input class="form-control input-height" placeholder="请输入供应商名称" bindinput="inputSupplierName" value="{{supplierName}}"/>
+      </view>
+      <view class="search-item mb-3">
+        <text class="form-label">供应商编号</text>
+        <input class="form-control input-height" placeholder="请输入供应商编号" bindinput="inputSupplierCode" value="{{supplierCode}}"/>
+      </view>
+      <view class="btn-center">
+        <button class="btn btn-primary" bindtap="searchSuppliers">
+          <text class="icon-search"></text> 查询
+        </button>
+      </view>
+    </view>
+    
+    <!-- 供应商列表标题 -->
+    <view class="list-header">
+      <text class="list-title">查询结果</text>
+    </view>
+    
+    <!-- 供应商列表 -->
+    <view class="supplier-list">
+      <block wx:for="{{suppliers}}" wx:key="id">
+        <view class="card supplier-item" bindtap="navigateToDetail" data-id="{{item.id}}">
+          <view class="supplier-content">
+            <view class="supplier-info">
+              <view class="supplier-header">
+                <text class="supplier-name">{{item.name}}</text>
+                <text class="supplier-code">编号: {{item.code}}</text>
+              </view>
+              <view class="supplier-contact">
+                <text class="contact-name">联系人: {{item.contactPerson}}</text>
+                <text class="contact-phone">电话: {{item.phone}}</text>
+              </view>
+              <view class="supplier-address">地址: {{item.address}}</view>
+            </view>
+          </view>
+        </view>
+      </block>
+      
+      <!-- 无数据提示 -->
+      <view class="no-data" wx:if="{{suppliers.length === 0}}">
+        <text>暂无供应商数据</text>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 新增供应商浮动按钮 -->
+  <view class="float-btn" bindtap="navigateToAdd">
+    <image class="add-btn-image" src="/images/add_product.png" mode="aspectFit"></image>
+  </view>
+</view>
