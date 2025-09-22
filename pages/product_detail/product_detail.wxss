@@ -20,6 +20,18 @@
   margin-bottom: 10rpx;
 }
 
+.form-control {
+  height: 80rpx;
+  line-height: 80rpx;
+  padding: 0 20rpx;
+}
+
+textarea.form-control {
+  height: 160rpx;
+  line-height: 1.5;
+  padding: 20rpx;
+}
+
 .required {
   color: #ee0a24;
 }
@@ -87,6 +99,9 @@
 
 .picker {
   position: relative;
+  height: 80rpx;
+  line-height: 80rpx;
+  padding: 0 20rpx;
 }
 
 .price-grid {
@@ -110,6 +125,8 @@
 
 .price-input .form-control {
   padding-left: 60rpx;
+  height: 80rpx;
+  line-height: 80rpx;
 }
 
 .status-group {

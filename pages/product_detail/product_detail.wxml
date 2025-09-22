@@ -1,14 +1,5 @@
 <!-- 产品详情页面 -->
 <view class="container">
-  <!-- 顶部导航栏 -->
-  <view class="navbar">
-    <view class="navbar-back" bindtap="navigateBack">
-      <text class="icon-back"></text>
-    </view>
-    <view class="navbar-title">{{mode === 'add' ? '新增产品' : '产品详情'}}</view>
-    <view class="navbar-action"></view>
-  </view>
-  
   <!-- 产品详情表单 -->
   <view class="form-container">
     <form bindsubmit="submitForm">
