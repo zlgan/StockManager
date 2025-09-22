@@ -105,7 +105,7 @@
         <view class="card product-card" bindtap="showProductDetail" data-id="{{item.id}}">
           <view class="product-info">
             <image class="product-image" src="{{item.image || '/images/placeholder.png'}}" mode="aspectFill"></image>
-            <view class="product-details">
+            <view class="product_details">
               <view class="product-header">
                 <view class="product-name">{{item.name}}</view>
                 <view class="detail-btn">详情</view>
@@ -133,7 +133,7 @@
         </view>
       </view>
       <view class="modal-content">
-        <view class="product-detail-header">
+        <view class="product_detail-header">
           <image class="detail-image" src="{{currentProduct.image || '/images/placeholder.png'}}" mode="aspectFill"></image>
           <view class="detail-info">
             <view class="detail-name">{{currentProduct.name}}</view>

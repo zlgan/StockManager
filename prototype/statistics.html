@@ -204,7 +204,7 @@
                 </div>
                 
                 <!-- 产品详情弹窗 (默认隐藏) -->
-                <div id="product-detail" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div id="product_detail" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                     <div class="bg-white rounded-lg w-11/12 max-w-md">
                         <div class="p-4 border-b">
                             <div class="flex justify-between items-center">
@@ -279,11 +279,11 @@
         <script>
             // 产品详情弹窗控制
             function showProductDetail() {
-                document.getElementById('product-detail').classList.remove('hidden');
+                document.getElementById('product_detail').classList.remove('hidden');
             }
             
             function hideProductDetail() {
-                document.getElementById('product-detail').classList.add('hidden');
+                document.getElementById('product_detail').classList.add('hidden');
             }
             
             // 标签页切换

@@ -1,0 +1,37 @@
+<!-- 商品类别管理页面 -->
+<view class="container">
+  <view class="card mb-4">
+    <view class="section-title">类别管理</view>
+    
+    <!-- 添加/编辑类别表单 -->
+    <view class="form-group">
+      <text class="form-label">类别名称</text>
+      <input class="form-control" placeholder="请输入类别名称" value="{{currentCategory.name}}" bindinput="inputCategoryName"/>
+      <view class="btn-group mt-3">
+        <button class="btn btn-primary" bindtap="saveCategory">{{editMode ? '更新' : '添加'}}</button>
+        <button class="btn btn-secondary" bindtap="resetForm" wx:if="{{editMode}}">取消</button>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 类别列表 -->
+  <view class="card">
+    <view class="section-title">类别列表</view>
+    <view class="category-list">
+      <block wx:for="{{categories}}" wx:key="id">
+        <view class="category-item">
+          <text class="category-name">{{item.name}}</text>
+          <view class="category-actions">
+            <text class="action-btn edit-btn" bindtap="editCategory" data-id="{{item.id}}">编辑</text>
+            <text class="action-btn delete-btn" bindtap="deleteCategory" data-id="{{item.id}}">删除</text>
+          </view>
+        </view>
+      </block>
+      
+      <!-- 无数据提示 -->
+      <view class="no-data" wx:if="{{categories.length === 0}}">
+        <text>暂无类别数据</text>
+      </view>
+    </view>
+  </view>
+</view>
