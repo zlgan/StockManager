@@ -24,13 +24,33 @@
   position: relative;
 }
 
-.form-row {
+/* 重写表单组样式，让label和输入框在同一行 */
+.form-group {
+  margin-bottom: 22rpx;
   display: flex;
   align-items: center;
 }
 
+/* 重写表单组样式，让label和输入框在同一行 */
+.form-label {
+  display: block;               /* 将标签设为块级元素，独占一行 */
+  margin-bottom: 0;             /* 去掉默认的下外边距 */
+  margin-right: 10rpx;          /* 右侧留出 20rpx 间距，与输入框分隔 */
+  font-weight: 500;             /* 设置字体粗细为中等 */
+  font-size: 25rpx;             /* 字体大小设为 28rpx */
+  color: #333;                  /* 字体颜色为深灰色 */
+  min-width: 140rpx;            /* 最小宽度 140rpx，保证标签内容显示完整 */
+  flex-shrink: 0;               /* 禁止在 flex 布局中被压缩，保持固定宽度 */
+}
+
+.form-row {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
 .form-control-wrapper {
-  width: 100%;
+  flex: 1;
 }
 
 .form-control {
@@ -40,6 +60,7 @@
   align-items: center;
   padding: 0 20rpx;
   box-sizing: border-box;
+  width: 100%;
 }
 
 .flex-grow {
@@ -179,6 +200,38 @@
   font-size: 36rpx;
   font-weight: 600;
   color: #ee0a24;
+}
+
+/* 备注字段特殊处理，保持垂直布局 */
+.textarea-group {
+  display: block !important;
+}
+
+.textarea-group .form-label {
+  margin-bottom: 16rpx !important;
+}
+
+/* 图片上传字段特殊处理，保持垂直布局 */
+.image-group {
+  display: block !important;
+}
+
+.image-group .form-label {
+  margin-bottom: 16rpx !important;
+}
+
+.form-textarea {
+  width: 100%;
+  min-height: 120rpx;
+  padding: 24rpx 32rpx;
+  font-size: 32rpx;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #fff;
+  border: 2rpx solid #e0e0e0;
+  border-radius: 8rpx;
+  box-sizing: border-box;
+  resize: none;
 }
 
 .btn-area {

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>入库单页面 - 样式预览</title>
+    <style>
+        /* 基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            font-size: 16px;
+            line-height: 1.5;
+            padding: 10px;
+        }
+        
+        .container {
+            padding: 10px;
+            padding-bottom: 60px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        
+        /* 修改后的表单样式 - label和输入框在同一行 */
+        .form-group {
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0;
+            margin-right: 10px;
+            font-weight: 500;
+            font-size: 14px;
+            color: #333;
+            min-width: 70px;
+            flex-shrink: 0;
+        }
+        
+        .form-row {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+        
+        .form-control-wrapper {
+            flex: 1;
+        }
+        
+        .form-control {
+            height: 44px;
+            line-height: 44px;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            box-sizing: border-box;
+            width: 100%;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        .bg-gray {
+            background-color: #f5f7fa;
+        }
+        
+        .required {
+            color: #ee0a24;
+        }
+        
+        .picker {
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .btn-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f5f7fa;
+            border-radius: 0 4px 4px 0;
+            margin-left: -1px;
+            border: 1px solid #e0e0e0;
+            cursor: pointer;
+        }
+        
+        .scan-image {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .flex-grow {
+            flex-grow: 1;
+        }
+        
+        /* 特殊字段的垂直布局 */
+        .textarea-group {
+            display: block !important;
+        }
+        
+        .textarea-group .form-label {
+            margin-bottom: 8px !important;
+        }
+        
+        .image-group {
+            display: block !important;
+        }
+        
+        .image-group .form-label {
+            margin-bottom: 8px !important;
+        }
+        
+        .form-textarea {
+            width: 100%;
+            min-height: 60px;
+            padding: 12px 16px;
+            font-size: 16px;
+            line-height: 1.5;
+            color: #495057;
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            box-sizing: border-box;
+            resize: none;
+        }
+        
+        .product-card {
+            background-color: #f8f8f8;
+            border-radius: 4px;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #eee;
+        }
+        
+        .product-number {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+            background-color: #f5f5f5;
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        
+        .price-input {
+            position: relative;
+            flex: 1;
+        }
+        
+        .price-symbol {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+        }
+        
+        .price-input .form-control {
+            padding-left: 30px;
+        }
+        
+        .image-upload {
+            margin-top: 5px;
+        }
+        
+        .upload-btn {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+            color: #999;
+            font-size: 12px;
+            border: 1px dashed #ccc;
+            cursor: pointer;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .btn-text {
+            font-size: 14px;
+            color: #1989fa;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <!-- 单据号 -->
+            <div class="form-group">
+                <div class="form-label">单据号</div>
+                <div class="form-control-wrapper">
+                    <input class="form-control bg-gray" value="IN202412180001" disabled />
+                </div>
+            </div>
+            
+            <!-- 入库类型 -->
+            <div class="form-group">
+                <div class="form-label">入库类型 <span class="required">*</span></div>
+                <div class="form-control picker">请选择入库类型</div>
+            </div>
+            
+            <!-- 入库日期 -->
+            <div class="form-group">
+                <div class="form-label">入库日期 <span class="required">*</span></div>
+                <div class="form-control picker">2024-12-18</div>
+            </div>
+            
+            <!-- 供应商 -->
+            <div class="form-group">
+                <div class="form-label">供应商</div>
+                <div class="form-control picker">请选择供应商</div>
+            </div>
+        </div>
+        
+        <!-- 产品信息 -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">产品信息</div>
+                <div class="btn-text">+ 添加产品</div>
+            </div>
+            
+            <div class="product-card">
+                <!-- 产品编号 -->
+                <div class="product-number">#1</div>
+                
+                <!-- 产品型号 -->
+                <div class="form-group">
+                    <div class="form-label">产品型号</div>
+                    <div class="form-row">
+                        <input class="form-control flex-grow" placeholder="请输入产品型号 / 扫一扫" />
+                        <div class="btn-icon">
+                            <img class="scan-image" src="/images/scan.png" alt="扫描" />
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 产品名称 -->
+                <div class="form-group">
+                    <div class="form-label">产品名称 <span class="required">*</span></div>
+                    <div class="form-row">
+                        <input class="form-control flex-grow" placeholder="请输入产品名称" />
+                    </div>
+                </div>
+                
+                <!-- 产品图片 -->
+                <div class="form-group image-group">
+                    <div class="form-label">产品图片</div>
+                    <div class="image-upload">
+                        <div class="upload-btn">
+                            📷<br>上传图片
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 库存数量 -->
+                <div class="form-group">
+                    <div class="form-label">库存数量</div>
+                    <div class="form-control-wrapper">
+                        <input class="form-control bg-gray" value="0" disabled />
+                    </div>
+                </div>
+                
+                <!-- 入库数量 -->
+                <div class="form-group">
+                    <div class="form-label">入库数量 <span class="required">*</span></div>
+                    <input class="form-control" type="number" placeholder="请输入数量" />
+                </div>
+                
+                <!-- 入库单价 -->
+                <div class="form-group">
+                    <div class="form-label">入库单价 <span class="required">*</span></div>
+                    <div class="price-input">
+                        <span class="price-symbol">¥</span>
+                        <input class="form-control" type="number" placeholder="请输入单价" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 备注 -->
+        <div class="card">
+            <div class="form-group textarea-group">
+                <div class="form-label">备注</div>
+                <textarea class="form-textarea" placeholder="请输入备注信息"></textarea>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

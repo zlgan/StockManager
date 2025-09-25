@@ -8,7 +8,6 @@
         <view class="form-control-wrapper">
           <input class="form-control bg-gray" value="{{billNo}}" disabled name="billNo" style="height: 88rpx; line-height: 88rpx;" />
         </view>
-        <view class="form-hint">系统自动生成</view>
       </view>
       
       <!-- 入库类型 -->
@@ -73,7 +72,7 @@
           </view>
           
           <!-- 产品图片 -->
-          <view class="form-group">
+          <view class="form-group image-group">
             <view class="form-label">产品图片</view>
             <view class="image-upload">
               <image wx:if="{{item.imageUrl}}" src="{{item.imageUrl}}" mode="aspectFill" class="product-image" bindtap="previewImage" data-index="{{index}}"></image>
@@ -116,7 +115,7 @@
     
     <!-- 备注 -->
     <view class="card">
-      <view class="form-group">
+      <view class="form-group textarea-group">
         <view class="form-label">备注</view>
         <textarea class="form-textarea" placeholder="请输入备注信息" name="remark" value="{{remark}}" />
       </view>
