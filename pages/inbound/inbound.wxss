@@ -96,6 +96,17 @@
   border: 1rpx solid #eee;
 }
 
+.product-number {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+  padding: 0;
+  background-color: #f5f5f5;
+  display: inline-block;
+  border-radius: 8rpx;
+}
+
 .price-input {
   position: relative;
 }
@@ -113,10 +124,41 @@
 }
 
 .delete-btn {
-  text-align: right;
+  color: #ff4d4f;
   font-size: 28rpx;
-  color: #ee0a24;
-  margin-top: 16rpx;
+  padding: 20rpx 0;
+  text-align: center;
+  border-top: 1px solid #f0f0f0;
+  margin-top: 20rpx;
+}
+
+/* 图片上传样式 */
+.image-upload {
+  margin-top: 10rpx;
+}
+
+.product-image {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 8rpx;
+}
+
+.upload-btn {
+  width: 160rpx;
+  height: 160rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #f5f5f5;
+  border-radius: 8rpx;
+  color: #999;
+  font-size: 24rpx;
+}
+
+.upload-btn .icon-camera {
+  font-size: 48rpx;
+  margin-bottom: 10rpx;
 }
 
 .total-card {
@@ -142,4 +184,8 @@
 .btn-area {
   margin-top: 40rpx;
   margin-bottom: 40rpx;
+}
+.scan-image {
+  width: 80rpx;
+  height: 80rpx;
 }

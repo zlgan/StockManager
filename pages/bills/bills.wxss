@@ -40,8 +40,8 @@
 }
 
 .scan-image {
-  width: 78rpx;
-  height: 78rpx;
+  width: 80rpx;
+  height: 80rpx;
 }
 
 .date-picker-container {

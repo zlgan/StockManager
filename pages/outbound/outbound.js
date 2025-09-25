@@ -13,10 +13,15 @@ Page({
     productOptions: ['苹果手机壳', 'Type-C数据线', '无线充电器', '蓝牙耳机', '手机支架'],
     products: [
       {
+        id: 1,
+        name: '',
+        quantity: 1,
+        price: '',
+        amount: 0,
         productIndex: -1,
         stock: 100,
-        quantity: '',
-        price: '',
+        model: '',
+        imageUrl: ''
       }
     ],
     remark: '',
@@ -148,6 +153,75 @@ Page({
           icon: 'none'
         });
       }
+    });
+  },
+  
+  // 扫描产品型号
+  scanModel: function(e) {
+    const index = e.currentTarget.dataset.index;
+    wx.scanCode({
+      success: (res) => {
+        const model = res.result;
+        const products = this.data.products;
+        products[index].model = model;
+        this.setData({
+          products: products
+        });
+        wx.showToast({
+          title: '扫码成功',
+          icon: 'success'
+        });
+      }
+    });
+  },
+  
+  // 输入产品名称
+  inputName: function(e) {
+    const index = e.currentTarget.dataset.index;
+    const value = e.detail.value;
+    const products = this.data.products;
+    products[index].name = value;
+    this.setData({
+      products: products
+    });
+  },
+  
+  // 输入产品型号
+  inputModel: function(e) {
+    const index = e.currentTarget.dataset.index;
+    const value = e.detail.value;
+    const products = this.data.products;
+    products[index].model = value;
+    this.setData({
+      products: products
+    });
+  },
+  
+  // 选择图片
+  chooseImage: function(e) {
+    const index = e.currentTarget.dataset.index;
+    wx.chooseImage({
+      count: 1,
+      sizeType: ['compressed'],
+      sourceType: ['album', 'camera'],
+      success: (res) => {
+        const tempFilePath = res.tempFilePaths[0];
+        const products = this.data.products;
+        products[index].imageUrl = tempFilePath;
+        this.setData({
+          products: products
+        });
+      }
+    });
+  },
+  
+  // 预览图片
+  previewImage: function(e) {
+    const index = e.currentTarget.dataset.index;
+    const imageUrl = this.data.products[index].imageUrl;
+    wx.previewImage({
+      urls: [imageUrl],
+      current: imageUrl
     });
   },
   

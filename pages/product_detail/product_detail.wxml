@@ -29,9 +29,9 @@
         <view class="form-row">
           <input class="form-control flex-grow" name="code" placeholder="支持扫码或手工录入" value="{{product.code}}" />
           <view class="btn-icon" bindtap="scanCode">
-            <text class="icon-scan"></text>
+            <image class="scan-image" src="/images/scan.png" mode="aspectFit"></image>
           </view>
-        </view>
+        </view>0
       </view>
       
       <!-- 产品类别 -->

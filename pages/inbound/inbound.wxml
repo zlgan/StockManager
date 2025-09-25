@@ -51,18 +51,43 @@
       
       <block wx:for="{{products}}" wx:key="index">
         <view class="product-card">
+          <!-- 产品编号 -->
+          <view class="product-number">#{{index + 1}}</view>
+          <!-- 产品型号 -->
+          <view class="form-group">
+            <view class="form-label">产品型号</view>
+            <view class="form-row">
+              <input class="form-control flex-grow" placeholder="请输入产品型号 / 扫一扫" value="{{item.model}}" bindinput="inputModel" data-index="{{index}}" />
+              <view class="btn-icon" bindtap="scanModel" data-index="{{index}}">
+                <image class="scan-image" src="/images/scan.png" mode="aspectFit"></image>
+              </view>
+            </view>
+          </view>
+          
           <!-- 产品名称 -->
           <view class="form-group">
             <view class="form-label">产品名称 <text class="required">*</text></view>
             <view class="form-row">
-              <picker bindchange="bindProductChange" data-index="{{index}}" value="{{item.productIndex}}" range="{{productOptions}}">
-                <view class="form-control picker flex-grow">
-                  {{item.productIndex > -1 ? productOptions[item.productIndex] : '请选择产品'}}
-                </view>
-              </picker>
-              <view class="btn-icon" bindtap="scanCode" data-index="{{index}}">
-                <text class="icon-scan"></text>
+              <input class="form-control flex-grow" placeholder="请输入产品名称" value="{{item.name}}" bindinput="inputName" data-index="{{index}}" />
+            </view>
+          </view>
+          
+          <!-- 产品图片 -->
+          <view class="form-group">
+            <view class="form-label">产品图片</view>
+            <view class="image-upload">
+              <image wx:if="{{item.imageUrl}}" src="{{item.imageUrl}}" mode="aspectFill" class="product-image" bindtap="previewImage" data-index="{{index}}"></image>
+              <view wx:else class="upload-btn" bindtap="chooseImage" data-index="{{index}}">
+                <text class="icon-camera"></text>
               </view>
+            </view>
+          </view>
+          
+          <!-- 库存数量 -->
+          <view class="form-group">
+            <view class="form-label">库存数量</view>
+            <view class="form-control-wrapper">
+              <input class="form-control bg-gray" value="{{item.stock || 0}}" disabled />
             </view>
           </view>
           
