@@ -7,7 +7,7 @@ Page({
             Math.floor(Math.random() * 1000).toString().padStart(3, '0'),
     date: new Date().toISOString().split('T')[0],
     typeIndex: -1,
-    typeOptions: ['销售出库', '退货出库', '调拨出库'],
+    typeOptions: ['销售出库', '退货出库', '调拨出库', '增加配件出库', '折旧出库'],
     customerIndex: -1,
     customerOptions: ['广州手机配件商城', '深圳电子市场', '东莞数码专卖店'],
     productOptions: ['苹果手机壳', 'Type-C数据线', '无线充电器', '蓝牙耳机', '手机支架'],

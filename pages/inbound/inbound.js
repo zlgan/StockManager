@@ -35,7 +35,9 @@ Page({
     inboundTypes: [
       { id: 1, name: '采购入库' },
       { id: 2, name: '退货入库' },
-      { id: 3, name: '调拨入库' }
+      { id: 3, name: '调拨入库' },
+      { id: 4, name: '增加配件出库' },
+      { id: 5, name: '折旧入库' }
     ],
     productList: [
       { id: 1, name: '苹果手机壳' },

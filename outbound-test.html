@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>出库页面预览</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 375px;
+            margin: 0 auto;
+            background-color: #fff;
+        }
+        
+        .card {
+            background-color: #fff;
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .btn-text {
+            color: #007aff;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .form-group.textarea-group {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .form-group.image-group {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .form-label {
+            width: 80px;
+            font-size: 14px;
+            color: #333;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .textarea-group .form-label,
+        .image-group .form-label {
+            margin-bottom: 10px;
+            width: auto;
+        }
+        
+        .form-control-wrapper {
+            flex: 1;
+        }
+        
+        .form-row {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+        
+        .form-control {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .form-control.bg-gray {
+            background-color: #f5f5f5;
+        }
+        
+        .flex-grow {
+            flex: 1;
+        }
+        
+        .btn-icon {
+            margin-left: 10px;
+            padding: 8px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .scan-image {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .picker {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fff;
+            cursor: pointer;
+        }
+        
+        .required {
+            color: #ff3b30;
+        }
+        
+        .form-hint {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+        
+        .product-card {
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        
+        .product-number {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background-color: #007aff;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .image-upload {
+            width: 80px;
+            height: 80px;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background-color: #fafafa;
+        }
+        
+        .upload-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #999;
+            font-size: 12px;
+        }
+        
+        .product-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+        
+        .price-input {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+        
+        .price-symbol {
+            margin-right: 5px;
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .form-textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: vertical;
+            font-family: inherit;
+        }
+        
+        .delete-btn {
+            color: #ff3b30;
+            font-size: 14px;
+            text-align: center;
+            padding: 10px;
+            cursor: pointer;
+            border-top: 1px solid #eee;
+            margin-top: 15px;
+        }
+        
+        .total-card {
+            background-color: #f8f9fa;
+        }
+        
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .total-amount {
+            color: #ff3b30;
+            font-weight: 600;
+        }
+        
+        .btn-area {
+            padding: 20px;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .btn-primary {
+            background-color: #007aff;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <form>
+            <div class="card">
+                <!-- 单据号 -->
+                <div class="form-group">
+                    <div class="form-label">单据号</div>
+                    <div class="form-control-wrapper">
+                        <input class="form-control bg-gray" value="OUT202501201001" disabled />
+                    </div>
+                </div>
+                
+                <!-- 出库类型 -->
+                <div class="form-group">
+                    <div class="form-label">出库类型 <span class="required">*</span></div>
+                    <div class="form-control-wrapper">
+                        <div class="picker">销售出库</div>
+                    </div>
+                </div>
+                
+                <!-- 出库日期 -->
+                <div class="form-group">
+                    <div class="form-label">出库日期 <span class="required">*</span></div>
+                    <div class="form-control-wrapper">
+                        <div class="picker">2025-01-20</div>
+                    </div>
+                </div>
+                
+                <!-- 客户 -->
+                <div class="form-group">
+                    <div class="form-label">客户</div>
+                    <div class="form-control-wrapper">
+                        <div class="picker">客户A</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 产品信息 -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">产品信息</div>
+                    <div class="btn-text" onclick="addProduct()">
+                        + 添加产品
+                    </div>
+                </div>
+                
+                <div id="products-container">
+                    <!-- 产品列表将在这里动态生成 -->
+                </div>
+            </div>
+            
+            <!-- 备注 -->
+            <div class="card">
+                <div class="form-group textarea-group">
+                    <div class="form-label">备注</div>
+                    <textarea class="form-textarea" placeholder="请输入备注信息"></textarea>
+                </div>
+            </div>
+            
+            <!-- 总计 -->
+            <div class="card total-card">
+                <div class="total-row">
+                    <span>总数量</span>
+                    <span id="total-quantity">0 件</span>
+                </div>
+                <div class="total-row">
+                    <span>总金额</span>
+                    <span class="total-amount" id="total-amount">¥ 0.00</span>
+                </div>
+            </div>
+            
+            <!-- 提交按钮 -->
+            <div class="btn-area">
+                <button class="btn btn-primary" type="button">确认出库</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        let products = [];
+        let productIdCounter = 1;
+
+        function addProduct() {
+            const newProduct = {
+                id: productIdCounter++,
+                model: '',
+                name: '',
+                imageUrl: '',
+                stock: Math.floor(Math.random() * 100) + 10,
+                quantity: '',
+                price: ''
+            };
+            
+            // 使用 unshift 将新产品添加到数组开头（倒序排列）
+            products.unshift(newProduct);
+            renderProducts();
+            updateTotals();
+        }
+
+        function deleteProduct(index) {
+            products.splice(index, 1);
+            renderProducts();
+            updateTotals();
+        }
+
+        function renderProducts() {
+            const container = document.getElementById('products-container');
+            container.innerHTML = '';
+
+            products.forEach((product, index) => {
+                const productHtml = `
+                    <div class="product-card">
+                        <!-- 产品编号 -->
+                        <div class="product-number">#${products.length - index}</div>
+                        
+                        <!-- 产品型号 -->
+                        <div class="form-group">
+                            <div class="form-label">产品型号</div>
+                            <div class="form-row">
+                                <input class="form-control flex-grow" placeholder="请输入产品型号 / 扫一扫" value="${product.model}" onchange="updateProduct(${index}, 'model', this.value)" style="height: 44px; line-height: 44px;" />
+                                <div class="btn-icon">
+                                    <img class="scan-image" src="/images/scan.png" alt="扫描" />
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 产品名称 -->
+                        <div class="form-group">
+                            <div class="form-label">产品名称 <span class="required">*</span></div>
+                            <div class="form-row">
+                                <input class="form-control flex-grow" placeholder="请输入产品名称" value="${product.name}" onchange="updateProduct(${index}, 'name', this.value)" style="height: 44px; line-height: 44px;" />
+                            </div>
+                        </div>
+                        
+                        <!-- 产品图片 -->
+                        <div class="form-group image-group">
+                            <div class="form-label">产品图片</div>
+                            <div class="image-upload">
+                                ${product.imageUrl ? 
+                                    `<img src="${product.imageUrl}" class="product-image" alt="产品图片" />` : 
+                                    `<div class="upload-btn">📷</div>`
+                                }
+                            </div>
+                        </div>
+                        
+                        <!-- 库存数量 -->
+                        <div class="form-group">
+                            <div class="form-label">库存数量</div>
+                            <div class="form-control-wrapper">
+                                <input class="form-control bg-gray" value="${product.stock}" disabled style="height: 44px; line-height: 44px;" />
+                            </div>
+                        </div>
+                        
+                        <!-- 出库数量 -->
+                        <div class="form-group">
+                            <div class="form-label">出库数量 <span class="required">*</span></div>
+                            <input class="form-control" type="number" placeholder="请输入数量" value="${product.quantity}" onchange="updateProduct(${index}, 'quantity', this.value)" style="height: 44px; line-height: 44px;" />
+                        </div>
+                        
+                        <!-- 出库单价 -->
+                        <div class="form-group">
+                            <div class="form-label">出库单价 <span class="required">*</span></div>
+                            <div class="price-input">
+                                <span class="price-symbol">¥</span>
+                                <input class="form-control" type="number" step="0.01" placeholder="请输入单价" value="${product.price}" onchange="updateProduct(${index}, 'price', this.value)" style="height: 44px; line-height: 44px;" />
+                            </div>
+                        </div>
+                        
+                        <!-- 删除按钮 -->
+                        <div class="delete-btn" onclick="deleteProduct(${index})">
+                            🗑️ 删除
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += productHtml;
+            });
+        }
+
+        function updateProduct(index, field, value) {
+            products[index][field] = value;
+            updateTotals();
+        }
+
+        function updateTotals() {
+            let totalQuantity = 0;
+            let totalAmount = 0;
+
+            products.forEach(product => {
+                const quantity = parseFloat(product.quantity) || 0;
+                const price = parseFloat(product.price) || 0;
+                totalQuantity += quantity;
+                totalAmount += quantity * price;
+            });
+
+            document.getElementById('total-quantity').textContent = `${totalQuantity} 件`;
+            document.getElementById('total-amount').textContent = `¥ ${totalAmount.toFixed(2)}`;
+        }
+
+        // 初始化时添加一个产品示例
+        addProduct();
+        updateProduct(0, 'model', 'ABC-001');
+        updateProduct(0, 'name', '示例产品');
+        updateProduct(0, 'quantity', '10');
+        updateProduct(0, 'price', '99.99');
+        renderProducts();
+        updateTotals();
+    </script>
+</body>
+</html>
