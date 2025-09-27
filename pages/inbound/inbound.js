@@ -125,10 +125,12 @@ Page({
       name: '',
       quantity: 1,
       price: '',
-      amount: 0
+      amount: 0,
+      model: '',
+      imageUrl: ''
     };
     
-    products.push(newProduct);
+    products.unshift(newProduct);
     
     this.setData({
       products: products
