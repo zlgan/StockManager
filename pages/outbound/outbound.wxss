@@ -29,8 +29,36 @@
   align-items: center;
 }
 
+.form-control {
+  height: 88rpx;
+  line-height: 88rpx;
+  display: flex;
+  align-items: center;
+  padding: 0 20rpx;
+  box-sizing: border-box;
+  width: 100%;
+}
+
 .flex-grow {
   flex-grow: 1;
+  width: 100%;
+}
+
+/* 统一的表单元素样式规则 */
+picker,
+input,
+textarea {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* picker 特殊样式 */
+picker {
+  flex: 1;
+}
+
+picker .form-control {
+  width: 100%;
 }
 
 .btn-icon {
@@ -47,6 +75,35 @@
 .icon-scan::before {
   content: "\e62a";
   font-family: "weui";
+}
+/* 重写表单组样式，让label和输入框在同一行 */
+.form-group {
+  margin-bottom: 22rpx;
+  display: flex;
+  align-items: center;
+}
+
+.form-control-wrapper {
+  flex: 1;
+}
+
+.form-control {
+  height: 88rpx;
+  line-height: 88rpx;
+  display: flex;
+  align-items: center;
+}
+
+/* 重写表单组样式，让label和输入框在同一行 */
+.form-label {
+  display: block;               /* 将标签设为块级元素，独占一行 */
+  margin-bottom: 0;             /* 去掉默认的下外边距 */
+  margin-right: 10rpx;          /* 右侧留出 20rpx 间距，与输入框分隔 */
+  font-weight: 500;             /* 设置字体粗细为中等 */
+  font-size: 28rpx;             /* 字体大小设为 28rpx */
+  color: #333;                  /* 字体颜色为深灰色 */
+  min-width: 140rpx;            /* 最小宽度 140rpx，保证标签内容显示完整 */
+  flex-shrink: 0;               /* 禁止在 flex 布局中被压缩，保持固定宽度 */
 }
 
 .icon-add::before {
@@ -160,4 +217,8 @@
 .btn-area {
   margin-top: 40rpx;
   margin-bottom: 40rpx;
+}
+.scan-image {
+  width: 80rpx;
+  height: 80rpx;
 }

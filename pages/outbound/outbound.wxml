@@ -5,10 +5,9 @@
       <!-- 单据号 -->
       <view class="form-group">
         <view class="form-label">单据号</view>
-        <view class="form-control-wrapper" style="display: flex; align-items: center;">
-          <input class="form-control bg-gray" value="{{billNo}}" disabled name="billNo" style="height: 88rpx; line-height: 88rpx;" />
+        <view class="form-control-wrapper">
+          <input class="form-control bg-gray flex-grow" value="{{billNo}}" disabled name="billNo" />
         </view>
-        <view class="form-hint">系统自动生成</view>
       </view>
       
       <!-- 出库类型 -->
@@ -51,11 +50,13 @@
       
       <block wx:for="{{products}}" wx:key="index">
         <view class="product-card">
+          <!-- 产品编号 -->
+          <view class="product-number">#{{products.length - index}}</view>
           <!-- 产品型号 -->
           <view class="form-group">
             <view class="form-label">产品型号</view>
             <view class="form-row">
-              <input class="form-control flex-grow" placeholder="请输入产品型号" value="{{item.model}}" bindinput="inputModel" data-index="{{index}}" style="height: 88rpx; line-height: 88rpx;" />
+              <input class="form-control flex-grow" placeholder="请输入产品型号 / 扫一扫" value="{{item.model}}" bindinput="inputModel" data-index="{{index}}" />
               <view class="btn-icon" bindtap="scanModel" data-index="{{index}}">
                 <image class="scan-image" src="/images/scan.png" mode="aspectFit"></image>
               </view>
@@ -66,56 +67,40 @@
           <view class="form-group">
             <view class="form-label">产品名称 <text class="required">*</text></view>
             <view class="form-row">
-              <input class="form-control flex-grow" placeholder="请输入产品名称" value="{{item.name}}" bindinput="inputName" data-index="{{index}}" style="height: 88rpx; line-height: 88rpx;" />
+              <input class="form-control flex-grow" placeholder="请输入产品名称" value="{{item.name}}" bindinput="inputName" data-index="{{index}}" />
             </view>
           </view>
           
-          <!-- 产品图片 -->
-          <view class="form-group">
-            <view class="form-label">产品图片</view>
-            <view class="image-upload">
-              <image wx:if="{{item.imageUrl}}" src="{{item.imageUrl}}" mode="aspectFill" class="product-image" bindtap="previewImage" data-index="{{index}}"></image>
-              <view wx:else class="upload-btn" bindtap="chooseImage" data-index="{{index}}">
-                <text class="icon-camera"></text>
-                <text>上传图片</text>
-              </view>
-            </view>
+          <!-- 产品图片（只读） -->
+          <view class="form-group image-group">
+          <view class="form-row image-group">
+            <view class="form-label inline-label">产品图片</view>
+            <image src="{{item.imageUrl}}" mode="aspectFill" class="product-image" bindtap="previewImage" data-index="{{index}}"></image>
+          </view>
           </view>
           
           <!-- 库存数量 -->
           <view class="form-group">
             <view class="form-label">库存数量</view>
-            <view class="form-control-wrapper">
-              <input class="form-control bg-gray" value="{{item.stock || 0}}" disabled style="height: 88rpx; line-height: 88rpx;" />
+            <view class="form-row">
+              <input class="form-control bg-gray flex-grow" value="{{item.stock || 0}}" disabled />
             </view>
           </view>
           
           <!-- 出库数量 -->
           <view class="form-group">
             <view class="form-label">出库数量 <text class="required">*</text></view>
-            <view class="form-control-wrapper">
-              <input class="form-control" type="number" placeholder="请输入数量" value="{{item.quantity}}" bindinput="inputQuantity" data-index="{{index}}" style="height: 88rpx; line-height: 88rpx;" />
+            <view class="form-row">
+              <input class="form-control flex-grow" type="number" placeholder="请输入数量" value="{{item.quantity}}" bindinput="inputQuantity" data-index="{{index}}" />
             </view>
           </view>
           
           <!-- 出库单价 -->
           <view class="form-group">
             <view class="form-label">出库单价 <text class="required">*</text></view>
-            <view class="price-input" style="display: flex; align-items: center; height: 88rpx;">
+            <view class="price-input">
               <text class="price-symbol">¥</text>
-              <input class="form-control" type="digit" placeholder="请输入单价" value="{{item.price}}" bindinput="inputPrice" data-index="{{index}}" style="height: 88rpx; line-height: 88rpx;" />
-            </view>
-          </view>
-          
-          <!-- 产品图片 -->
-          <view class="form-group">
-            <view class="form-label">产品图片</view>
-            <view class="image-upload">
-              <image wx:if="{{item.imageUrl}}" src="{{item.imageUrl}}" mode="aspectFill" class="product-image" bindtap="previewImage" data-index="{{index}}"></image>
-              <view wx:else class="upload-btn" bindtap="chooseImage" data-index="{{index}}">
-                <text class="icon-camera"></text>
-                <text>上传图片</text>
-              </view>
+              <input class="form-control flex-grow" type="digit" placeholder="请输入单价" value="{{item.price}}" bindinput="inputPrice" data-index="{{index}}" />
             </view>
           </view>
           
@@ -129,7 +114,7 @@
     
     <!-- 备注 -->
     <view class="card">
-      <view class="form-group">
+      <view class="form-group textarea-group">
         <view class="form-label">备注</view>
         <textarea class="form-textarea" placeholder="请输入备注信息" name="remark" value="{{remark}}" />
       </view>

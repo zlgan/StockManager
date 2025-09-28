@@ -13,6 +13,7 @@ Page({
     
     supplierOptions: ['广州电子科技有限公司', '深圳数码配件厂', '东莞塑胶制品有限公司'],
     productOptions: ['苹果手机壳', 'Type-C数据线', '无线充电器'],
+    inboundTypeOptions: ['采购入库', '退货入库', '调拨入库', '增加配件出库', '折旧入库'],
     products: [
       {
         id: 1,

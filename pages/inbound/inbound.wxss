@@ -37,7 +37,7 @@
   margin-bottom: 0;             /* 去掉默认的下外边距 */
   margin-right: 10rpx;          /* 右侧留出 20rpx 间距，与输入框分隔 */
   font-weight: 500;             /* 设置字体粗细为中等 */
-  font-size: 25rpx;             /* 字体大小设为 28rpx */
+  font-size: 28rpx;             /* 字体大小设为 28rpx */
   color: #333;                  /* 字体颜色为深灰色 */
   min-width: 140rpx;            /* 最小宽度 140rpx，保证标签内容显示完整 */
   flex-shrink: 0;               /* 禁止在 flex 布局中被压缩，保持固定宽度 */
@@ -65,6 +65,24 @@
 
 .flex-grow {
   flex-grow: 1;
+  width: 100%;
+}
+
+/* 统一的表单元素样式规则 */
+picker,
+input,
+textarea {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* picker 特殊样式 */
+picker {
+  flex: 1;
+}
+
+picker .form-control {
+  width: 100%;
 }
 
 .btn-icon {

@@ -6,16 +6,16 @@
       <view class="form-group">
         <view class="form-label">单据号</view>
         <view class="form-control-wrapper">
-          <input class="form-control bg-gray" value="{{billNo}}" disabled name="billNo" style="height: 88rpx; line-height: 88rpx;" />
+          <input class="form-control bg-gray flex-grow" value="{{billNo}}" disabled name="billNo" />
         </view>
       </view>
       
       <!-- 入库类型 -->
       <view class="form-group">
         <view class="form-label">入库类型 <text class="required">*</text></view>
-        <picker bindchange="bindTypeChange" value="{{typeIndex}}" range="{{typeOptions}}">
+        <picker bindchange="bindTypeChange" value="{{typeIndex}}" range="{{inboundTypeOptions}}" class="flex-grow">
           <view class="form-control picker">
-            {{typeIndex > -1 ? typeOptions[typeIndex] : '请选择入库类型'}}
+            {{typeIndex > -1 ? inboundTypeOptions[typeIndex] : '请选择入库类型'}}
           </view>
         </picker>
       </view>
@@ -71,17 +71,13 @@
             </view>
           </view>
           
-          <!-- 产品图片 -->
+          <!-- 产品图片（只读） -->
           <view class="form-group image-group">
-            <view class="form-label">产品图片</view>
-            <view class="image-upload">
-              <image wx:if="{{item.imageUrl}}" src="{{item.imageUrl}}" mode="aspectFill" class="product-image" bindtap="previewImage" data-index="{{index}}"></image>
-              <view wx:else class="upload-btn" bindtap="chooseImage" data-index="{{index}}">
-                <text class="icon-camera"></text>
-              </view>
-            </view>
+          <view class="form-row image-group">
+            <view class="form-label inline-label">产品图片</view>
+            <image src="{{item.imageUrl}}" mode="aspectFill" class="product-image" bindtap="previewImage" data-index="{{index}}"></image>
           </view>
-          
+          </view>
           <!-- 库存数量 -->
           <view class="form-group">
             <view class="form-label">库存数量</view>

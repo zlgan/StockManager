@@ -109,8 +109,13 @@
         }
         
         .form-control {
+            height: 44px;
+            line-height: 44px;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            box-sizing: border-box;
             width: 100%;
-            padding: 12px;
             border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 14px;
@@ -120,7 +125,24 @@
         .form-control:focus {
             outline: none;
             border-color: #007aff;
-            box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.1);
+        }
+        
+        .flex-grow {
+            flex-grow: 1;
+            width: 100%;
+        }
+        
+        /* 统一的表单元素样式规则 */
+        .picker,
+        input,
+        textarea {
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        /* picker 特殊样式 */
+        .picker {
+            flex: 1;
         }
         
         .bg-gray {
