@@ -5,8 +5,8 @@
       <text class="avatar-icon">微</text>
     </view>
     <view class="user-details">
-      <view class="username">微信昵称: 小明同学</view>
-      <view class="user-id">微信ID: wxid_abc123456</view>
+      <view class="username">姓名: {{userInfo.name || '未知用户'}}</view>
+      <view class="user-id">用户名: {{userInfo.username || '未知'}}</view>
     </view>
   </view>
   
@@ -26,6 +26,12 @@
     <view class="menu-item" bindtap="navigateTo" data-url="/pages/suppliers/suppliers">
       <text class="menu-icon ri-user-star-line"></text>
       <text>供应商管理</text>
+      <text class="arrow-icon"></text>
+    </view>
+
+    <view class="menu-item" bindtap="navigateTo" data-url="/pages/customers/customers">
+      <text class="menu-icon ri-user-heart-line"></text>
+      <text>客户管理</text>
       <text class="arrow-icon"></text>
     </view>
   </view>

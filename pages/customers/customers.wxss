@@ -1,0 +1,198 @@
+/* pages/customers/customers.wxss */
+.container {
+  padding: 20rpx;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+/* 搜索区域 */
+.search-area {
+  margin-bottom: 20rpx;
+}
+
+.search-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.form-label {
+  width: 120rpx;
+  font-size: 28rpx;
+  color: #333;
+  margin-right: 20rpx;
+}
+
+.form-control {
+  flex: 1;
+  height: 80rpx;
+  line-height: 80rpx;
+  padding: 0 20rpx;
+  border: 1rpx solid #ddd;
+  border-radius: 8rpx;
+  background-color: #fff;
+  font-size: 28rpx;
+  box-sizing: border-box;
+}
+
+.input-height {
+  height: 80rpx;
+  line-height: 80rpx;
+}
+
+.btn-center {
+  display: flex;
+  justify-content: center;
+  margin-top: 20rpx;
+}
+
+.btn {
+  padding: 20rpx 40rpx;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-primary {
+  background-color: #007aff;
+  color: #fff;
+}
+
+.icon-search::before {
+  content: "🔍";
+  margin-right: 10rpx;
+}
+
+/* 列表标题 */
+.list-header {
+  margin: 20rpx 0;
+}
+
+.list-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+/* 客户列表 */
+.customer-list {
+  margin-bottom: 120rpx; /* 为浮动按钮留出空间 */
+}
+
+.customer-item {
+  margin-bottom: 20rpx;
+  padding: 30rpx;
+  background-color: #fff;
+  border-radius: 12rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+.customer-content {
+  width: 100%;
+}
+
+.customer-info {
+  width: 100%;
+}
+
+.customer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15rpx;
+}
+
+.customer-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  flex: 1;
+}
+
+.customer-code {
+  font-size: 24rpx;
+  color: #666;
+  background-color: #f0f0f0;
+  padding: 8rpx 16rpx;
+  border-radius: 20rpx;
+}
+
+.customer-contact {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10rpx;
+}
+
+.contact-name,
+.contact-phone {
+  font-size: 26rpx;
+  color: #666;
+}
+
+.customer-address {
+  font-size: 26rpx;
+  color: #666;
+  margin-bottom: 10rpx;
+  line-height: 1.4;
+}
+
+.customer-service {
+  margin-top: 10rpx;
+}
+
+.service-info {
+  font-size: 24rpx;
+  color: #007aff;
+  background-color: #e6f3ff;
+  padding: 6rpx 12rpx;
+  border-radius: 16rpx;
+}
+
+/* 无数据提示 */
+.no-data {
+  text-align: center;
+  padding: 100rpx 0;
+  color: #999;
+  font-size: 28rpx;
+}
+
+/* 浮动按钮 */
+.float-btn {
+  position: fixed;
+  bottom: 40rpx;
+  right: 40rpx;
+  width: 120rpx;
+  height: 120rpx;
+  background-color: #007aff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4rpx 16rpx rgba(0, 122, 255, 0.3);
+  z-index: 999;
+}
+
+.add-btn-image {
+  width: 60rpx;
+  height: 60rpx;
+  filter: brightness(0) invert(1); /* 将图标变为白色 */
+}
+
+/* 卡片样式 */
+.card {
+  background-color: #fff;
+  border-radius: 12rpx;
+  padding: 30rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+.mb-3 {
+  margin-bottom: 30rpx;
+}
+
+.mb-4 {
+  margin-bottom: 40rpx;
+}

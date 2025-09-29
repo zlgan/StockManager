@@ -1,0 +1,64 @@
+<!-- 客户列表页面 -->
+<view class="container">
+  <!-- 搜索区域 -->
+  <view class="search-area">
+    <view class="card mb-4">
+      <view class="search-item mb-3">
+        <text class="form-label">客户名称</text>
+        <input class="form-control input-height" placeholder="请输入客户名称" bindinput="inputCustomerName" value="{{customerName}}"/>
+      </view>
+      <view class="search-item mb-3">
+        <text class="form-label">联系人</text>
+        <input class="form-control input-height" placeholder="请输入联系人姓名" bindinput="inputContactPerson" value="{{contactPerson}}"/>
+      </view>
+      <view class="search-item mb-3">
+        <text class="form-label">手机号</text>
+        <input class="form-control input-height" placeholder="请输入手机号" bindinput="inputPhone" value="{{phone}}" type="number"/>
+      </view>
+      <view class="btn-center">
+        <button class="btn btn-primary" bindtap="searchCustomers">
+          <text class="icon-search"></text> 查询
+        </button>
+      </view>
+    </view>
+    
+    <!-- 客户列表标题 -->
+    <view class="list-header">
+      <text class="list-title">查询结果</text>
+    </view>
+    
+    <!-- 客户列表 -->
+    <view class="customer-list">
+      <block wx:for="{{customers}}" wx:key="id">
+        <view class="card customer-item" bindtap="navigateToDetail" data-id="{{item.id}}">
+          <view class="customer-content">
+            <view class="customer-info">
+              <view class="customer-header">
+                <text class="customer-name">{{item.name}}</text>
+                <text class="customer-code">编号: {{item.code}}</text>
+              </view>
+              <view class="customer-contact">
+                <text class="contact-name">联系人: {{item.contactPerson}}</text>
+                <text class="contact-phone">电话: {{item.phone}}</text>
+              </view>
+              <view class="customer-address">地址: {{item.address}}</view>
+              <view class="customer-service" wx:if="{{item.serviceMonths}}">
+                <text class="service-info">售后周期: {{item.serviceMonths}}个月</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </block>
+      
+      <!-- 无数据提示 -->
+      <view class="no-data" wx:if="{{customers.length === 0}}">
+        <text>暂无客户数据</text>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 新增客户浮动按钮 -->
+  <view class="float-btn" bindtap="navigateToAdd">
+    <image class="add-btn-image" src="/images/add_product.png" mode="aspectFit"></image>
+  </view>
+</view>

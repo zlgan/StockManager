@@ -6,8 +6,8 @@ Page({
    */
   data: {
     userInfo: {
-      nickName: '小明同学',
-      wxId: 'wxid_abc123456'
+      name: '',
+      username: ''
     },
     version: '1.0.0'
   },
@@ -16,7 +16,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    // 可以在这里获取用户信息
+    this.loadUserInfo();
   },
 
   /**
@@ -30,7 +30,23 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
-    // 每次显示页面时可以刷新用户信息
+    // 每次显示页面时刷新用户信息
+    this.loadUserInfo();
+  },
+
+  /**
+   * 加载用户信息
+   */
+  loadUserInfo() {
+    const currentUser = wx.getStorageSync('currentUser');
+    if (currentUser) {
+      this.setData({
+        userInfo: {
+          name: currentUser.name,
+          username: currentUser.username
+        }
+      });
+    }
   },
   
   /**
@@ -52,9 +68,13 @@ Page({
       content: '确定要退出登录吗？',
       success (res) {
         if (res.confirm) {
-          // 这里可以清除用户登录状态
+          // 清除用户登录状态
+          wx.removeStorageSync('currentUser');
+          wx.removeStorageSync('isLoggedIn');
+          
+          // 跳转到登录页
           wx.reLaunch({
-            url: '/pages/index/index'
+            url: '/pages/login/login'
           });
         }
       }

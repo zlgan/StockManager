@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>客户详情页面样式修复预览</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            padding: 10px;
+            background-color: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        .card {
+            background-color: #fff;
+            border-radius: 6px;
+            padding: 15px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        /* 表单组 */
+        .form-group {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-label {
+            width: 70px;
+            font-size: 14px;
+            color: #333;
+            margin-right: 10px;
+            margin-top: 13px;
+            flex-shrink: 0;
+        }
+
+        .form-label.required::after {
+            content: "*";
+            color: #ff4757;
+            margin-left: 2px;
+        }
+
+        .form-control-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-control {
+            width: 100%;
+            height: 40px;
+            line-height: 40px;
+            padding: 0 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fff;
+            font-size: 14px;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+        }
+
+        /* 修复前的选择器样式 - 有问题的版本 */
+        .picker-display-old {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            height: 40px;
+            padding: 0 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fff;
+            box-sizing: border-box;
+        }
+
+        /* 修复后的选择器样式 */
+        .picker-display {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            height: 40px;
+            padding: 0 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fff;
+            box-sizing: border-box;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .picker-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .selected-text {
+            color: #333;
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .placeholder-text {
+            color: #999;
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .picker-arrow {
+            color: #999;
+            font-size: 12px;
+            margin-left: 8px;
+            flex-shrink: 0;
+        }
+
+        /* 已选择产品样式 */
+        .selected-products {
+            margin: 10px 0;
+            padding-left: 80px;
+        }
+
+        .selected-products-title {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .product-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .product-tag {
+            display: flex;
+            align-items: center;
+            background-color: #e6f3ff;
+            border: 1px solid #007aff;
+            border-radius: 10px;
+            padding: 4px 8px;
+            margin-bottom: 5px;
+        }
+
+        .product-name {
+            font-size: 12px;
+            color: #007aff;
+            margin-right: 4px;
+        }
+
+        .remove-product {
+            font-size: 14px;
+            color: #007aff;
+            font-weight: bold;
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: rgba(0, 122, 255, 0.1);
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin: 20px 0 10px 0;
+            color: #333;
+        }
+
+        .demo-section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .problem {
+            border-color: #ff4757;
+            background-color: #fff5f5;
+        }
+
+        .fixed {
+            border-color: #2ed573;
+            background-color: #f0fff4;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="section-title">客户详情页面样式修复对比</div>
+        
+        <!-- 修复前 - 有问题的版本 -->
+        <div class="demo-section problem">
+            <h3 style="color: #ff4757; margin-top: 0;">修复前 - 有问题的版本</h3>
+            <div class="card">
+                <!-- 购买产品 -->
+                <div class="form-group">
+                    <span class="form-label">购买产品</span>
+                    <div class="form-control-wrapper">
+                        <div class="picker-display-old">
+                            <span class="selected-text">已选择 3 个产品</span>
+                            <span class="picker-arrow">></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 已选择的产品列表 -->
+                <div class="selected-products">
+                    <div class="selected-products-title">已选择的产品：</div>
+                    <div class="product-tags">
+                        <div class="product-tag">
+                            <span class="product-name">iPhone 14</span>
+                            <span class="remove-product">×</span>
+                        </div>
+                        <div class="product-tag">
+                            <span class="product-name">MacBook Pro</span>
+                            <span class="remove-product">×</span>
+                        </div>
+                        <div class="product-tag">
+                            <span class="product-name">iPad Air</span>
+                            <span class="remove-product">×</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 售后周期 -->
+                <div class="form-group">
+                    <span class="form-label">售后周期</span>
+                    <div class="form-control-wrapper">
+                        <div class="picker-display-old">
+                            <span class="selected-text">12个月</span>
+                            <span class="picker-arrow">></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 修复后 - 正确的版本 -->
+        <div class="demo-section fixed">
+            <h3 style="color: #2ed573; margin-top: 0;">修复后 - 正确的版本</h3>
+            <div class="card">
+                <!-- 购买产品 -->
+                <div class="form-group">
+                    <span class="form-label">购买产品</span>
+                    <div class="form-control-wrapper">
+                        <div class="picker-display">
+                            <div class="picker-content">
+                                <span class="selected-text">已选择 3 个产品</span>
+                            </div>
+                            <span class="picker-arrow">></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 已选择的产品列表 -->
+                <div class="selected-products">
+                    <div class="selected-products-title">已选择的产品：</div>
+                    <div class="product-tags">
+                        <div class="product-tag">
+                            <span class="product-name">iPhone 14</span>
+                            <span class="remove-product">×</span>
+                        </div>
+                        <div class="product-tag">
+                            <span class="product-name">MacBook Pro</span>
+                            <span class="remove-product">×</span>
+                        </div>
+                        <div class="product-tag">
+                            <span class="product-name">iPad Air</span>
+                            <span class="remove-product">×</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 售后周期 -->
+                <div class="form-group">
+                    <span class="form-label">售后周期</span>
+                    <div class="form-control-wrapper">
+                        <div class="picker-display">
+                            <div class="picker-content">
+                                <span class="selected-text">12个月</span>
+                            </div>
+                            <span class="picker-arrow">></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 长文本测试 -->
+                <div class="form-group">
+                    <span class="form-label">长文本测试</span>
+                    <div class="form-control-wrapper">
+                        <div class="picker-display">
+                            <div class="picker-content">
+                                <span class="selected-text">这是一个很长的文本内容，用来测试文本溢出的处理效果</span>
+                            </div>
+                            <span class="picker-arrow">></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

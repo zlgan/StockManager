@@ -5,14 +5,114 @@ Page({
    * 页面的初始数据
    */
   data: {
-
+    username: '',
+    password: '',
+    canLogin: false
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
+    // 检查是否已经登录
+    const isLoggedIn = wx.getStorageSync('isLoggedIn');
+    if (isLoggedIn) {
+      wx.reLaunch({
+        url: '/pages/index/index'
+      });
+    }
+  },
 
+  /**
+   * 用户名输入处理
+   */
+  onUsernameInput(e) {
+    this.setData({
+      username: e.detail.value
+    });
+    this.checkCanLogin();
+  },
+
+  /**
+   * 密码输入处理
+   */
+  onPasswordInput(e) {
+    this.setData({
+      password: e.detail.value
+    });
+    this.checkCanLogin();
+  },
+
+  /**
+   * 检查是否可以登录
+   */
+  checkCanLogin() {
+    const { username, password } = this.data;
+    const canLogin = username.trim() && password.trim();
+    this.setData({
+      canLogin
+    });
+  },
+
+  /**
+   * 登录处理
+   */
+  onLogin() {
+    const { username, password } = this.data;
+
+    // 验证输入
+    if (!username.trim()) {
+      wx.showToast({
+        title: '请输入用户名',
+        icon: 'none'
+      });
+      return;
+    }
+
+    if (!password.trim()) {
+      wx.showToast({
+        title: '请输入密码',
+        icon: 'none'
+      });
+      return;
+    }
+
+    // 获取用户列表
+    const users = wx.getStorageSync('users') || [];
+    const user = users.find(u => u.username === username.trim() && u.password === password.trim());
+
+    if (user) {
+      // 登录成功
+      wx.setStorageSync('currentUser', user);
+      wx.setStorageSync('isLoggedIn', true);
+
+      wx.showToast({
+        title: '登录成功',
+        icon: 'success'
+      });
+
+      // 跳转到首页
+      setTimeout(() => {
+        wx.reLaunch({
+          url: '/pages/index/index'
+        });
+      }, 1500);
+    } else {
+      // 登录失败
+      wx.showToast({
+        title: '用户名或密码错误',
+        icon: 'none'
+      });
+    }
+  },
+
+  /**
+   * 跳转到注册页面
+   */
+  goToRegister() {
+    wx.navigateTo({
+      url: '/pages/register/register'
+    });
   },
 
   /**
