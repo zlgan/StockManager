@@ -18,11 +18,11 @@
       <view class="form-label">日期范围</view>
       <view class="date-range-container">
         <picker mode="date" value="{{startDate}}" bindchange="bindStartDateChange" class="flex-grow">
-          <view class="form-control picker">{{startDate || '开始日期'}}</view>
+          <view class="picker">{{startDate || '开始日期'}}</view>
         </picker>
         <view class="date-separator">至</view>
         <picker mode="date" value="{{endDate}}" bindchange="bindEndDateChange" class="flex-grow">
-          <view class="form-control picker">{{endDate || '结束日期'}}</view>
+          <view class="picker">{{endDate || '结束日期'}}</view>
         </picker>
       </view>
     </view>
@@ -39,10 +39,20 @@
     
     <!-- 供应商/客户 -->
     <view class="form-group">
-      <view class="form-label">供应商/客户</view>
+      <view class="form-label">供应商</view>
       <picker bindchange="bindSupplierChange" value="{{supplierIndex}}" range="{{suppliers}}" class="flex-grow">
         <view class="form-control picker">
           {{suppliers[supplierIndex]}}
+        </view>
+      </picker>
+    </view>
+
+    <!-- 客户 -->
+    <view class="form-group">
+      <view class="form-label">客户</view>
+      <picker bindchange="bindCustomerChange" value="{{customerIndex}}" range="{{customers}}" class="flex-grow">
+        <view class="form-control picker">
+          {{customers[customerIndex]}}
         </view>
       </picker>
     </view>

@@ -64,13 +64,14 @@
         
         .form-input {
             width: 100%;
-            height: 44px;
+            height: 52px;
             padding: 0 40px 0 16px;
             border: 1px solid #e0e0e0;
             border-radius: 8px;
             font-size: 14px;
             background-color: #fafafa;
             transition: all 0.3s ease;
+            line-height: 1.4;
         }
         
         .form-input:focus {
@@ -101,22 +102,29 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            white-space: nowrap;
         }
         
         .date-picker {
             flex: 1;
-            height: 44px;
+            min-width: 0;
+            height: 52px;
+            min-height: 52px;
             padding: 0 16px;
             border: 1px solid #e0e0e0;
             border-radius: 8px;
             font-size: 14px;
             background-color: #fafafa;
             cursor: pointer;
+            line-height: 1.4;
+            box-sizing: border-box;
         }
         
         .date-separator {
             font-size: 14px;
             color: #666;
+            flex-shrink: 0;
+            padding: 0 4px;
         }
         
         /* 表单网格 */
@@ -128,13 +136,14 @@
         
         .form-select {
             width: 100%;
-            height: 44px;
+            height: 52px;
             padding: 0 16px;
             border: 1px solid #e0e0e0;
             border-radius: 8px;
             font-size: 14px;
             background-color: #fafafa;
             cursor: pointer;
+            line-height: 1.4;
         }
         
         /* 按钮组 */
@@ -362,13 +371,24 @@
                         </select>
                     </div>
                     <div>
-                        <label class="form-label">供应商/客户</label>
+                        <label class="form-label">供应商</label>
                         <select class="form-select">
-                            <option value="">全部</option>
-                            <option value="supplier1">供应商A</option>
-                            <option value="customer1">客户B</option>
+                            <option value="">全部供应商</option>
+                            <option value="supplier1">广州电子科技有限公司</option>
+                            <option value="supplier2">北京科技有限公司</option>
+                            <option value="supplier3">深圳数码配件厂</option>
                         </select>
                     </div>
+                    <div>
+                        <label class="form-label">客户</label>
+                        <select class="form-select">
+                            <option value="">全部客户</option>
+                            <option value="customer1">深圳华强客户</option>
+                            <option value="customer2">广州天河客户</option>
+                            <option value="customer3">北京中关村客户</option>
+                        </select>
+                    </div>
+                    <div></div>
                 </div>
             </div>
             
@@ -457,5 +477,184 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // 模拟单据数据
+        const mockBills = [
+            {
+                id: '001',
+                type: 'inbound',
+                billNumber: 'RK20240115001',
+                date: '2024-01-15',
+                billTypeName: '采购入库',
+                totalAmount: '15,000.00',
+                creator: '张三',
+                supplier: '广州电子科技有限公司',
+                products: [{ name: 'iPhone 15 Pro', quantity: 10 }]
+            },
+            {
+                id: '002',
+                type: 'outbound',
+                billNumber: 'CK20240116001',
+                date: '2024-01-16',
+                billTypeName: '销售出库',
+                totalAmount: '8,000.00',
+                creator: '李四',
+                customer: '深圳华强客户',
+                products: [{ name: 'iPhone 15 Pro', quantity: 5 }]
+            },
+            {
+                id: '003',
+                type: 'inbound',
+                billNumber: 'RK20240117001',
+                date: '2024-01-17',
+                billTypeName: '采购入库',
+                totalAmount: '32,000.00',
+                creator: '张三',
+                supplier: '北京科技有限公司',
+                products: [{ name: 'MacBook Pro', quantity: 8 }, { name: 'iPad Air', quantity: 15 }]
+            },
+            {
+                id: '004',
+                type: 'outbound',
+                billNumber: 'CK20240118001',
+                date: '2024-01-18',
+                billTypeName: '销售出库',
+                totalAmount: '12,000.00',
+                creator: '王五',
+                customer: '广州天河客户',
+                products: [{ name: 'MacBook Pro', quantity: 3 }, { name: 'iPad Air', quantity: 8 }]
+            },
+            {
+                id: '005',
+                type: 'inbound',
+                billNumber: 'RK20240119001',
+                date: '2024-01-19',
+                billTypeName: '采购入库',
+                totalAmount: '25,600.00',
+                creator: '赵六',
+                supplier: '深圳数码配件厂',
+                products: [{ name: 'AirPods Pro', quantity: 50 }, { name: 'Apple Watch', quantity: 20 }]
+            },
+            {
+                id: '006',
+                type: 'outbound',
+                billNumber: 'CK20240120001',
+                date: '2024-01-20',
+                billTypeName: '销售出库',
+                totalAmount: '18,500.00',
+                creator: '钱七',
+                customer: '北京中关村客户',
+                products: [{ name: 'AirPods Pro', quantity: 30 }, { name: 'Apple Watch', quantity: 15 }]
+            }
+        ];
+
+        let currentBills = [...mockBills];
+
+        // 搜索功能
+        function searchBills() {
+            const keyword = document.getElementById('searchInput').value.trim();
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            const billType = document.getElementById('billType').value;
+            const supplier = document.getElementById('supplier').value;
+            const customer = document.getElementById('customer').value;
+
+            let filteredBills = mockBills.filter(bill => {
+                // 关键词搜索
+                if (keyword) {
+                    const inProducts = bill.products.some(p => p.name.includes(keyword));
+                    if (!(bill.billNumber.includes(keyword) || bill.creator.includes(keyword) || inProducts)) {
+                        return false;
+                    }
+                }
+
+                // 日期范围
+                if (startDate && bill.date < startDate) return false;
+                if (endDate && bill.date > endDate) return false;
+
+                // 单据类型
+                if (billType && billType !== '全部') {
+                    const typeMap = { '入库单': 'inbound', '出库单': 'outbound' };
+                    if (bill.type !== typeMap[billType]) return false;
+                }
+
+                // 供应商
+                if (supplier && supplier !== '全部' && bill.supplier !== supplier) return false;
+
+                // 客户
+                if (customer && customer !== '全部' && bill.customer !== customer) return false;
+
+                return true;
+            });
+
+            currentBills = filteredBills;
+            renderBills();
+            updateStats();
+        }
+
+        // 重置功能
+        function resetSearch() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('startDate').value = '';
+            document.getElementById('endDate').value = '';
+            document.getElementById('billType').selectedIndex = 0;
+            document.getElementById('supplier').selectedIndex = 0;
+            document.getElementById('customer').selectedIndex = 0;
+            
+            currentBills = [...mockBills];
+            renderBills();
+            updateStats();
+        }
+
+        // 渲染单据列表
+        function renderBills() {
+            const billList = document.querySelector('.bill-list');
+            
+            if (currentBills.length === 0) {
+                billList.innerHTML = '<div style="text-align: center; padding: 40px; color: #999;">暂无数据</div>';
+                return;
+            }
+
+            billList.innerHTML = currentBills.map(bill => `
+                <div class="bill-card">
+                    <div class="bill-header">
+                        <span class="bill-number">${bill.billNumber}</span>
+                        <span class="bill-date">${bill.date}</span>
+                    </div>
+                    <div class="bill-content">
+                        <div class="bill-product">产品：${bill.products.map(p => `${p.name} × ${p.quantity}${bill.type === 'inbound' ? '台' : '台'}`).join(', ')}</div>
+                    </div>
+                    <div class="bill-info">
+                        <span class="bill-type ${bill.type}">${bill.billTypeName}</span>
+                        <span class="bill-amount">¥${bill.totalAmount}</span>
+                    </div>
+                    <div class="bill-footer">
+                        <span class="bill-creator">制单人：${bill.creator}</span>
+                        <div class="bill-actions">
+                            <button class="action-btn edit-btn">编辑</button>
+                            <button class="action-btn delete-btn">删除</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 更新统计信息
+        function updateStats() {
+            const statsText = document.querySelector('.stats-text');
+            statsText.textContent = `共找到 ${currentBills.length} 条记录`;
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            renderBills();
+            updateStats();
+            
+            // 绑定搜索按钮事件
+            document.querySelector('.search-btn').addEventListener('click', searchBills);
+            document.querySelector('.reset-btn').addEventListener('click', resetSearch);
+        });
+    </script>
 </body>
 </html>

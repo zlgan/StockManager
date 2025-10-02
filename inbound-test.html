@@ -3,392 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>入库单页面 - 产品倒序测试</title>
+    <title>入库页面 - 占位符图片测试</title>
     <style>
-        /* 基础样式 */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background-color: #f5f7fa;
-            color: #333;
-            font-size: 16px;
-            line-height: 1.5;
-            padding: 10px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
         }
-        
         .container {
-            padding: 10px;
-            padding-bottom: 60px;
-        }
-        
-        .card {
-            background-color: white;
+            max-width: 375px;
+            margin: 0 auto;
+            background: white;
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-            padding: 16px;
-            margin-bottom: 12px;
+            padding: 20px;
         }
-        
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-        
-        .card-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: #333;
-        }
-        
-        .btn-text {
-            color: #007aff;
-            font-size: 14px;
-            cursor: pointer;
-            padding: 8px 12px;
-            border-radius: 4px;
-            transition: background-color 0.2s;
-        }
-        
-        .btn-text:hover {
-            background-color: #f0f8ff;
-        }
-        
         .product-card {
-            border: 1px solid #e5e5e5;
+            border: 1px solid #e0e0e0;
             border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 12px;
-            position: relative;
+            padding: 15px;
+            margin-bottom: 15px;
         }
-        
-        .product-number {
-            position: absolute;
-            top: -8px;
-            left: 12px;
-            background-color: #007aff;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        
-        /* 表单样式 */
         .form-group {
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
+            margin-bottom: 15px;
         }
-        
         .form-label {
-            display: block;
-            margin-bottom: 0;
-            margin-right: 10px;
-            font-weight: 500;
             font-size: 14px;
             color: #333;
-            min-width: 80px;
-            text-align: left;
+            margin-bottom: 5px;
+            display: block;
         }
-        
         .form-row {
-            flex: 1;
             display: flex;
             align-items: center;
+            gap: 10px;
         }
-        
-        .form-control-wrapper {
-            flex: 1;
+        .inline-label {
+            min-width: 60px;
         }
-        
-        .form-control {
-            height: 44px;
-            line-height: 44px;
-            display: flex;
-            align-items: center;
-            padding: 0 10px;
-            box-sizing: border-box;
-            width: 100%;
-            border: 1px solid #ddd;
+        .product-image {
+            width: 60px;
+            height: 60px;
             border-radius: 4px;
-            font-size: 14px;
-            background-color: white;
+            object-fit: cover;
+            border: 1px solid #e0e0e0;
         }
-        
-        .form-control:focus {
-            outline: none;
-            border-color: #007aff;
-        }
-        
-        .flex-grow {
-            flex-grow: 1;
-            width: 100%;
-        }
-        
-        /* 统一的表单元素样式规则 */
-        .picker,
-        input,
-        textarea {
-            width: 100%;
-            box-sizing: border-box;
-        }
-        
-        /* picker 特殊样式 */
-        .picker {
-            flex: 1;
-        }
-        
-        .bg-gray {
-            background-color: #f8f9fa !important;
-            color: #6c757d;
-        }
-        
-        .required {
-            color: #ff3b30;
-            margin-left: 2px;
-        }
-        
-        .btn-icon {
-            margin-left: 8px;
-            padding: 8px;
-            background-color: #f8f9fa;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        
-        .scan-image {
-            width: 20px;
-            height: 20px;
-        }
-        
-        .delete-btn {
-            color: #ff3b30;
-            font-size: 14px;
-            cursor: pointer;
-            text-align: center;
-            padding: 8px;
-            margin-top: 12px;
-            border: 1px solid #ff3b30;
-            border-radius: 4px;
-            transition: all 0.2s;
-        }
-        
-        .delete-btn:hover {
-            background-color: #ff3b30;
-            color: white;
-        }
-        
-        /* 特殊样式 - 备注字段 */
-        .textarea-group {
-            display: block !important;
-        }
-        
-        .textarea-group .form-label {
-            margin-bottom: 8px !important;
-        }
-        
-        .form-textarea {
-            width: 100%;
-            min-height: 80px;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-            resize: vertical;
-            font-family: inherit;
-        }
-        
-        /* 特殊样式 - 图片上传字段 */
-        .image-group {
-            display: block !important;
-        }
-        
-        .image-group .form-label {
-            margin-bottom: 8px !important;
-        }
-        
-        .image-upload {
-            display: flex;
-            align-items: center;
-        }
-        
-        .upload-btn {
-            width: 80px;
-            height: 80px;
-            border: 2px dashed #ddd;
+        .test-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f9f9f9;
             border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 12px;
-            color: #999;
-            text-align: center;
-            transition: all 0.2s;
         }
-        
-        .upload-btn:hover {
-            border-color: #007aff;
-            color: #007aff;
-        }
-        
-        .price-input {
-            display: flex;
-            align-items: center;
-            flex: 1;
-        }
-        
-        .price-symbol {
-            margin-right: 4px;
-            font-weight: 500;
+        .test-title {
+            font-weight: bold;
+            margin-bottom: 10px;
             color: #333;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- 产品信息 -->
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">产品信息</div>
-                <div class="btn-text" onclick="addProduct()">
-                    ➕ 添加产品
+        <h2>入库页面 - 产品图片占位符测试</h2>
+        
+        <div class="test-section">
+            <div class="test-title">测试1: 有效图片URL</div>
+            <div class="product-card">
+                <div class="form-group">
+                    <div class="form-row">
+                        <div class="form-label inline-label">产品图片</div>
+                        <img src="/images/scan.png" class="product-image" alt="产品图片">
+                    </div>
                 </div>
             </div>
-            
-            <div id="products-container">
-                <!-- 产品列表将在这里动态生成 -->
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">测试2: 空图片URL (应显示占位符)</div>
+            <div class="product-card">
+                <div class="form-group">
+                    <div class="form-row">
+                        <div class="form-label inline-label">产品图片</div>
+                        <img src="/images/product-placeholder.png" class="product-image" alt="占位符图片">
+                    </div>
+                </div>
             </div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">测试3: 无效图片URL (应显示占位符)</div>
+            <div class="product-card">
+                <div class="form-group">
+                    <div class="form-row">
+                        <div class="form-label inline-label">产品图片</div>
+                        <img src="/images/product-placeholder.png" class="product-image" alt="占位符图片" 
+                             onerror="this.src='/images/product-placeholder.png'">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <div class="test-title">JavaScript 模拟微信小程序逻辑</div>
+            <div class="product-card">
+                <div class="form-group">
+                    <div class="form-row">
+                        <div class="form-label inline-label">产品图片</div>
+                        <img id="testImage" class="product-image" alt="测试图片">
+                    </div>
+                </div>
+            </div>
+            <button onclick="testEmptyUrl()">测试空URL</button>
+            <button onclick="testValidUrl()">测试有效URL</button>
+            <button onclick="testInvalidUrl()">测试无效URL</button>
         </div>
     </div>
 
     <script>
-        // 模拟微信小程序的数据结构
-        let products = [
-            {
-                id: 1,
-                name: '',
-                quantity: 1,
-                price: '',
-                amount: 0,
-                model: '',
-                imageUrl: ''
-            }
-        ];
+        // 模拟微信小程序的 || 逻辑
+        function getImageSrc(imageUrl) {
+            return imageUrl || '/images/product-placeholder.png';
+        }
 
-        // 添加产品函数 - 使用unshift实现倒序排列
-        function addProduct() {
-            const newProduct = {
-                id: products.length + 1,
-                name: '',
-                quantity: 1,
-                price: '',
-                amount: 0,
-                model: '',
-                imageUrl: ''
+        function testEmptyUrl() {
+            const img = document.getElementById('testImage');
+            img.src = getImageSrc('');
+        }
+
+        function testValidUrl() {
+            const img = document.getElementById('testImage');
+            img.src = getImageSrc('/images/scan.png');
+        }
+
+        function testInvalidUrl() {
+            const img = document.getElementById('testImage');
+            img.src = getImageSrc('/images/nonexistent.png');
+            img.onerror = function() {
+                this.src = '/images/product-placeholder.png';
             };
-            
-            // 使用unshift将新产品添加到数组开头
-            products.unshift(newProduct);
-            
-            // 重新渲染产品列表
-            renderProducts();
         }
 
-        // 删除产品函数
-        function removeProduct(index) {
-            if (products.length > 1) {
-                products.splice(index, 1);
-                renderProducts();
-            } else {
-                alert('至少需要保留一个产品');
-            }
-        }
-
-        // 渲染产品列表
-        function renderProducts() {
-            const container = document.getElementById('products-container');
-            container.innerHTML = '';
-            
-            products.forEach((product, index) => {
-                const productHtml = `
-                    <div class="product-card">
-                        <!-- 产品编号 -->
-                        <div class="product-number">#${products.length - index}</div>
-                        
-                        <!-- 产品型号 -->
-                        <div class="form-group">
-                            <div class="form-label">产品型号</div>
-                            <div class="form-row">
-                                <input class="form-control" placeholder="请输入产品型号 / 扫一扫" value="${product.model}" />
-                                <div class="btn-icon">
-                                    <img class="scan-image" src="/images/scan.png" alt="扫描" style="width: 20px; height: 20px;" />
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- 产品名称 -->
-                        <div class="form-group">
-                            <div class="form-label">产品名称 <span class="required">*</span></div>
-                            <div class="form-row">
-                                <input class="form-control" placeholder="请输入产品名称" value="${product.name}" />
-                            </div>
-                        </div>
-                        
-                        <!-- 产品图片 -->
-                        <div class="form-group image-group">
-                            <div class="form-label">产品图片</div>
-                            <div class="image-upload">
-                                <div class="upload-btn">
-                                    📷<br>上传图片
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- 库存数量 -->
-                        <div class="form-group">
-                            <div class="form-label">库存数量</div>
-                            <div class="form-control-wrapper">
-                                <input class="form-control bg-gray" value="0" disabled />
-                            </div>
-                        </div>
-                        
-                        <!-- 入库数量 -->
-                        <div class="form-group">
-                            <div class="form-label">入库数量 <span class="required">*</span></div>
-                            <input class="form-control" type="number" placeholder="请输入数量" value="${product.quantity}" />
-                        </div>
-                        
-                        <!-- 入库单价 -->
-                        <div class="form-group">
-                            <div class="form-label">入库单价 <span class="required">*</span></div>
-                            <div class="price-input">
-                                <span class="price-symbol">¥</span>
-                                <input class="form-control" type="number" placeholder="请输入单价" value="${product.price}" />
-                            </div>
-                        </div>
-                        
-                        <!-- 删除按钮 -->
-                        <div class="delete-btn" onclick="removeProduct(${index})">
-                            🗑️ 删除
-                        </div>
-                    </div>
-                `;
-                container.innerHTML += productHtml;
-            });
-        }
-
-        // 页面加载时初始化
-        document.addEventListener('DOMContentLoaded', function() {
-            renderProducts();
-        });
+        // 初始化显示占位符
+        testEmptyUrl();
     </script>
 </body>
 </html>

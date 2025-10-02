@@ -12,9 +12,12 @@ Page({
     billTypeIndex: 0,
     suppliers: ['全部', '广州电子科技有限公司', '北京科技有限公司', '深圳数码配件厂'],
     supplierIndex: 0,
+    customers: ['全部', '深圳华强客户', '广州天河客户', '北京中关村客户'],
+    customerIndex: 0,
     totalCount: 0,
     showExportSuccess: false,
-    bills: []
+    bills: [],
+    sourceBills: []
   },
 
   /**
@@ -227,12 +230,24 @@ Page({
   },
 
   /**
+   * 客户选择器变化事件
+   */
+  bindCustomerChange: function(e) {
+    this.setData({
+      customerIndex: e.detail.value
+    });
+  },
+
+  /**
    * 搜索单据
    */
   search: function() {
-    // 实际应用中这里会根据搜索条件请求后端API
-    // 这里简化为重新加载模拟数据
-    this.loadBillData();
+    // 过滤 sourceBills 得到结果
+    const bills = this.applyFilters();
+    this.setData({
+      bills: bills,
+      totalCount: bills.length
+    });
     wx.showToast({
       title: '搜索成功',
       icon: 'success',
@@ -247,8 +262,17 @@ Page({
     this.setData({
       searchKeyword: '',
       dateRange: '',
+      startDate: '',
+      endDate: '',
       billTypeIndex: 0,
-      supplierIndex: 0
+      supplierIndex: 0,
+      customerIndex: 0
+    });
+    // 恢复完整数据
+    const bills = this.applyFilters();
+    this.setData({
+      bills: bills,
+      totalCount: bills.length
     });
   },
 
@@ -311,62 +335,142 @@ Page({
       {
         id: '001',
         type: 'inbound',
-        billNumber: 'RK20230915001',
-        date: '2023-09-15',
+        billNumber: 'RK20240115001',
+        date: '2024-01-15',
         billTypeName: '采购入库',
-        totalAmount: '1,500.00',
+        totalAmount: '15,000.00',
         creator: '张三',
-        createTime: '2023-09-15 10:30',
+        createTime: '2024-01-15 10:30',
+        supplier: '广州电子科技有限公司',
         products: [
-          { name: '苹果手机壳', quantity: 100 }
+          { name: 'iPhone 15 Pro', quantity: 10 }
         ]
       },
       {
         id: '002',
         type: 'outbound',
-        billNumber: 'CK20230915001',
-        date: '2023-09-15',
+        billNumber: 'CK20240116001',
+        date: '2024-01-16',
         billTypeName: '销售出库',
-        totalAmount: '400.00',
+        totalAmount: '8,000.00',
         creator: '李四',
-        createTime: '2023-09-15 14:20',
+        createTime: '2024-01-16 14:20',
+        customer: '深圳华强客户',
         products: [
-          { name: '苹果手机壳', quantity: 20 }
+          { name: 'iPhone 15 Pro', quantity: 5 }
         ]
       },
       {
         id: '003',
         type: 'inbound',
-        billNumber: 'RK20230914001',
-        date: '2023-09-14',
+        billNumber: 'RK20240117001',
+        date: '2024-01-17',
         billTypeName: '采购入库',
-        totalAmount: '3,200.00',
+        totalAmount: '32,000.00',
         creator: '张三',
-        createTime: '2023-09-14 09:15',
+        createTime: '2024-01-17 09:15',
+        supplier: '北京科技有限公司',
         products: [
-          { name: '三星手机壳', quantity: 150 },
-          { name: '手机贴膜', quantity: 200 }
+          { name: 'MacBook Pro', quantity: 8 },
+          { name: 'iPad Air', quantity: 15 }
         ]
       },
       {
         id: '004',
         type: 'outbound',
-        billNumber: 'CK20230913002',
-        date: '2023-09-13',
+        billNumber: 'CK20240118001',
+        date: '2024-01-18',
         billTypeName: '销售出库',
-        totalAmount: '1,200.00',
+        totalAmount: '12,000.00',
         creator: '王五',
-        createTime: '2023-09-13 16:45',
+        createTime: '2024-01-18 16:45',
+        customer: '广州天河客户',
         products: [
-          { name: '三星手机壳', quantity: 30 },
-          { name: '手机贴膜', quantity: 50 }
+          { name: 'MacBook Pro', quantity: 3 },
+          { name: 'iPad Air', quantity: 8 }
+        ]
+      },
+      {
+        id: '005',
+        type: 'inbound',
+        billNumber: 'RK20240119001',
+        date: '2024-01-19',
+        billTypeName: '采购入库',
+        totalAmount: '25,600.00',
+        creator: '赵六',
+        createTime: '2024-01-19 11:20',
+        supplier: '深圳数码配件厂',
+        products: [
+          { name: 'AirPods Pro', quantity: 50 },
+          { name: 'Apple Watch', quantity: 20 }
+        ]
+      },
+      {
+        id: '006',
+        type: 'outbound',
+        billNumber: 'CK20240120001',
+        date: '2024-01-20',
+        billTypeName: '销售出库',
+        totalAmount: '18,500.00',
+        creator: '钱七',
+        createTime: '2024-01-20 15:30',
+        customer: '北京中关村客户',
+        products: [
+          { name: 'AirPods Pro', quantity: 30 },
+          { name: 'Apple Watch', quantity: 15 }
         ]
       }
     ];
     
+    console.log('Loading bill data:', mockBills);
+    
+    this.setData({
+      sourceBills: mockBills
+    });
+    
+    // 初始显示所有数据
     this.setData({
       bills: mockBills,
       totalCount: mockBills.length
+    });
+    
+    console.log('Bills loaded:', this.data.bills);
+  }
+
+  ,
+  /**
+   * 根据当前筛选条件过滤数据
+   */
+  applyFilters: function() {
+    const { sourceBills, searchKeyword, startDate, endDate, billTypeIndex, suppliers, supplierIndex, customers, customerIndex } = this.data;
+    const keyword = (searchKeyword || '').trim();
+    const typeMap = { 1: 'inbound', 2: 'outbound' };
+    const selectedType = billTypeIndex === 0 ? null : typeMap[billTypeIndex];
+    const selectedSupplier = supplierIndex === 0 ? null : suppliers[supplierIndex];
+    const selectedCustomer = customerIndex === 0 ? null : customers[customerIndex];
+
+    const start = startDate ? new Date(startDate).getTime() : null;
+    const end = endDate ? new Date(endDate).getTime() : null;
+
+    return (sourceBills || []).filter(bill => {
+      // 类型
+      if (selectedType && bill.type !== selectedType) return false;
+      // 日期
+      const ts = new Date(bill.date).getTime();
+      if (start && ts < start) return false;
+      if (end && ts > end) return false;
+      // 供应商
+      if (selectedSupplier && bill.supplier !== selectedSupplier) return false;
+      // 客户
+      if (selectedCustomer && bill.customer !== selectedCustomer) return false;
+      // 关键词：单号、制单人、产品名称
+      if (keyword) {
+        const inProducts = (bill.products || []).some(p => (p.name || '').includes(keyword));
+        if (!((bill.billNumber || '').includes(keyword) || (bill.creator || '').includes(keyword) || inProducts)) {
+          return false;
+        }
+      }
+      return true;
     });
   }
 })

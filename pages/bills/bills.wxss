@@ -10,38 +10,47 @@
 }
 
 /* 表单组样式 */
+/* 表单组：用于包裹标签与输入控件，保持水平居中并对齐 */
 .form-group {
-  margin-bottom: 30rpx;
+  margin-bottom: 30rpx;  /* 与下一组表单的间距 */
+  display: flex;         /* 启用 flex 布局，子元素水平排列 */
+  align-items: center;   /* 垂直居中对齐 */
+  gap: 10rpx;            /* 标签与输入框之间的水平间距 */
 }
 
 .form-label {
-  display: block;
-  margin-bottom: 16rpx;
+  display: inline-flex;
+  align-items: center;
+  min-width: 110rpx;
+  margin-bottom: 0;
   font-size: 28rpx;
   color: #333;
   font-weight: 500;
 }
 
 /* 表单元素样式 */
-.picker, .input, .textarea {
+.picker, .input, .textarea, .form-control {
   background-color: #fff;
   border: 2rpx solid #e8e8e8;
   border-radius: 8rpx;
-  padding: 24rpx;
+  padding: 30rpx 24rpx;
   font-size: 28rpx;
   color: #333;
   transition: border-color 0.3s;
+  min-height: 88rpx;
+  line-height: 1.4;
 }
 
 .picker:focus, .input:focus, .textarea:focus {
   border-color: #007bff;
 }
 
+/* 下拉选择器样式：使用 flex 布局，左右留空，垂直居中，最小高度 88rpx，保证点击区域足够 */
 .picker {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  min-height: 88rpx;
+  height: 88rpx;
+  box-sizing: border-box;
 }
 
 .picker::after {
@@ -54,11 +63,23 @@
   margin-left: 20rpx;
 }
 
+/* 单行排列容器 */
+.form-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  flex: 1;
+}
+
+.flex-grow {
+  flex: 1;
+}
+
 /* 搜索区域样式 */
 .search-card {
   background-color: #fff;
   border-radius: 12rpx;
-  padding: 30rpx;
+  padding: 10rpx;
   margin-bottom: 30rpx;
   box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
 }
@@ -113,20 +134,25 @@
 }
 
 /* 日期选择器样式 */
-.date-picker-container {
-  display: flex;
+.date-picker-container,
+.date-range-container {
+  display: flex; /* 使用 flex 布局，使子元素水平排列 */
   align-items: center;
-  margin-bottom: 20rpx;
+  flex: 1;
+  gap: 16rpx;
+  white-space: nowrap;
 }
 
 .date-picker-item {
   flex: 1;
+  min-width: 0;
 }
 
 .date-separator {
-  padding: 0 10rpx;
+  padding: 0 0rpx;
   color: #666;
   font-size: 28rpx;
+  flex-shrink: 0;
 }
 
 /* 表单网格布局 */
