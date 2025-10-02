@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>单据详情页面预览</title>
+    <style>
+        /* 基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            padding: 20px;
+            max-width: 375px;
+            margin: 0 auto;
+            background-color: #f5f5f5;
+        }
+        
+        /* 页面头部 */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 0 4px;
+        }
+        
+        .page-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .header-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .edit-btn {
+            background-color: #007aff;
+            color: #fff;
+        }
+        
+        .delete-btn {
+            background-color: #dc3545;
+            color: #fff;
+        }
+        
+        /* 卡片样式 */
+        .card {
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        /* 表单组 */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-input {
+            width: 100%;
+            height: 44px;
+            padding: 0 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            background-color: #fafafa;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            border-color: #007aff;
+            background-color: #fff;
+            outline: none;
+        }
+        
+        .form-input:disabled {
+            background-color: #f8f8f8;
+            color: #999;
+            cursor: not-allowed;
+        }
+        
+        .form-select {
+            width: 100%;
+            height: 44px;
+            padding: 0 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            background-color: #fafafa;
+            cursor: pointer;
+        }
+        
+        .form-textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 12px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            background-color: #fafafa;
+            resize: vertical;
+            font-family: inherit;
+        }
+        
+        /* 单据类型 */
+        .bill-type {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .bill-type.inbound {
+            background-color: #e8f5e8;
+            color: #28a745;
+        }
+        
+        .bill-type.outbound {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        /* 表单网格 */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        /* 产品列表 */
+        .product-list {
+            margin-top: 16px;
+        }
+        
+        .product-item {
+            border: 1px solid #f0f0f0;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            background-color: #fafafa;
+            position: relative;
+        }
+        
+        .product-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .product-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .product-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .delete-product-btn {
+            width: 24px;
+            height: 24px;
+            border: none;
+            border-radius: 50%;
+            background-color: #dc3545;
+            color: #fff;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .product-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .price-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+        }
+        
+        .price-input {
+            text-align: right;
+        }
+        
+        .subtotal {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 8px;
+            border-top: 1px solid #e0e0e0;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .subtotal-amount {
+            color: #007aff;
+        }
+        
+        /* 添加产品按钮 */
+        .add-product-btn {
+            width: 100%;
+            height: 44px;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            background-color: transparent;
+            color: #666;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 16px;
+        }
+        
+        .add-product-btn:hover {
+            border-color: #007aff;
+            color: #007aff;
+        }
+        
+        /* 总计卡片 */
+        .total-card {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+        }
+        
+        .total-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .total-info:last-child {
+            margin-bottom: 0;
+            padding-top: 12px;
+            border-top: 1px solid #e0e0e0;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .total-label {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .total-value {
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .total-amount {
+            color: #007aff;
+            font-size: 18px;
+        }
+        
+        /* 操作按钮区域 */
+        .action-area {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #fff;
+            padding: 16px 20px;
+            border-top: 1px solid #f0f0f0;
+            box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            max-width: 375px;
+            margin: 0 auto;
+        }
+        
+        .action-btn {
+            flex: 1;
+            height: 44px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background-color: #007aff;
+            color: #fff;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        
+        .btn-secondary {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #e0e0e0;
+        }
+        
+        /* 为底部按钮留出空间 */
+        .container {
+            padding-bottom: 80px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 页面头部 -->
+        <div class="page-header">
+            <h1 class="page-title">单据详情</h1>
+            <div class="header-actions">
+                <button class="header-btn edit-btn">编辑</button>
+                <button class="header-btn delete-btn">删除</button>
+            </div>
+        </div>
+        
+        <!-- 基本信息 -->
+        <div class="card">
+            <h2 class="card-title">基本信息</h2>
+            <div class="form-group">
+                <label class="form-label">单据号</label>
+                <input type="text" class="form-input" value="RK202401001" disabled>
+            </div>
+            <div class="form-group">
+                <label class="form-label">单据类型</label>
+                <span class="bill-type inbound">入库单</span>
+            </div>
+            <div class="form-group">
+                <div class="form-grid">
+                    <div>
+                        <label class="form-label">单据日期</label>
+                        <input type="date" class="form-input" value="2024-01-15">
+                    </div>
+                    <div>
+                        <label class="form-label">供应商</label>
+                        <select class="form-select">
+                            <option value="supplier1" selected>供应商A</option>
+                            <option value="supplier2">供应商B</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 产品信息 -->
+        <div class="card">
+            <h2 class="card-title">产品信息</h2>
+            <div class="product-list">
+                <!-- 产品项1 -->
+                <div class="product-item">
+                    <div class="product-header">
+                        <span class="product-title">产品 #1</span>
+                        <button class="delete-product-btn">×</button>
+                    </div>
+                    <div class="product-grid">
+                        <div>
+                            <label class="form-label">产品编号</label>
+                            <input type="text" class="form-input" value="IP15P001" placeholder="请输入产品编号">
+                        </div>
+                        <div>
+                            <label class="form-label">产品型号</label>
+                            <input type="text" class="form-input" value="iPhone 15 Pro" placeholder="请输入产品型号">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">产品名称</label>
+                        <input type="text" class="form-input" value="iPhone 15 Pro 256GB 深空黑色" placeholder="请输入产品名称">
+                    </div>
+                    <div class="price-grid">
+                        <div>
+                            <label class="form-label">数量</label>
+                            <input type="number" class="form-input price-input" value="10" placeholder="0">
+                        </div>
+                        <div>
+                            <label class="form-label">单价</label>
+                            <input type="number" class="form-input price-input" value="8999.00" placeholder="0.00" step="0.01">
+                        </div>
+                        <div>
+                            <label class="form-label">小计</label>
+                            <input type="number" class="form-input price-input" value="89990.00" disabled>
+                        </div>
+                    </div>
+                    <div class="subtotal">
+                        <span>小计</span>
+                        <span class="subtotal-amount">¥89,990.00</span>
+                    </div>
+                </div>
+                
+                <!-- 产品项2 -->
+                <div class="product-item">
+                    <div class="product-header">
+                        <span class="product-title">产品 #2</span>
+                        <button class="delete-product-btn">×</button>
+                    </div>
+                    <div class="product-grid">
+                        <div>
+                            <label class="form-label">产品编号</label>
+                            <input type="text" class="form-input" value="MB16P001" placeholder="请输入产品编号">
+                        </div>
+                        <div>
+                            <label class="form-label">产品型号</label>
+                            <input type="text" class="form-input" value="MacBook Pro" placeholder="请输入产品型号">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">产品名称</label>
+                        <input type="text" class="form-input" value="MacBook Pro 16英寸 M3 Pro 512GB 深空灰色" placeholder="请输入产品名称">
+                    </div>
+                    <div class="price-grid">
+                        <div>
+                            <label class="form-label">数量</label>
+                            <input type="number" class="form-input price-input" value="5" placeholder="0">
+                        </div>
+                        <div>
+                            <label class="form-label">单价</label>
+                            <input type="number" class="form-input price-input" value="14999.00" placeholder="0.00" step="0.01">
+                        </div>
+                        <div>
+                            <label class="form-label">小计</label>
+                            <input type="number" class="form-input price-input" value="74995.00" disabled>
+                        </div>
+                    </div>
+                    <div class="subtotal">
+                        <span>小计</span>
+                        <span class="subtotal-amount">¥74,995.00</span>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="add-product-btn">+ 添加产品</button>
+        </div>
+        
+        <!-- 备注信息 -->
+        <div class="card">
+            <h2 class="card-title">备注信息</h2>
+            <div class="form-group">
+                <label class="form-label">备注</label>
+                <textarea class="form-textarea" placeholder="请输入备注信息">这是一批新到货的苹果产品，质量良好，已完成验收。</textarea>
+            </div>
+        </div>
+        
+        <!-- 总计信息 -->
+        <div class="card total-card">
+            <h2 class="card-title">总计信息</h2>
+            <div class="total-info">
+                <span class="total-label">总数量</span>
+                <span class="total-value">15 件</span>
+            </div>
+            <div class="total-info">
+                <span class="total-label">总金额</span>
+                <span class="total-amount">¥164,985.00</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 底部操作按钮 -->
+    <div class="action-area">
+        <div class="action-buttons">
+            <button class="action-btn btn-secondary">取消</button>
+            <button class="action-btn btn-primary">保存</button>
+        </div>
+    </div>
+</body>
+</html>

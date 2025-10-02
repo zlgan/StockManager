@@ -1,126 +1,130 @@
+<!-- 主要内容区域 -->
 <view class="container">
-  <!-- 搜索区域 -->
-  <view class="search-area">
-    <view class="card mb-4">
-      <view class="search-input-box">
-        <input type="text" class="form-control" placeholder="搜索产品名称/单据号/制单人" model:value="{{searchKeyword}}" style="height: 88rpx; line-height: 88rpx; width: 100%;" />
+  <!-- 搜索筛选区域 -->
+  <view class="card">
+    <!-- 搜索框 -->
+    <view class="form-group">
+      <view class="form-label">搜索</view>
+      <view class="form-row">
+        <input class="form-control flex-grow" placeholder="搜索产品名称/单据号/制单人" value="{{searchKeyword}}" bindinput="inputSearchKeyword" />
         <view class="btn-icon" bindtap="scanCode">
           <image class="scan-image" src="/images/scan.png" mode="aspectFit"></image>
         </view>
       </view>
-      
-      <view class="form-item">
-        <view class="form-label">日期范围</view>
-        <view class="date-picker-container">
-          <view class="date-picker-item">
-            <picker mode="date" value="{{startDate}}" bindchange="bindStartDateChange">
-              <view class="date-picker-box">
-                <input type="text" class="form-control" placeholder="开始日期" disabled value="{{startDate}}" style="height: 88rpx; line-height: 88rpx; width: 100%;" />
-                <text class="iconfont icon-calendar"></text>
-              </view>
-            </picker>
-          </view>
-          <view class="date-separator">至</view>
-          <view class="date-picker-item">
-            <picker mode="date" value="{{endDate}}" bindchange="bindEndDateChange">
-              <view class="date-picker-box">
-                <input type="text" class="form-control" placeholder="结束日期" disabled value="{{endDate}}" style="height: 88rpx; line-height: 88rpx; width: 100%;" />
-                <text class="iconfont icon-calendar"></text>
-              </view>
-            </picker>
-          </view>
-        </view>
-      </view>
-      
-      <view class="form-grid">
-        <view class="form-item">
-          <view class="form-label">单据类型</view>
-          <picker bindchange="bindBillTypeChange" value="{{billTypeIndex}}" range="{{billTypes}}">
-            <view class="form-control picker">
-              {{billTypes[billTypeIndex]}}
-            </view>
-          </picker>
-        </view>
-        <view class="form-item">
-          <view class="form-label">供应商/客户</view>
-          <picker bindchange="bindSupplierChange" value="{{supplierIndex}}" range="{{suppliers}}">
-            <view class="form-control picker">
-              {{suppliers[supplierIndex]}}
-            </view>
-          </picker>
-        </view>
-      </view>
-      
-      <view class="btn-group">
-        <button class="btn btn-primary" bindtap="search">搜索</button>
-        <button class="btn btn-outline" bindtap="reset">重置</button>
+    </view>
+    
+    <!-- 日期范围 -->
+    <view class="form-group">
+      <view class="form-label">日期范围</view>
+      <view class="date-range-container">
+        <picker mode="date" value="{{startDate}}" bindchange="bindStartDateChange" class="flex-grow">
+          <view class="form-control picker">{{startDate || '开始日期'}}</view>
+        </picker>
+        <view class="date-separator">至</view>
+        <picker mode="date" value="{{endDate}}" bindchange="bindEndDateChange" class="flex-grow">
+          <view class="form-control picker">{{endDate || '结束日期'}}</view>
+        </picker>
       </view>
     </view>
     
-    <!-- 统计信息 -->
-    <view class="stats-bar">
-      <view class="stats-count">共 {{totalCount}} 笔记录</view>
-      <view class="export-btn" bindtap="exportToExcel">
-        <text class="iconfont icon-download"></text> 导出Excel
-      </view>
+    <!-- 单据类型 -->
+    <view class="form-group">
+      <view class="form-label">单据类型</view>
+      <picker bindchange="bindBillTypeChange" value="{{billTypeIndex}}" range="{{billTypes}}" class="flex-grow">
+        <view class="form-control picker">
+          {{billTypes[billTypeIndex]}}
+        </view>
+      </picker>
     </view>
     
-    <!-- 单据列表 -->
-    <view class="bill-list" wx:if="{{bills.length > 0}}">
-      <block wx:for="{{bills}}" wx:key="id">
-        <!-- 入库单 -->
-        <view class="card bill-card" wx:if="{{item.type === 'inbound'}}" bindtap="viewBillDetail" data-id="{{item.id}}">
-          <view class="bill-header">
-            <view class="bill-number inbound">入库单: {{item.billNumber}}</view>
-            <view class="bill-date">{{item.date}}</view>
-          </view>
-          <view class="bill-product" wx:for="{{item.products}}" wx:for-item="product" wx:key="index">
-            <view class="product-name">{{product.name}}</view>
-            <view class="product-quantity inbound">+{{product.quantity}}</view>
-          </view>
-          <view class="bill-info">
-            <view class="bill-type">{{item.billTypeName}}</view>
-            <view class="bill-amount">¥{{item.totalAmount}}</view>
-          </view>
-          <view class="bill-footer">
-            制单人: {{item.creator}}
-          </view>
+    <!-- 供应商/客户 -->
+    <view class="form-group">
+      <view class="form-label">供应商/客户</view>
+      <picker bindchange="bindSupplierChange" value="{{supplierIndex}}" range="{{suppliers}}" class="flex-grow">
+        <view class="form-control picker">
+          {{suppliers[supplierIndex]}}
         </view>
-        
-        <!-- 出库单 -->
-        <view class="card bill-card" wx:if="{{item.type === 'outbound'}}" bindtap="viewBillDetail" data-id="{{item.id}}">
-          <view class="bill-header">
-            <view class="bill-number outbound">出库单: {{item.billNumber}}</view>
-            <view class="bill-date">{{item.date}}</view>
-          </view>
-          <view class="bill-product" wx:for="{{item.products}}" wx:for-item="product" wx:key="index">
-            <view class="product-name">{{product.name}}</view>
-            <view class="product-quantity outbound">-{{product.quantity}}</view>
-          </view>
-          <view class="bill-info">
-            <view class="bill-type">{{item.billTypeName}}</view>
-            <view class="bill-amount">¥{{item.totalAmount}}</view>
-          </view>
-          <view class="bill-footer">
-            制单人: {{item.creator}}
-          </view>
-        </view>
-      </block>
+      </picker>
     </view>
     
-    <!-- 无数据提示 -->
-    <view class="empty-tip" wx:if="{{bills.length === 0}}">
-      <image src="/images/empty.png" mode="aspectFit" class="empty-image"></image>
-      <view class="empty-text">暂无单据数据</view>
+    <!-- 操作按钮 -->
+    <view class="btn-group">
+      <button class="btn btn-primary" bindtap="search">搜索</button>
+      <button class="btn btn-outline" bindtap="reset">重置</button>
     </view>
   </view>
   
-  <!-- 导出成功提示 -->
-  <view class="modal" wx:if="{{showExportSuccess}}">
-    <view class="modal-content">
-      <view class="success-icon">
-        <text class="iconfont icon-success"></text>
+  <!-- 统计信息 -->
+  <view class="card">
+    <view class="stats-header">
+      <view class="stats-count">共 {{totalCount}} 笔记录</view>
+      <view class="export-btn" bindtap="exportToExcel">
+        <text class="icon-download"></text> 导出Excel
       </view>
+    </view>
+  </view>
+  
+  <!-- 单据列表 -->
+  <block wx:for="{{bills}}" wx:key="id">
+    <view class="card bill-card" bindtap="viewBillDetail" data-id="{{item.id}}">
+      <!-- 单据头部信息 -->
+      <view class="bill-header">
+        <view class="bill-number {{item.type}}">
+          <text class="bill-type-label">{{item.type === 'inbound' ? '入库单' : '出库单'}}</text>
+          <text class="bill-number-text">{{item.billNumber}}</text>
+        </view>
+        <view class="bill-date">{{item.date}}</view>
+      </view>
+      
+      <!-- 产品信息 -->
+      <view class="bill-products">
+        <block wx:for="{{item.products}}" wx:for-item="product" wx:key="index">
+          <view class="product-item">
+            <view class="product-info">
+              <view class="product-name">{{product.name}}</view>
+              <view class="product-model" wx:if="{{product.model}}">型号: {{product.model}}</view>
+            </view>
+            <view class="product-quantity {{item.type}}">
+              {{item.type === 'inbound' ? '+' : '-'}}{{product.quantity}}
+            </view>
+          </view>
+        </block>
+      </view>
+      
+      <!-- 单据底部信息 -->
+      <view class="bill-footer">
+        <view class="bill-info">
+          <view class="bill-type-name">{{item.billTypeName}}</view>
+          <view class="bill-supplier" wx:if="{{item.supplier}}">{{item.supplier}}</view>
+        </view>
+        <view class="bill-amount">¥{{item.totalAmount}}</view>
+      </view>
+      
+      <view class="bill-creator">制单人: {{item.creator}}</view>
+      
+      <!-- 操作按钮 -->
+      <view class="bill-actions">
+        <view class="action-btn" bindtap="editBill" data-id="{{item.id}}" catchtap="stopPropagation">
+          <text class="icon-edit"></text> 编辑
+        </view>
+        <view class="action-btn delete" bindtap="deleteBill" data-id="{{item.id}}" catchtap="stopPropagation">
+          <text class="icon-delete"></text> 删除
+        </view>
+      </view>
+    </view>
+  </block>
+  
+  <!-- 无数据提示 -->
+  <view class="empty-state" wx:if="{{bills.length === 0}}">
+    <view class="empty-icon">📋</view>
+    <view class="empty-text">暂无单据数据</view>
+    <view class="empty-hint">您可以通过搜索或调整筛选条件查看相关单据</view>
+  </view>
+  
+  <!-- 导出成功提示 -->
+  <view class="modal-overlay" wx:if="{{showExportSuccess}}" bindtap="hideExportSuccess">
+    <view class="modal-content" catchtap="stopPropagation">
+      <view class="success-icon">✅</view>
       <view class="modal-title">导出成功</view>
       <view class="modal-message">文件已保存至"我的文档"</view>
       <button class="btn btn-primary" bindtap="hideExportSuccess">确定</button>

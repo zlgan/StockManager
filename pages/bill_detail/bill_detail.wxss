@@ -1,0 +1,341 @@
+/* 引入共享样式 */
+@import "../../styles/shared.wxss";
+
+/* 通用样式 */
+.container {
+  padding: 30rpx;
+  padding-bottom: 30rpx;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+/* 页面头部样式 */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30rpx;
+}
+
+.header-title {
+  font-size: 36rpx;
+  font-weight: 500;
+  color: #333;
+}
+
+.header-actions {
+  display: flex;
+  gap: 20rpx;
+}
+
+/* 卡片样式 */
+.card {
+  background-color: #fff;
+  border-radius: 12rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 2rpx solid #f0f0f0;
+}
+
+.card-title {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #333;
+}
+
+/* 表单组样式 */
+.form-group {
+  margin-bottom: 30rpx;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 16rpx;
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.form-value {
+  font-size: 28rpx;
+  color: #666;
+  padding: 24rpx 0;
+  border-bottom: 2rpx solid #f0f0f0;
+}
+
+/* 表单元素样式 */
+.picker, .input, .textarea {
+  background-color: #fff;
+  border: 2rpx solid #e8e8e8;
+  border-radius: 8rpx;
+  padding: 24rpx;
+  font-size: 28rpx;
+  color: #333;
+  transition: border-color 0.3s;
+}
+
+.picker:focus, .input:focus, .textarea:focus {
+  border-color: #007bff;
+}
+
+.picker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 88rpx;
+}
+
+.picker::after {
+  content: '';
+  width: 0;
+  height: 0;
+  border-left: 8rpx solid transparent;
+  border-right: 8rpx solid transparent;
+  border-top: 8rpx solid #999;
+  margin-left: 20rpx;
+}
+
+.picker-text {
+  flex: 1;
+}
+
+.textarea {
+  min-height: 120rpx;
+  resize: none;
+}
+
+/* 单据类型样式 */
+.bill-type {
+  padding: 8rpx 16rpx;
+  border-radius: 4rpx;
+  font-size: 24rpx;
+  font-weight: 500;
+}
+
+.bill-type.inbound {
+  background-color: #e6f7ff;
+  color: #1890ff;
+}
+
+.bill-type.outbound {
+  background-color: #fff2e8;
+  color: #ff7a45;
+}
+
+/* 表单网格布局 */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+/* 图标样式 */
+.btn-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20rpx;
+  color: #007bff;
+  font-size: 28rpx;
+  white-space: nowrap;
+  background: none;
+  border: none;
+}
+
+.icon-add {
+  width: 32rpx;
+  height: 32rpx;
+  margin-right: 10rpx;
+}
+
+.icon-delete {
+  width: 32rpx;
+  height: 32rpx;
+}
+
+.btn-text {
+  font-size: 28rpx;
+}
+
+/* 产品列表样式 */
+.product-list {
+  margin-top: 20rpx;
+}
+
+.product-card {
+  background-color: #f8f9fa;
+  border-radius: 8rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  position: relative;
+  border: 2rpx solid #e8e8e8;
+}
+
+.product-card:last-child {
+  margin-bottom: 0;
+}
+
+/* 价格输入样式 */
+.price-input {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  border: 2rpx solid #e8e8e8;
+  border-radius: 8rpx;
+  padding: 0 24rpx;
+  transition: border-color 0.3s;
+}
+
+.price-input:focus-within {
+  border-color: #007bff;
+}
+
+.price-symbol {
+  color: #999;
+  font-size: 28rpx;
+  margin-right: 8rpx;
+}
+
+.price-value {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 24rpx 0;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.total-price {
+  font-weight: 500;
+  color: #333;
+  font-size: 32rpx;
+}
+
+/* 删除按钮样式 */
+.delete-btn {
+  position: absolute;
+  top: 20rpx;
+  right: 20rpx;
+  width: 60rpx;
+  height: 60rpx;
+  background-color: #ff4d4f;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  padding: 0;
+}
+
+/* 总计卡片样式 */
+.total-card {
+  background-color: #fff;
+  border-radius: 12rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+  border-left: 8rpx solid #007bff;
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.total-row:last-child {
+  margin-bottom: 0;
+}
+
+.total-label {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.total-value {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.total-amount {
+  font-size: 36rpx;
+  color: #007bff;
+  font-weight: 600;
+}
+
+/* 操作按钮区域样式 */
+.btn-area {
+  display: flex;
+  gap: 20rpx;
+  padding-top: 20rpx;
+}
+
+.btn {
+  flex: 1;
+  height: 88rpx;
+  border-radius: 8rpx;
+  font-size: 32rpx;
+  font-weight: 500;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.btn-primary:active {
+  background-color: #0056b3;
+}
+
+.btn-default {
+  background-color: #f8f9fa;
+  color: #666;
+  border: 2rpx solid #e8e8e8;
+}
+
+.btn-default:active {
+  background-color: #e8e8e8;
+}
+
+/* 操作按钮样式 */
+.action-btn {
+  padding: 12rpx 24rpx;
+  border-radius: 6rpx;
+  font-size: 24rpx;
+  border: none;
+  cursor: pointer;
+}
+
+.edit-btn {
+  background-color: #1890ff;
+  color: #fff;
+}
+
+.edit-btn:active {
+  background-color: #0056b3;
+}
+
+.delete-btn {
+  background-color: #ff4d4f;
+  color: #fff;
+}
+
+.delete-btn:active {
+  background-color: #d32f2f;
+}

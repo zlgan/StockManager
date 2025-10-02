@@ -1,0 +1,199 @@
+<!--pages/bill_detail/bill_detail.wxml-->
+<view class="container">
+  <!-- 页面标题 -->
+  <view class="page-header">
+    <view class="header-title">
+      <text wx:if="{{mode === 'view'}}">单据详情</text>
+      <text wx:elif="{{mode === 'edit'}}">编辑单据</text>
+    </view>
+    <view class="header-actions" wx:if="{{mode === 'view'}}">
+      <button class="action-btn edit-btn" bindtap="editBill">编辑</button>
+      <button class="action-btn delete-btn" bindtap="deleteBill">删除</button>
+    </view>
+  </view>
+
+  <!-- 基本信息卡片 -->
+  <view class="card">
+    <view class="card-header">
+      <text class="card-title">基本信息</text>
+    </view>
+    
+    <!-- 单据号 -->
+    <view class="form-group">
+      <text class="form-label">单据号</text>
+      <view class="form-value">{{billData.billNumber}}</view>
+    </view>
+
+    <!-- 单据类型 -->
+    <view class="form-group">
+      <text class="form-label">单据类型</text>
+      <view class="form-value">
+        <text class="bill-type {{billData.type === '入库单' ? 'inbound' : 'outbound'}}">
+          {{billData.type}}
+        </text>
+      </view>
+    </view>
+
+    <!-- 日期 -->
+    <view class="form-group">
+      <text class="form-label">日期</text>
+      <picker wx:if="{{mode === 'edit'}}" 
+              mode="date" 
+              value="{{billData.date}}" 
+              bindchange="bindDateChange"
+              class="picker">
+        <view class="picker-text">{{billData.date || '请选择日期'}}</view>
+      </picker>
+      <view wx:else class="form-value">{{billData.date}}</view>
+    </view>
+
+    <!-- 供应商/客户 -->
+    <view class="form-group">
+      <text class="form-label">{{billData.type === '入库单' ? '供应商' : '客户'}}</text>
+      <picker wx:if="{{mode === 'edit'}}" 
+              range="{{supplierList}}" 
+              value="{{supplierIndex}}" 
+              bindchange="bindSupplierChange"
+              class="picker">
+        <view class="picker-text">{{supplierList[supplierIndex] || '请选择' + (billData.type === '入库单' ? '供应商' : '客户')}}</view>
+      </picker>
+      <view wx:else class="form-value">{{billData.supplier}}</view>
+    </view>
+  </view>
+
+  <!-- 产品信息卡片 -->
+  <view class="card">
+    <view class="card-header">
+      <text class="card-title">产品信息</text>
+      <button wx:if="{{mode === 'edit'}}" class="btn-icon" bindtap="addProduct">
+        <image class="icon-add" src="/images/add.png" mode="aspectFit"></image>
+        <text class="btn-text">添加产品</text>
+      </button>
+    </view>
+
+    <!-- 产品列表 -->
+    <view class="product-list">
+      <view class="product-card" wx:for="{{billData.products}}" wx:key="index">
+        <!-- 产品编号 -->
+        <view class="form-group">
+          <text class="form-label">产品编号</text>
+          <input wx:if="{{mode === 'edit'}}" 
+                 class="input" 
+                 value="{{item.productNumber}}" 
+                 placeholder="请输入产品编号"
+                 data-index="{{index}}"
+                 data-field="productNumber"
+                 bindinput="updateProductField" />
+          <view wx:else class="form-value">{{item.productNumber}}</view>
+        </view>
+
+        <!-- 产品型号 -->
+        <view class="form-group">
+          <text class="form-label">产品型号</text>
+          <input wx:if="{{mode === 'edit'}}" 
+                 class="input" 
+                 value="{{item.productModel}}" 
+                 placeholder="请输入产品型号"
+                 data-index="{{index}}"
+                 data-field="productModel"
+                 bindinput="updateProductField" />
+          <view wx:else class="form-value">{{item.productModel}}</view>
+        </view>
+
+        <!-- 产品名称 -->
+        <view class="form-group">
+          <text class="form-label">产品名称</text>
+          <input wx:if="{{mode === 'edit'}}" 
+                 class="input" 
+                 value="{{item.productName}}" 
+                 placeholder="请输入产品名称"
+                 data-index="{{index}}"
+                 data-field="productName"
+                 bindinput="updateProductField" />
+          <view wx:else class="form-value">{{item.productName}}</view>
+        </view>
+
+        <!-- 数量和单价 -->
+        <view class="form-grid">
+          <view class="form-group">
+            <text class="form-label">数量</text>
+            <input wx:if="{{mode === 'edit'}}" 
+                   class="input" 
+                   type="number" 
+                   value="{{item.quantity}}" 
+                   placeholder="请输入数量"
+                   data-index="{{index}}"
+                   data-field="quantity"
+                   bindinput="updateProductField" />
+            <view wx:else class="form-value">{{item.quantity}}</view>
+          </view>
+          <view class="form-group">
+            <text class="form-label">单价</text>
+            <view class="price-input">
+              <text class="price-symbol">¥</text>
+              <input wx:if="{{mode === 'edit'}}" 
+                     class="input price-value" 
+                     type="digit" 
+                     value="{{item.price}}" 
+                     placeholder="0.00"
+                     data-index="{{index}}"
+                     data-field="price"
+                     bindinput="updateProductField" />
+              <view wx:else class="form-value price-value">{{item.price}}</view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 小计 -->
+        <view class="form-group">
+          <text class="form-label">小计</text>
+          <view class="form-value total-price">¥{{item.subtotalStr}}</view>
+        </view>
+
+        <!-- 删除按钮 -->
+        <button wx:if="{{mode === 'edit'}}" 
+                class="delete-btn" 
+                data-index="{{index}}" 
+                bindtap="deleteProduct">
+          <image class="icon-delete" src="/images/delete.png" mode="aspectFit"></image>
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 备注信息卡片 -->
+  <view class="card">
+    <view class="card-header">
+      <text class="card-title">备注信息</text>
+    </view>
+    
+    <view class="form-group">
+      <text class="form-label">备注</text>
+      <textarea wx:if="{{mode === 'edit'}}" 
+                class="textarea" 
+                value="{{billData.remark}}" 
+                placeholder="请输入备注信息"
+                bindinput="updateRemark"
+                maxlength="200"></textarea>
+      <view wx:else class="form-value">{{billData.remark || '无'}}</view>
+    </view>
+  </view>
+
+  <!-- 总计信息卡片 -->
+  <view class="total-card">
+    <view class="total-row">
+      <text class="total-label">总数量：</text>
+      <text class="total-value">{{totalQuantity}}</text>
+    </view>
+    <view class="total-row">
+      <text class="total-label">总金额：</text>
+      <text class="total-amount">¥{{totalAmount}}</text>
+    </view>
+  </view>
+
+  <!-- 操作按钮区域 -->
+  <view class="btn-area">
+    <button wx:if="{{mode === 'edit'}}" class="btn btn-primary" bindtap="saveBill">保存</button>
+    <button class="btn btn-default" bindtap="goBack">{{mode === 'edit' ? '取消' : '返回'}}</button>
+  </view>
+</view>

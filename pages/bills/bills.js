@@ -33,6 +33,15 @@ Page({
   },
 
   /**
+   * 输入搜索关键词
+   */
+  inputSearchKeyword: function(e) {
+    this.setData({
+      searchKeyword: e.detail.value
+    });
+  },
+
+  /**
    * 扫码功能
    */
   scanCode: function() {
@@ -42,17 +51,100 @@ Page({
         this.setData({
           searchKeyword: res.result
         });
-        // 可选：自动执行搜索
-        // this.search();
+        // 自动执行搜索
+        this.search();
       },
       fail: (err) => {
         wx.showToast({
           title: '扫码失败',
-          icon: 'none',
-          duration: 2000
+          icon: 'none'
         });
       }
     });
+  },
+
+  /**
+   * 阻止事件冒泡
+   */
+  stopPropagation: function(e) {
+    // 阻止事件冒泡
+  },
+
+  /**
+   * 编辑单据
+   */
+  editBill: function(e) {
+    const billId = e.currentTarget.dataset.id;
+    const bill = this.data.bills.find(item => item.id === billId);
+    
+    if (!bill) {
+      wx.showToast({
+        title: '单据不存在',
+        icon: 'none'
+      });
+      return;
+    }
+
+    // 跳转到单据详情页面进行编辑
+    wx.navigateTo({
+      url: `/pages/bill_detail/bill_detail?id=${billId}&mode=edit`
+    });
+  },
+
+  /**
+   * 删除单据
+   */
+  deleteBill: function(e) {
+    const billId = e.currentTarget.dataset.id;
+    const bill = this.data.bills.find(item => item.id === billId);
+    
+    if (!bill) {
+      wx.showToast({
+        title: '单据不存在',
+        icon: 'none'
+      });
+      return;
+    }
+
+    wx.showModal({
+      title: '确认删除',
+      content: `确定要删除单据 ${bill.billNumber} 吗？此操作不可恢复。`,
+      confirmText: '删除',
+      confirmColor: '#ff4d4f',
+      success: (res) => {
+        if (res.confirm) {
+          // 执行删除操作
+          this.performDeleteBill(billId);
+        }
+      }
+    });
+  },
+
+  /**
+   * 执行删除单据操作
+   */
+  performDeleteBill: function(billId) {
+    // 模拟删除操作
+    const bills = this.data.bills.filter(item => item.id !== billId);
+    this.setData({
+      bills: bills,
+      totalCount: bills.length
+    });
+
+    wx.showToast({
+      title: '删除成功',
+      icon: 'success'
+    });
+
+    // 这里应该调用后端API删除数据
+    // wx.request({
+    //   url: '/api/bills/' + billId,
+    //   method: 'DELETE',
+    //   success: (res) => {
+    //     // 重新加载数据
+    //     this.loadBillData();
+    //   }
+    // });
   },
 
   /**
@@ -194,10 +286,19 @@ Page({
    */
   viewBillDetail: function(e) {
     const billId = e.currentTarget.dataset.id;
-    // 实际应用中这里会跳转到单据详情页面
-    wx.showToast({
-      title: '查看单据: ' + billId,
-      icon: 'none'
+    const bill = this.data.bills.find(item => item.id === billId);
+    
+    if (!bill) {
+      wx.showToast({
+        title: '单据不存在',
+        icon: 'none'
+      });
+      return;
+    }
+
+    // 跳转到单据详情页面
+    wx.navigateTo({
+      url: `/pages/bill_detail/bill_detail?id=${billId}&mode=view`
     });
   },
 
