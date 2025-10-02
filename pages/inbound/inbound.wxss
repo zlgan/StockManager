@@ -49,6 +49,43 @@
   flex: 1;
 }
 
+/* 搜索建议样式 */
+.suggestions-container {
+  position: absolute;
+  width: 100%;
+  left: 0;
+  top: 100%;
+  z-index: 999;
+  margin-top: 2rpx;
+}
+
+.suggestions-list {
+  max-height: 300rpx;
+  background-color: #fff;
+  border-radius: 8rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+}
+
+.suggestion-item {
+  padding: 20rpx;
+  font-size: 28rpx;
+  color: #333;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.suggestion-item.active {
+  background-color: #f5f7fa;
+}
+
+.suggestion-item:hover {
+  background-color: #f5f7fa;
+}
+
 .form-control-wrapper {
   flex: 1;
 }

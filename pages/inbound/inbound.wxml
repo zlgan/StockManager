@@ -67,7 +67,23 @@
           <view class="form-group">
             <view class="form-label">产品名称 <text class="required">*</text></view>
             <view class="form-row">
-              <input class="form-control flex-grow" placeholder="请输入产品名称" value="{{item.name}}" bindinput="inputName" data-index="{{index}}" />
+              <input class="form-control flex-grow" placeholder="请输入产品名称" value="{{item.name}}" bindinput="inputName" data-index="{{index}}" bindfocus="showSuggestions" bindblur="hideSuggestionsDelayed" />
+            </view>
+            <!-- 产品搜索建议列表 -->
+            <view class="suggestions-container" wx:if="{{currentEditIndex === index && showSuggestions && filteredProducts.length > 0}}">
+              <scroll-view scroll-y class="suggestions-list">
+                <view 
+                  wx:for="{{filteredProducts}}" 
+                  wx:for-item="product" 
+                  wx:key="id" 
+                  class="suggestion-item {{suggestIndex === index ? 'active' : ''}}"
+                  data-name="{{product.name}}"
+                  data-id="{{product.id}}"
+                  data-index="{{index}}"
+                  bindtap="selectProduct">
+                  {{product.name}}
+                </view>
+              </scroll-view>
             </view>
           </view>
           

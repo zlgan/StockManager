@@ -8,8 +8,10 @@ Page({
     remark: '',
     typeIndex: -1,
     supplierIndex: -1,
-    
-    
+    showSuggestions: false,
+    currentEditIndex: -1,
+    filteredProducts: [],
+    suggestIndex: -1,
     
     supplierOptions: ['广州电子科技有限公司', '深圳数码配件厂', '东莞塑胶制品有限公司'],
     productOptions: ['苹果手机壳', 'Type-C数据线', '无线充电器'],
@@ -41,9 +43,16 @@ Page({
       { id: 5, name: '折旧入库' }
     ],
     productList: [
-      { id: 1, name: '苹果手机壳' },
-      { id: 2, name: 'Type-C数据线' },
-      { id: 3, name: '无线充电器' }
+      { id: 1, name: '苹果手机壳', model: 'IP-12-C', stock: 100, price: 15.5, imageUrl: '/images/product-placeholder.png' },
+      { id: 2, name: 'Type-C数据线', model: 'TC-100', stock: 200, price: 12.8, imageUrl: '/images/product-placeholder.png' },
+      { id: 3, name: '无线充电器', model: 'WC-01', stock: 50, price: 68, imageUrl: '/images/product-placeholder.png' },
+      { id: 4, name: '蓝牙耳机', model: 'BT-X5', stock: 75, price: 129, imageUrl: '/images/product-placeholder.png' },
+      { id: 5, name: '手机支架', model: 'MS-02', stock: 150, price: 9.9, imageUrl: '/images/product-placeholder.png' },
+      { id: 6, name: '手机钢化膜', model: 'SP-IP12', stock: 300, price: 5.5, imageUrl: '/images/product-placeholder.png' },
+      { id: 7, name: '移动电源', model: 'PB-10000', stock: 80, price: 89, imageUrl: '/images/product-placeholder.png' },
+      { id: 8, name: '手机壳-华为', model: 'HC-P40', stock: 120, price: 18, imageUrl: '/images/product-placeholder.png' },
+      { id: 9, name: '苹果快充头', model: 'AC-20W', stock: 90, price: 49, imageUrl: '/images/product-placeholder.png' },
+      { id: 10, name: '手机指环支架', model: 'FR-01', stock: 200, price: 7.5, imageUrl: '/images/product-placeholder.png' }
     ]
   },
 
@@ -222,6 +231,79 @@ Page({
     this.setData({
       products: products
     });
+    
+    // 搜索匹配产品
+    this.searchProducts(value, index);
+  },
+  
+  // 搜索匹配产品
+  searchProducts: function(keyword, index) {
+    if (!keyword) {
+      this.setData({
+        filteredProducts: [],
+        showSuggestions: false
+      });
+      return;
+    }
+    
+    // 过滤匹配的产品
+    const filtered = this.data.productList.filter(product => 
+      product.name.toLowerCase().indexOf(keyword.toLowerCase()) !== -1
+    );
+    
+    this.setData({
+      filteredProducts: filtered,
+      currentEditIndex: index,
+      showSuggestions: true
+    });
+  },
+  
+  // 显示建议列表
+  showSuggestions: function(e) {
+    const { index } = e.currentTarget.dataset;
+    const keyword = this.data.products[index].name;
+    
+    this.setData({
+      currentEditIndex: index,
+      showSuggestions: true
+    });
+    
+    if (keyword) {
+      this.searchProducts(keyword, index);
+    }
+  },
+  
+  // 延迟隐藏建议列表（防止点击建议项时因为blur事件导致无法选择）
+  hideSuggestionsDelayed: function() {
+    setTimeout(() => {
+      this.setData({
+        showSuggestions: false
+      });
+    }, 300);
+  },
+  
+  // 选择产品
+  selectProduct: function(e) {
+    const { name, id, index } = e.currentTarget.dataset;
+    const productIndex = this.data.currentEditIndex;
+    const selectedProduct = this.data.productList.find(p => p.id === id);
+    
+    // 更新产品信息
+    const products = this.data.products;
+    products[productIndex].name = name;
+    products[productIndex].model = selectedProduct.model;
+    products[productIndex].price = selectedProduct.price;
+    products[productIndex].stock = selectedProduct.stock;
+    products[productIndex].imageUrl = selectedProduct.imageUrl;
+    products[productIndex].amount = products[productIndex].quantity * selectedProduct.price;
+    
+    this.setData({
+      products: products,
+      showSuggestions: false,
+      filteredProducts: []
+    });
+    
+    this.calculateTotal();
   },
   
   // 输入产品型号
