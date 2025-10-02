@@ -11,21 +11,26 @@
 
 /* 页面头部样式 */
 .page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30rpx;
+  padding: 20rpx 30rpx;
+  background-color: #fff;
+  border-bottom: 2rpx solid #f0f0f0;
 }
 
 .header-title {
-  font-size: 36rpx;
-  font-weight: 500;
+  font-size: 32rpx;
+  font-weight: bold;
   color: #333;
+  text-align: center;
 }
 
 .header-actions {
   display: flex;
+  justify-content: center;
   gap: 20rpx;
+  padding: 20rpx 30rpx;
+  background-color: #fff;
+  border-bottom: 2rpx solid #f0f0f0;
+  margin-bottom: 20rpx;
 }
 
 /* 卡片样式 */
@@ -65,6 +70,26 @@
   font-weight: 500;
 }
 
+/* 表单行样式 - label和input在同一行 */
+.form-row {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.form-row .form-label {
+  flex-shrink: 0;
+  width: 160rpx;
+  margin-bottom: 0;
+  text-align: left;
+}
+
+.form-row .picker,
+.form-row .input,
+.form-row .form-value {
+  flex: 1;
+}
+
 .form-value {
   font-size: 28rpx;
   color: #666;
@@ -77,10 +102,11 @@
   background-color: #fff;
   border: 2rpx solid #e8e8e8;
   border-radius: 8rpx;
-  padding: 24rpx;
+  padding: 16rpx 20rpx;
   font-size: 28rpx;
   color: #333;
   transition: border-color 0.3s;
+  box-sizing: border-box;
 }
 
 .picker:focus, .input:focus, .textarea:focus {
@@ -91,7 +117,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 88rpx;
+  min-height: 60rpx;
+  height: 60rpx;
+}
+
+.input {
+  height: 60rpx;
 }
 
 .picker::after {
@@ -173,16 +204,90 @@
 }
 
 .product-card {
-  background-color: #f8f9fa;
-  border-radius: 8rpx;
+  background: #fff;
+  border-radius: 16rpx;
   padding: 30rpx;
   margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
   position: relative;
-  border: 2rpx solid #e8e8e8;
 }
 
 .product-card:last-child {
   margin-bottom: 0;
+}
+
+/* 产品编号 */
+.product-number {
+  position: absolute;
+  top: 20rpx;
+  right: 30rpx;
+  background: #f5f5f5;
+  color: #666;
+  padding: 8rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+}
+
+/* 表单行内容 */
+.form-row-content {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  gap: 20rpx;
+}
+
+.flex-grow {
+  flex: 1;
+}
+
+/* 扫码按钮 */
+.btn-icon {
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #007aff;
+  border-radius: 8rpx;
+  flex-shrink: 0;
+}
+
+.scan-image {
+  width: 32rpx;
+  height: 32rpx;
+}
+
+/* 必填标识 */
+.required {
+  color: #ff3b30;
+  margin-left: 4rpx;
+}
+
+/* 产品图片 */
+.image-group {
+  margin: 20rpx 0;
+}
+
+.image-group .form-row {
+  align-items: flex-start;
+}
+
+.inline-label {
+  margin-top: 10rpx;
+}
+
+.product-image {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 8rpx;
+  border: 2rpx solid #e5e5e5;
+  background: #f8f8f8;
+}
+
+/* 禁用输入框 */
+.bg-gray {
+  background-color: #f5f5f5;
+  color: #999;
 }
 
 /* 价格输入样式 */
@@ -221,20 +326,19 @@
   font-size: 32rpx;
 }
 
-/* 删除按钮样式 */
-.delete-btn {
-  position: absolute;
-  top: 20rpx;
-  right: 20rpx;
-  width: 60rpx;
-  height: 60rpx;
-  background-color: #ff4d4f;
-  border-radius: 50%;
+/* 删除按钮 */
+.product-card .delete-btn {
+  margin-top: 20rpx;
+  padding: 16rpx 24rpx;
+  background: #ff3b30;
+  color: white;
+  border-radius: 8rpx;
+  text-align: center;
+  font-size: 28rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: none;
-  padding: 0;
+  gap: 8rpx;
 }
 
 /* 总计卡片样式 */
@@ -315,27 +419,30 @@
 
 /* 操作按钮样式 */
 .action-btn {
-  padding: 12rpx 24rpx;
+  padding: 8rpx 16rpx;
   border-radius: 6rpx;
-  font-size: 24rpx;
+  font-size: 22rpx;
   border: none;
   cursor: pointer;
+  min-width: 80rpx;
+  text-align: center;
+  white-space: nowrap;
 }
 
-.edit-btn {
+.header-actions .edit-btn {
   background-color: #1890ff;
   color: #fff;
 }
 
-.edit-btn:active {
+.header-actions .edit-btn:active {
   background-color: #0056b3;
 }
 
-.delete-btn {
+.header-actions .delete-btn {
   background-color: #ff4d4f;
   color: #fff;
 }
 
-.delete-btn:active {
+.header-actions .delete-btn:active {
   background-color: #d32f2f;
 }
