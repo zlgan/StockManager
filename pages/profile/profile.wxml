@@ -5,7 +5,7 @@
       <text class="avatar-icon">微</text>
     </view>
     <view class="user-details">
-      <view class="username">姓名: {{userInfo.name || '未知用户'}}</view>
+      <view class="username">店铺名称: {{userInfo.name || '未知店铺'}}</view>
       <view class="user-id">用户名: {{userInfo.username || '未知'}}</view>
     </view>
   </view>
