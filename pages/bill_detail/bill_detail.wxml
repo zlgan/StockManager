@@ -33,9 +33,7 @@
       <view class="form-row">
         <text class="form-label">单据类型</text>
         <view class="form-value">
-          <text class="bill-type {{billData.type === '入库单' ? 'inbound' : 'outbound'}}">
-            {{billData.type}}
-          </text>
+          <text>{{billData.type}}</text>
         </view>
       </view>
     </view>
@@ -188,7 +186,6 @@
     
     <view class="form-group">
       <view class="form-row">
-        <text class="form-label">备注</text>
         <textarea wx:if="{{mode === 'edit'}}" 
                   class="textarea" 
                   value="{{billData.remark}}" 

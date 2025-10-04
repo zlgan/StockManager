@@ -109,18 +109,7 @@
         </view>
         <view class="bill-amount">¥{{item.totalAmount}}</view>
       </view>
-      
       <view class="bill-creator">制单人: {{item.creator}}</view>
-      
-      <!-- 操作按钮 -->
-      <view class="bill-actions">
-        <view class="action-btn" bindtap="editBill" data-id="{{item.id}}" catchtap="stopPropagation">
-          <text class="icon-edit"></text> 编辑
-        </view>
-        <view class="action-btn delete" bindtap="deleteBill" data-id="{{item.id}}" catchtap="stopPropagation">
-          <text class="icon-delete"></text> 删除
-        </view>
-      </view>
     </view>
   </block>
   

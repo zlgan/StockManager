@@ -41,9 +41,9 @@
       </view>
     </view>
 
-    <!-- 购买产品 -->
+    <!-- 可购买的产品 -->
     <view class="form-group">
-      <text class="form-label">购买产品</text>
+      <text class="form-label">可购买的产品</text>
       <view class="form-control-wrapper">
         <view class="form-control picker-display" bindtap="showProductSelector">
           <text wx:if="{{selectedProducts.length > 0}}" class="selected-text">
