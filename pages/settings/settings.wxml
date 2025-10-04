@@ -1,2 +1,76 @@
 <!--pages/settings/settings.wxml-->
-<text>pages/settings/settings.wxml</text>
+<view class="container">
+  <!-- 设置项列表 -->
+  <view class="settings-list">
+    <!-- 员工账户禁用库存点 -->
+    <view class="setting-item">
+      <view class="setting-info">
+        <text class="setting-title">员工账户禁用库存盘点</text>
+        <view class="help-icon" bindtap="showHelp" data-type="stockPoint">
+          <text class="help-text">?</text>
+        </view>
+      </view>
+      <switch checked="{{settings.disableStockPoint}}" bindchange="onStockPointChange" />
+    </view>
+
+    <!-- 员工账户不显示产品入库价信息 -->
+    <view class="setting-item">
+      <view class="setting-info">
+        <text class="setting-title">员工账户不显示产品入库价信息</text>
+        <view class="help-icon" bindtap="showHelp" data-type="hideInboundPrice">
+          <text class="help-text">?</text>
+        </view>
+      </view>
+      <switch checked="{{settings.hideInboundPrice}}" bindchange="onHideInboundPriceChange" />
+    </view>
+
+    <!-- 员工账户只能看见自己的出入库记录 -->
+    <view class="setting-item">
+      <view class="setting-info">
+        <text class="setting-title">员工账户只能看见自己的出入库记录</text>
+        <view class="help-icon" bindtap="showHelp" data-type="ownRecordsOnly">
+          <text class="help-text">?</text>
+        </view>
+      </view>
+      <switch checked="{{settings.ownRecordsOnly}}" bindchange="onOwnRecordsOnlyChange" />
+    </view>
+
+    <!-- 出入库记录开启管理员审核 -->
+    <view class="setting-item">
+      <view class="setting-info">
+        <text class="setting-title">出入库记录开启管理员审核</text>
+        <view class="help-icon" bindtap="showHelp" data-type="adminApproval">
+          <text class="help-text">?</text>
+        </view>
+      </view>
+      <switch checked="{{settings.adminApproval}}" bindchange="onAdminApprovalChange" />
+    </view>
+
+    <!-- 员工账户不可以查看产品库存 -->
+    <view class="setting-item">
+      <view class="setting-info">
+        <text class="setting-title">员工账户不可以查看产品库存</text>
+        <view class="help-icon" bindtap="showHelp" data-type="hideInventory">
+          <text class="help-text">?</text>
+        </view>
+      </view>
+      <switch checked="{{settings.hideInventory}}" bindchange="onHideInventoryChange" />
+    </view>
+
+    <!-- 员工账户不可以编辑产品 -->
+    <view class="setting-item">
+      <view class="setting-info">
+        <text class="setting-title">员工账户不可以编辑产品</text>
+        <view class="help-icon" bindtap="showHelp" data-type="disableProductEdit">
+          <text class="help-text">?</text>
+        </view>
+      </view>
+      <switch checked="{{settings.disableProductEdit}}" bindchange="onDisableProductEditChange" />
+    </view>
+  </view>
+
+  <!-- 提示信息 -->
+  <view class="notice">
+    <text class="notice-text">以上设置修改后，员工账户需要重新登录后才能生效。</text>
+  </view>
+</view>

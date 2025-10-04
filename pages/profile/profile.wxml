@@ -34,6 +34,18 @@
       <text>客户管理</text>
       <text class="arrow-icon"></text>
     </view>
+
+    <view class="menu-item" bindtap="navigateTo" data-url="/pages/staff/staff">
+      <text class="menu-icon ri-team-line"></text>
+      <text>员工管理</text>
+      <text class="arrow-icon"></text>
+    </view>
+
+    <view class="menu-item" bindtap="navigateTo" data-url="/pages/settings/settings">
+      <text class="menu-icon ri-settings-3-line"></text>
+      <text>系统设置</text>
+      <text class="arrow-icon"></text>
+    </view>
   </view>
   
   <!-- 版本信息 -->

@@ -1,0 +1,40 @@
+<!--pages/staff/staff.wxml-->
+<view class="container">
+  <!-- 搜索框 -->
+  <view class="search-container">
+    <view class="search-box">
+      <image class="search-icon" src="/images/search.png" mode="aspectFit"></image>
+      <input class="search-input" 
+             placeholder="用户名、姓名、手机号" 
+             value="{{searchKeyword}}" 
+             bindinput="onSearchInput" />
+    </view>
+  </view>
+
+  <!-- 员工列表 -->
+  <view class="staff-list">
+    <view class="staff-item" 
+          wx:for="{{filteredStaffList}}" 
+          wx:key="id" 
+          bindtap="viewStaffDetail" 
+          data-id="{{item.id}}">
+      <view class="staff-info">
+        <view class="staff-name">用户名：{{item.username}}</view>
+        <view class="staff-realname">姓名：{{item.realName}}</view>
+        <view class="staff-phone">手机号：{{item.phone}}</view>
+      </view>
+      <view class="arrow-icon"></view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{filteredStaffList.length === 0}}">
+    <image class="empty-icon" src="/images/empty.png" mode="aspectFit"></image>
+    <text class="empty-text">暂无员工数据</text>
+  </view>
+
+  <!-- 添加按钮 -->
+  <view class="add-btn" bindtap="addStaff">
+    <text class="add-icon">+</text>
+  </view>
+</view>

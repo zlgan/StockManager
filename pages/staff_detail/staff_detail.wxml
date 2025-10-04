@@ -1,0 +1,104 @@
+<!--pages/staff_detail/staff_detail.wxml-->
+<view class="container">
+  <!-- 表单内容 -->
+  <view class="form-container">
+    <!-- 员工编号 -->
+    <view class="form-row" wx:if="{{!isAddMode}}">
+      <text class="label">员工编号：</text>
+      <text class="value">{{staffInfo.id}}</text>
+    </view>
+
+    <!-- 用户名 -->
+    <view class="form-row">
+      <text class="label">用户名：</text>
+      <input wx:if="{{isEditMode || isAddMode}}" 
+             class="input" 
+             value="{{staffInfo.username}}" 
+             bindinput="onUsernameInput" 
+             placeholder="请输入用户名" />
+      <text wx:else class="value">{{staffInfo.username}}</text>
+    </view>
+
+    <!-- 密码 -->
+    <view class="form-row">
+      <text class="label">密码：</text>
+      <input wx:if="{{isEditMode || isAddMode}}" 
+             class="input" 
+             type="password"
+             value="{{staffInfo.password}}" 
+             bindinput="onPasswordInput" 
+             placeholder="请输入密码" />
+      <text wx:else class="value">{{staffInfo.password}}</text>
+    </view>
+
+    <!-- 姓名 -->
+    <view class="form-row">
+      <text class="label">姓名：</text>
+      <input wx:if="{{isEditMode || isAddMode}}" 
+             class="input" 
+             value="{{staffInfo.realName}}" 
+             bindinput="onRealNameInput" 
+             placeholder="请输入姓名" />
+      <text wx:else class="value">{{staffInfo.realName}}</text>
+    </view>
+
+    <!-- 手机号 -->
+    <view class="form-row">
+      <text class="label">手机号：</text>
+      <input wx:if="{{isEditMode || isAddMode}}" 
+             class="input" 
+             type="number"
+             value="{{staffInfo.phone}}" 
+             bindinput="onPhoneInput" 
+             placeholder="请输入手机号" />
+      <text wx:else class="value">{{staffInfo.phone}}</text>
+    </view>
+
+    <!-- 备注 -->
+    <view class="form-row">
+      <text class="label">备注：</text>
+      <textarea wx:if="{{isEditMode || isAddMode}}" 
+                class="textarea" 
+                value="{{staffInfo.remark}}" 
+                bindinput="onRemarkInput" 
+                placeholder="请输入备注" />
+      <text wx:else class="value">{{staffInfo.remark || '无'}}</text>
+    </view>
+
+    <!-- 权限设置 -->
+    <view class="permission-section">
+      <text class="section-title">权限设置</text>
+      
+      <view class="permission-item">
+        <text class="permission-label">禁用入库操作：</text>
+        <switch wx:if="{{isEditMode || isAddMode}}" 
+                checked="{{!staffInfo.canStockIn}}" 
+                bindchange="onStockInChange" />
+        <text wx:else class="permission-value">{{staffInfo.canStockIn ? '否' : '是'}}</text>
+      </view>
+
+      <view class="permission-item">
+        <text class="permission-label">禁用出库操作：</text>
+        <switch wx:if="{{isEditMode || isAddMode}}" 
+                checked="{{!staffInfo.canStockOut}}" 
+                bindchange="onStockOutChange" />
+        <text wx:else class="permission-value">{{staffInfo.canStockOut ? '否' : '是'}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="button-container">
+    <button wx:if="{{!isEditMode && !isAddMode}}" 
+            class="btn btn-primary" 
+            bindtap="enterEditMode">编辑</button>
+    
+    <button wx:if="{{isEditMode || isAddMode}}" 
+            class="btn btn-secondary" 
+            bindtap="cancelEdit">取消</button>
+    
+    <button wx:if="{{isEditMode || isAddMode}}" 
+            class="btn btn-primary" 
+            bindtap="saveStaff">保存</button>
+  </view>
+</view>
