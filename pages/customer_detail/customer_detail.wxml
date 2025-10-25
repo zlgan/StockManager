@@ -41,9 +41,9 @@
       </view>
     </view>
 
-    <!-- 可购买的产品 -->
+    <!-- 可购买产品 -->
     <view class="form-group">
-      <text class="form-label">可购买的产品</text>
+      <text class="form-label">可购买产品</text>
       <view class="form-control-wrapper">
         <view class="form-control picker-display" bindtap="showProductSelector">
           <text wx:if="{{selectedProducts.length > 0}}" class="selected-text">
@@ -101,7 +101,7 @@
   <view class="product-selector-mask" wx:if="{{showProductModal}}" bindtap="hideProductSelector">
     <view class="product-selector-modal" catchtap="stopPropagation">
       <view class="modal-header">
-        <text class="modal-title">选择可购买的产品</text>
+        <text class="modal-title">选择可购买产品</text>
         <text class="modal-close" bindtap="hideProductSelector">×</text>
       </view>
       

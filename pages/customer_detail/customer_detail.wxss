@@ -93,35 +93,37 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  min-height: 80rpx;
-  padding: 20rpx;
+  height: 80rpx;
+  padding: 0 20rpx;
   border: 1rpx solid #ddd;
   border-radius: 8rpx;
   background-color: #fff;
   box-sizing: border-box;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  white-space: normal;
 }
 
 .selected-text {
   color: #333;
   font-size: 28rpx;
   flex: 1;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  white-space: normal;
   margin-right: 10rpx;
+  line-height: 40rpx;
+  word-wrap: break-word;
 }
 
 .placeholder-text {
   color: #999;
   font-size: 28rpx;
+  flex: 1;
+  margin-right: 10rpx;
+  line-height: 40rpx;
+  word-wrap: break-word;
 }
 
 .picker-arrow {
   color: #999;
   font-size: 24rpx;
+  align-self: center;
+  flex-shrink: 0;
 }
 
 /* 已选择产品样式 */
