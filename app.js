@@ -6,8 +6,8 @@ App({
     logs.unshift(Date.now())
     wx.setStorageSync('logs', logs)
 
-    // 检查用户登录状态
-    this.checkLoginStatus()
+    // 初始化用户信息
+    this.initUserInfo()
 
     // 登录
     wx.login({
@@ -18,21 +18,24 @@ App({
   },
 
   /**
-   * 检查登录状态
+   * 初始化用户信息
+   */
+  initUserInfo() {
+    const currentUser = wx.getStorageSync('currentUser')
+    if (currentUser) {
+      // 用户已登录，更新全局用户信息
+      this.globalData.userInfo = currentUser
+    }
+  },
+
+  /**
+   * 检查登录状态（供页面调用）
    */
   checkLoginStatus() {
     const isLoggedIn = wx.getStorageSync('isLoggedIn')
     const currentUser = wx.getStorageSync('currentUser')
     
-    if (!isLoggedIn || !currentUser) {
-      // 用户未登录，跳转到登录页
-      wx.reLaunch({
-        url: '/pages/login/login'
-      })
-    } else {
-      // 用户已登录，更新全局用户信息
-      this.globalData.userInfo = currentUser
-    }
+    return !!(isLoggedIn && currentUser)
   },
 
   /**

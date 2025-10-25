@@ -56,7 +56,33 @@ Page({
   },
   
   onLoad: function() {
+    this.checkLoginStatus();
+  },
+
+  onShow: function() {
+    // 每次显示页面时也检查登录状态
+    this.checkLoginStatus();
+  },
+
+  checkLoginStatus: function() {
+    const isLoggedIn = wx.getStorageSync('isLoggedIn');
+    const currentUser = wx.getStorageSync('currentUser');
+    
+    if (!isLoggedIn || !currentUser) {
+      // 用户未登录，跳转到登录页
+      wx.reLaunch({
+        url: '/pages/login/login'
+      });
+      return;
+    }
+    
+    // 用户已登录，加载页面数据
+    this.loadPageData();
+  },
+
+  loadPageData: function() {
     // 可以在这里加载实际数据
+    console.log('用户已登录，加载首页数据');
   },
   
   navigateToInbound: function() {
