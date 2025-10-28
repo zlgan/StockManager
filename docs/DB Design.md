@@ -6,91 +6,42 @@
 
 ## 数据库集合设计
 
-### 1. users（用户表）
+### 1. shops（店铺）
+**用途：** 存储店铺信息和店铺员工的权限设置
+**字段设计：**
+```javascript
+{
+  "_id": "string",             // 用户唯一标识，云开发自动生成
+  "_openid": "string",         // 微信用户openid，云开发自动生成
+  "shopName": "string",        // 店铺名称
+  "staffPermissions": {        // 员工的权限设置
+    "disableInbound": false,   
+    "disableIoutbound": false
+  },
+  "createdAt": "date",         // 创建时间
+}
+```
 
-**用途：** 存储系统用户（店主）的基本信息和认证信息
+### 2. users（店主、员工表）
+
+**用途：** 存储系统用户（店主和员工）的基本信息和认证信息
 
 **字段设计：**
 ```javascript
 {
   "_id": "string",              // 用户唯一标识，云开发自动生成
+  "shopId": "string",          // 店铺ID
   "_openid": "string",          // 微信用户openid，云开发自动生成
   "username": "string",         // 用户名，用于登录，唯一
   "password": "string",         // 密码，加密存储
-  "shop_name": "string",        // 店铺名称
-  "role": "string",             // 用户角色：admin（管理员）
+  "realName": "string",        // 真实姓名
+  "role": "string",             // 用户角色：owner（店主），staff（员工）
   "status": "string",           // 账户状态：active（激活）、inactive（停用）
-  "created_at": "date",         // 创建时间
-  "updated_at": "date",         // 更新时间
-  "last_login": "date"          // 最后登录时间
+  "createdAt": "date",         // 创建时间
+  "updatedAt": "date",         // 更新时间
+  "lastLogin": "date"          // 最后登录时间
 }
 ```
-
-**示例数据：**
-```javascript
-{
-  "_id": "user_001",
-  "_openid": "oABC123456789",
-  "username": "admin",
-  "password": "encrypted_password_hash",
-  "shop_name": "小明便利店",
-  "role": "admin",
-  "status": "active",
-  "created_at": "2024-01-01T00:00:00.000Z",
-  "updated_at": "2024-01-01T00:00:00.000Z",
-  "last_login": "2024-01-15T08:30:00.000Z"
-}
-```
-
-### 2. staff（员工表）
-
-**用途：** 存储员工信息和权限设置
-
-**字段设计：**
-
-```javascript
-{
-  "_id": "string",              // 员工唯一标识
-  "user_id": "string",          // 关联的用户ID（店主）
-  "staff_id": "string",         // 员工编号，自动生成
-  "username": "string",         // 员工用户名，唯一
-  "password": "string",         // 员工密码，加密存储
-  "real_name": "string",        // 真实姓名
-  "phone": "string",            // 联系电话
-  "remarks": "string",          // 备注信息
-  "permissions": {              // 权限设置对象
-    "disable_inbound": "boolean",   // 禁用入库操作
-    "disable_outbound": "boolean"   // 禁用出库操作
-  },
-  "status": "string",           // 员工状态：active（在职）、inactive（离职）
-  "created_at": "date",         // 创建时间
-  "updated_at": "date",         // 更新时间
-  "created_by": "string"        // 创建人ID
-}
-```
-
-**示例数据：**
-```javascript
-{
-  "_id": "staff_001",
-  "user_id": "user_001",
-  "staff_id": "S001",
-  "username": "zhangsan",
-  "password": "encrypted_password_hash",
-  "real_name": "张三",
-  "phone": "13800138001",
-  "remarks": "仓库管理员",
-  "permissions": {
-    "disable_inbound": false,
-    "disable_outbound": false
-  },
-  "status": "active",
-  "created_at": "2024-01-02T00:00:00.000Z",
-  "updated_at": "2024-01-02T00:00:00.000Z",
-  "created_by": "user_001"
-}
-```
-
 ### 3. categories（产品类别表）
 
 **用途：** 存储产品分类信息
