@@ -12,7 +12,7 @@
 ```javascript
 {
   "_id": "string",             // 用户唯一标识，云开发自动生成
-  "_openid": "string",         // 微信用户openid，云开发自动生成
+  "openId": "string",         // 微信用户openid，云开发自动生成
   "shopName": "string",        // 店铺名称
   "staffPermissions": {        // 员工的权限设置
     "disableInbound": false,   
@@ -31,7 +31,7 @@
 {
   "_id": "string",              // 用户唯一标识，云开发自动生成
   "shopId": "string",          // 店铺ID
-  "_openid": "string",          // 微信用户openid，云开发自动生成
+  "openId": "string",          // 微信用户openid，云开发自动生成
   "username": "string",         // 用户名，用于登录，唯一
   "password": "string",         // 密码，加密存储
   "realName": "string",        // 真实姓名
@@ -50,32 +50,11 @@
 ```javascript
 {
   "_id": "string",              // 类别唯一标识
-  "user_id": "string",          // 关联的用户ID（店主）
+  "shopId": "string",          // 店铺ID
   "name": "string",             // 类别名称
-  "description": "string",      // 类别描述
-  "sort_order": "number",       // 排序顺序
   "status": "string",           // 状态：active（启用）、inactive（停用）
-  "created_at": "date",         // 创建时间
-  "updated_at": "date",         // 更新时间
-  "created_by": "string"        // 创建人ID
 }
 ```
-
-**示例数据：**
-```javascript
-{
-  "_id": "category_001",
-  "user_id": "user_001",
-  "name": "饮料",
-  "description": "各类饮品",
-  "sort_order": 1,
-  "status": "active",
-  "created_at": "2024-01-01T00:00:00.000Z",
-  "updated_at": "2024-01-01T00:00:00.000Z",
-  "created_by": "user_001"
-}
-```
-
 ### 4. products（产品表）
 
 **用途：** 存储产品基本信息和库存数据
