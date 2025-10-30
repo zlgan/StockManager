@@ -112,44 +112,21 @@
 ```javascript
 {
   "_id": "string",              // 客户唯一标识
-  "user_id": "string",          // 关联的用户ID（店主）
-  "name": "string",             // 客户名称
-  "code": "string",             // 客户编码
-  "address": "string",          // 地址
-  "contact_person": "string",   // 联系人
-  "contact_phone": "string",    // 联系电话
-  "available_products": ["string"], // 可选产品ID数组
-  "service_period": "number",   // 售后周期（月）
-  "service_months": "number",   // 服务月数（累计）
+  "shopId": "string",          // 店铺ID
+  "name": "string",            // 客户名称
+  "code": "string",            // 客户编码
+  "address": "string",         // 地址
+  "contactPerson": "string",   // 联系人
+  "phone": "string",           // 联系电话
+  "availableProducts": [],     // 可选产品对象数组，每个元素包含产品的Id和name
+  "serviceMonths": "number",   // 服务月数（累计）
   "remarks": "string",          // 备注信息
   "status": "string",           // 状态：active（合作中）、inactive（停止合作）
-  "created_at": "date",         // 创建时间
-  "updated_at": "date",         // 更新时间
-  "created_by": "string"        // 创建人ID
+  "createdAt": "date",         // 创建时间
+  "updatedAt": "date",         // 更新时间
+  "createdBy": "string"        // 创建人ID
 }
 ```
-
-**示例数据：**
-```javascript
-{
-  "_id": "customer_001",
-  "user_id": "user_001",
-  "name": "张三小卖部",
-  "code": "CUS001",
-  "address": "上海市浦东新区xxx路xxx号",
-  "contact_person": "张三",
-  "contact_phone": "13700137001",
-  "available_products": ["product_001", "product_002"],
-  "service_period": 12,
-  "service_months": 6,
-  "remarks": "长期合作客户",
-  "status": "active",
-  "created_at": "2024-01-01T00:00:00.000Z",
-  "updated_at": "2024-01-10T00:00:00.000Z",
-  "created_by": "user_001"
-}
-```
-
 ### 7. bill_types（单据类型表）
 
 **用途：** 存储入库和出库的业务类型
