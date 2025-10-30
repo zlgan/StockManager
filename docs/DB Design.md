@@ -127,57 +127,19 @@
   "createdBy": "string"        // 创建人ID
 }
 ```
-### 7. bill_types（单据类型表）
+### 7. config（配置信息）
 
-**用途：** 存储入库和出库的业务类型
+**用途：** 业务参数配置，包括出入库类型、
 
 **字段设计：**
 ```javascript
 {
-  "_id": "string",              // 类型唯一标识
-  "user_id": "string",          // 关联的用户ID（店主）
-  "name": "string",             // 类型名称
-  "type": "string",             // 单据类型：inbound（入库）、outbound（出库）
-  "description": "string",      // 类型描述
-  "is_default": "boolean",      // 是否默认类型
-  "sort_order": "number",       // 排序顺序
-  "status": "string",           // 状态：active（启用）、inactive（停用）
-  "created_at": "date",         // 创建时间
-  "updated_at": "date",         // 更新时间
-  "created_by": "string"        // 创建人ID
+  "_id": "string",             // 类型唯一标识
+  "shopId": "string",          // 店铺ID
+  "inboundType": [string],     // 入库类型
+  "outboundType": [string],    // 出库类型
+  "productUnit":[string],      // 产品单位（个、箱、瓶等）
 }
-```
-
-**示例数据：**
-```javascript
-[
-  {
-    "_id": "bill_type_001",
-    "user_id": "user_001",
-    "name": "采购入库",
-    "type": "inbound",
-    "description": "从供应商采购商品入库",
-    "is_default": true,
-    "sort_order": 1,
-    "status": "active",
-    "created_at": "2024-01-01T00:00:00.000Z",
-    "updated_at": "2024-01-01T00:00:00.000Z",
-    "created_by": "user_001"
-  },
-  {
-    "_id": "bill_type_002",
-    "user_id": "user_001",
-    "name": "销售出库",
-    "type": "outbound",
-    "description": "销售商品出库",
-    "is_default": true,
-    "sort_order": 1,
-    "status": "active",
-    "created_at": "2024-01-01T00:00:00.000Z",
-    "updated_at": "2024-01-01T00:00:00.000Z",
-    "created_by": "user_001"
-  }
-]
 ```
 
 ### 8. inbound_bills（入库单表）
