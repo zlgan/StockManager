@@ -83,31 +83,6 @@
   "createdBy": "string"        // 创建人ID
 }
 ```
-
-**示例数据：**
-```javascript
-{
-  "_id": "product_001",
-  "user_id": "user_001",
-  "name": "可口可乐",
-  "model": "COCA001",
-  "category_id": "category_001",
-  "unit": "瓶",
-  "specification": "330ml",
-  "supplier_id": "supplier_001",
-  "image_url": "cloud://images/coca_cola.jpg",
-  "inbound_price": 2.5,
-  "outbound_price": 3.0,
-  "stock_quantity": 100,
-  "warning_stock": 20,
-  "is_enabled": true,
-  "remarks": "经典口味",
-  "created_at": "2024-01-01T00:00:00.000Z",
-  "updated_at": "2024-01-15T10:30:00.000Z",
-  "created_by": "user_001"
-}
-```
-
 ### 5. suppliers（供应商表）
 
 **用途：** 存储供应商信息
@@ -116,38 +91,19 @@
 ```javascript
 {
   "_id": "string",              // 供应商唯一标识
-  "user_id": "string",          // 关联的用户ID（店主）
+  "shopId": "string",          // 店铺ID
   "name": "string",             // 供应商名称
   "code": "string",             // 供应商编码
   "address": "string",          // 地址
-  "contact_person": "string",   // 联系人
-  "contact_phone": "string",    // 联系电话
+  "contactPerson": "string",   // 联系人
+  "phone": "string",           // 联系电话
   "remarks": "string",          // 备注信息
   "status": "string",           // 状态：active（合作中）、inactive（停止合作）
-  "created_at": "date",         // 创建时间
-  "updated_at": "date",         // 更新时间
-  "created_by": "string"        // 创建人ID
+  "createdAt": "date",         // 创建时间
+  "updatedAt": "date",         // 更新时间
+  "createdBy": "string"        // 创建人ID
 }
 ```
-
-**示例数据：**
-```javascript
-{
-  "_id": "supplier_001",
-  "user_id": "user_001",
-  "name": "可口可乐公司",
-  "code": "SUP001",
-  "address": "北京市朝阳区xxx路xxx号",
-  "contact_person": "李经理",
-  "contact_phone": "13900139001",
-  "remarks": "主要饮料供应商",
-  "status": "active",
-  "created_at": "2024-01-01T00:00:00.000Z",
-  "updated_at": "2024-01-01T00:00:00.000Z",
-  "created_by": "user_001"
-}
-```
-
 ### 6. customers（客户表）
 
 **用途：** 存储客户信息
