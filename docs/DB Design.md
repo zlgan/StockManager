@@ -63,23 +63,24 @@
 ```javascript
 {
   "_id": "string",              // 产品唯一标识
-  "user_id": "string",          // 关联的用户ID（店主）
+  "shopId": "string",          // 店铺ID
   "name": "string",             // 产品名称
-  "model": "string",            // 产品型号/编码
-  "category_id": "string",      // 产品类别ID
+  "code": "string",            // 产品型号/编码
+  "categoryId": "string",      // 产品类别ID
+  "categoryName": "string",      // 产品类别名称
   "unit": "string",             // 产品单位（个、箱、瓶等）
   "specification": "string",    // 规格名称
-  "supplier_id": "string",      // 默认供应商ID
-  "image_url": "string",        // 产品图片URL
-  "inbound_price": "number",    // 入库价格
-  "outbound_price": "number",   // 出库价格
-  "stock_quantity": "number",   // 当前库存数量
-  "warning_stock": "number",    // 库存预警数量
-  "is_enabled": "boolean",      // 是否启用
+  "supplierId": "string",      // 供应商ID
+  "supplierName": "string",      // 供应商名称
+  "imageUrl": "string",        // 产品图片URL
+  "inboundPrice": "number",    // 入库单价
+  "outboundPrice": "number",   // 出库单价
+  "warningStock": "number",    // 库存预警数量
+  "isEnabled": "boolean",      // 是否启用
   "remarks": "string",          // 备注信息
-  "created_at": "date",         // 创建时间
-  "updated_at": "date",         // 更新时间   
-  "created_by": "string"        // 创建人ID
+  "createdAt": "date",         // 创建时间
+  "updatedAt": "date",         // 更新时间   
+  "createdBy": "string"        // 创建人ID
 }
 ```
 
