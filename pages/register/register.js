@@ -1,4 +1,5 @@
 // pages/register/register.js
+ 
 Page({
 
   /**
@@ -74,7 +75,7 @@ Page({
   /**
    * 注册处理
    */
-  onRegister() {
+  async onRegister() {
     const { name, username, password, confirmPassword } = this.data;
 
     // 验证输入
@@ -110,45 +111,26 @@ Page({
       return;
     }
 
-    // 检查用户名是否已存在
-    const existingUsers = wx.getStorageSync('users') || [];
-    const userExists = existingUsers.find(user => user.username === username);
-    
-    if (userExists) {
-      wx.showToast({
-        title: '用户名已存在',
-        icon: 'none'
-      });
-      return;
+    try {
+      wx.showLoading({ title: '处理中', mask: true })
+      const res = await wx.cloud.callFunction({ name: 'registerUser', data: { shopName: name.trim(), username: username.trim(), password: password.trim() } })
+      const currentUser = res && res.result && res.result.currentUser
+      if (!currentUser) {
+        wx.hideLoading()
+        wx.showToast({ title: '注册失败，请重试', icon: 'none' })
+        return
+      }
+      wx.setStorageSync('currentUser', currentUser)
+      wx.setStorageSync('isLoggedIn', true)
+      wx.hideLoading()
+      wx.showToast({ title: '注册成功', icon: 'success' })
+      setTimeout(() => {
+        wx.reLaunch({ url: '/pages/profile/profile' })
+      }, 800)
+    } catch (err) {
+      wx.hideLoading()
+      wx.showToast({ title: '注册失败，请重试', icon: 'none' })
     }
-
-    // 保存用户信息
-    const newUser = {
-      id: Date.now().toString(),
-      name: name.trim(),
-      username: username.trim(),
-      password: password.trim(),
-      createTime: new Date().toISOString()
-    };
-
-    existingUsers.push(newUser);
-    wx.setStorageSync('users', existingUsers);
-
-    // 自动登录
-    wx.setStorageSync('currentUser', newUser);
-    wx.setStorageSync('isLoggedIn', true);
-
-    wx.showToast({
-      title: '注册成功',
-      icon: 'success'
-    });
-
-    // 跳转到首页
-    setTimeout(() => {
-      wx.reLaunch({
-        url: '/pages/index/index'
-      });
-    }, 1500);
   },
 
   /**

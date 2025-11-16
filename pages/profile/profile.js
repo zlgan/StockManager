@@ -42,7 +42,7 @@ Page({
     if (currentUser) {
       this.setData({
         userInfo: {
-          name: currentUser.name,
+          name: currentUser.name || currentUser.shopName,
           username: currentUser.username
         }
       });

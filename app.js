@@ -1,6 +1,13 @@
 // app.js
 App({
   onLaunch() {
+    if (wx.cloud) {
+      wx.cloud.init({
+        traceUser: true,
+        env: "cloud1-1gb6hxc2a529122a"
+      })
+      wx.cloud.callFunction({ name: 'initDb' }).catch(() => {})
+    }
     // 展示本地存储能力
     const logs = wx.getStorageSync('logs') || []
     logs.unshift(Date.now())
