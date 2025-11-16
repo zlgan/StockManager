@@ -1,56 +1,16 @@
-// products.js
 Page({
   data: {
     categoryIndex: -1,
-    categoryOptions: ['手机配件', '数码配件', '电脑周边', '智能设备'],
+    categoryOptions: [],
     productName: '',
     productCode: '',
-    products: [
-      {
-        id: 1,
-        name: '无线充电器',
-        category: '手机配件',
-        code: 'SP20230001',
-        stock: 128,
-        price: '59.00',
-        image: '../../images/product-placeholder.png'
-      },
-      {
-        id: 2,
-        name: 'Type-C数据线',
-        category: '手机配件',
-        code: 'SP20230002',
-        stock: 256,
-        price: '29.00',
-        image: '../../images/product-placeholder.png'
-      },
-      {
-        id: 3,
-        name: '蓝牙耳机',
-        category: '数码配件',
-        code: 'SP20230003',
-        stock: 64,
-        price: '129.00',
-        image: '../../images/product-placeholder.png'
-      },
-      {
-        id: 4,
-        name: '手机壳',
-        category: '手机配件',
-        code: 'SP20230004',
-        stock: 320,
-        price: '19.00',
-        image: '../../images/product-placeholder.png'
-      }
-    ],
-    originalProducts: [] // 用于存储原始产品列表，便于搜索过滤
+    products: [],
+    originalProducts: []
   },
-  
+
   onLoad: function() {
-    // 保存原始产品列表
-    this.setData({
-      originalProducts: this.data.products
-    });
+    this.loadCategories()
+    this.loadProducts()
   },
   
   navigateBack: function() {
@@ -95,37 +55,20 @@ Page({
   },
   
   searchProducts: function() {
-    const { categoryIndex, productName, productCode, originalProducts, categoryOptions } = this.data;
-    
-    // 过滤产品
-    let filteredProducts = [...originalProducts];
-    
-    if (categoryIndex !== -1) {
-      const category = categoryOptions[categoryIndex];
-      filteredProducts = filteredProducts.filter(product => product.category === category);
-    }
-    
-    if (productName) {
-      filteredProducts = filteredProducts.filter(product => 
-        product.name.toLowerCase().includes(productName.toLowerCase())
-      );
-    }
-    
-    if (productCode) {
-      filteredProducts = filteredProducts.filter(product => 
-        product.code.toLowerCase().includes(productCode.toLowerCase())
-      );
-    }
-    
-    this.setData({
-      products: filteredProducts
-    });
-    
-    // 显示搜索结果提示
-    wx.showToast({
-      title: `找到 ${filteredProducts.length} 个产品`,
-      icon: 'none'
-    });
+    const { categoryIndex, productName, productCode, categoryOptions } = this.data;
+    const user = wx.getStorageSync('currentUser') || {}
+    const shopId = user.shopId || ''
+    const db = wx.cloud.database()
+    const where = { shopId, isEnabled: true }
+    if (categoryIndex !== -1 && categoryOptions[categoryIndex]) where.categoryName = categoryOptions[categoryIndex]
+    db.collection('products').where(where).get().then(res => {
+      let list = res.data || []
+      if (productName) list = list.filter(p => (p.name||'').toLowerCase().includes(productName.toLowerCase()))
+      if (productCode) list = list.filter(p => (p.code||'').toLowerCase().includes(productCode.toLowerCase()))
+      const mapped = list.map(p => ({ id: p._id, name: p.name, category: p.categoryName, code: p.code, stock: p.stock||0, price: p.outboundPrice || 0, image: p.imageUrl || '../../images/product-placeholder.png' }))
+      this.setData({ products: mapped })
+      wx.showToast({ title: `找到 ${mapped.length} 个产品`, icon: 'none' })
+    })
   },
   
   exportToExcel: function() {
@@ -146,5 +89,25 @@ Page({
     wx.navigateTo({
       url: '/pages/product_detail/product_detail?mode=add'
     });
+  },
+
+  loadCategories: function(){
+    const user = wx.getStorageSync('currentUser') || {}
+    const shopId = user.shopId || ''
+    const db = wx.cloud.database()
+    db.collection('categories').where({ shopId, status: 'active' }).get().then(res=>{
+      const names = (res.data||[]).map(i=>i.name)
+      this.setData({ categoryOptions: names })
+    })
+  },
+
+  loadProducts: function(){
+    const user = wx.getStorageSync('currentUser') || {}
+    const shopId = user.shopId || ''
+    const db = wx.cloud.database()
+    db.collection('products').where({ shopId, isEnabled: true }).get().then(res=>{
+      const mapped = (res.data||[]).map(p=>({ id: p._id, name: p.name, category: p.categoryName, code: p.code, stock: p.stock||0, price: p.outboundPrice || 0, image: p.imageUrl || '../../images/product-placeholder.png' }))
+      this.setData({ products: mapped, originalProducts: mapped })
+    })
   }
 });

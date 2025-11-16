@@ -2,7 +2,6 @@
 Page({
   data: {
     categories: [],
-    originalCategories: [],
     currentCategory: {
       id: '',
       name: ''
@@ -11,24 +10,18 @@ Page({
   },
 
   onLoad: function() {
-    // 加载类别数据
     this.loadCategories();
   },
 
   // 加载类别数据
   loadCategories: function() {
-    // 模拟数据，实际项目中应从服务器获取
-    const categories = [
-      { id: '1', name: '电子产品' },
-      { id: '2', name: '服装' },
-      { id: '3', name: '食品' },
-      { id: '4', name: '家居' }
-    ];
-    
-    this.setData({
-      categories: categories,
-      originalCategories: JSON.parse(JSON.stringify(categories))
-    });
+    const user = wx.getStorageSync('currentUser') || {}
+    const shopId = user.shopId || ''
+    const db = wx.cloud.database()
+    db.collection('categories').where({ shopId, status: 'active' }).get().then(res => {
+      const list = (res.data || []).map(i => ({ id: i._id, name: i.name }))
+      this.setData({ categories: list })
+    })
   },
 
   // 输入类别名称
@@ -49,42 +42,15 @@ Page({
       });
       return;
     }
-    
-    let newCategories = [...categories];
-    
-    if (editMode) {
-      // 更新现有类别
-      const index = newCategories.findIndex(item => item.id === currentCategory.id);
-      if (index !== -1) {
-        newCategories[index] = {...currentCategory};
-        
-        wx.showToast({
-          title: '类别更新成功',
-          icon: 'success'
-        });
-      }
-    } else {
-      // 添加新类别
-      const newId = Date.now().toString();
-      newCategories.push({
-        id: newId,
-        name: currentCategory.name
-      });
-      
-      wx.showToast({
-        title: '类别添加成功',
-        icon: 'success'
-      });
-    }
-    
-    this.setData({
-      categories: newCategories,
-      currentCategory: {
-        id: '',
-        name: ''
-      },
-      editMode: false
-    });
+    const user = wx.getStorageSync('currentUser') || {}
+    const shopId = user.shopId || ''
+    const action = editMode ? 'update' : 'add'
+    const payload = editMode ? { id: currentCategory.id, name: currentCategory.name, shopId } : { name: currentCategory.name, shopId }
+    wx.cloud.callFunction({ name: 'categoryService', data: { action, ...payload } }).then(() => {
+      wx.showToast({ title: editMode ? '类别更新成功' : '类别添加成功', icon: 'success' })
+      this.setData({ currentCategory: { id: '', name: '' }, editMode: false })
+      this.loadCategories()
+    })
   },
 
   // 编辑类别
@@ -103,22 +69,17 @@ Page({
   // 删除类别
   deleteCategory: function(e) {
     const id = e.currentTarget.dataset.id;
-    
     wx.showModal({
       title: '确认删除',
       content: '确定要删除此类别吗？',
       success: res => {
         if (res.confirm) {
-          const newCategories = this.data.categories.filter(item => item.id !== id);
-          
-          this.setData({
-            categories: newCategories
-          });
-          
-          wx.showToast({
-            title: '删除成功',
-            icon: 'success'
-          });
+          const user = wx.getStorageSync('currentUser') || {}
+          const shopId = user.shopId || ''
+          wx.cloud.callFunction({ name: 'categoryService', data: { action: 'delete', id, shopId } }).then(() => {
+            wx.showToast({ title: '删除成功', icon: 'success' })
+            this.loadCategories()
+          })
         }
       }
     });
