@@ -69,9 +69,26 @@ Page({
       sizeType: ['compressed'],
       sourceType: ['album', 'camera'],
       success: (res) => {
-        this.setData({
-          tempImagePath: res.tempFilePaths[0]
-        });
+        const filePath = res.tempFilePaths[0]
+        wx.showLoading({ title: '上传中' })
+        const user = wx.getStorageSync('currentUser') || {}
+        const shopId = user.shopId || ''
+        const ext = (filePath.split('.').pop() || 'jpg').toLowerCase()
+        const temp = (res.tempFiles && res.tempFiles[0]) || {}
+        const rawName = temp.name || ''
+        const safeName = (rawName || `${(this.data.product.name||'image')}_${Date.now()}.${ext}`).replace(/[^a-zA-Z0-9_.-]/g,'_')
+        const cloudPath = `products/${shopId}_${safeName}`
+        wx.cloud.uploadFile({ cloudPath, filePath }).then(r => {
+          const p = this.data.product
+          p.image = r.fileID
+          p.imageName = rawName || safeName
+          this.setData({ tempImagePath: r.fileID, product: p })
+          wx.hideLoading()
+          wx.showToast({ title: '上传成功', icon: 'success' })
+        }).catch(() => {
+          wx.hideLoading()
+          wx.showToast({ title: '上传失败', icon: 'none' })
+        })
       }
     });
   },
@@ -132,9 +149,12 @@ Page({
     db.collection('suppliers').where({ shopId, status: 'active' }).get().then(res=>{
       this.setData({ supplierOptions: (res.data||[]).map(i=>i.name) })
     })
-    db.collection('config').where({ shopId }).get().then(res=>{
-      const cfg=(res.data||[])[0]
-      this.setData({ unitOptions: (cfg&&cfg.productUnit)||['个','件','套','盒','箱'] })
+    db.collection('config').get().then(res=>{
+      const list = (res.data||[])
+      let units = []
+      list.forEach(cfg=>{ if (Array.isArray(cfg.productUnit)) units = units.concat(cfg.productUnit) })
+      const uniq = Array.from(new Set(units))
+      this.setData({ unitOptions: (uniq.length? uniq : ['个','件','套','盒','箱']) })
     })
   },
   
@@ -164,7 +184,8 @@ Page({
       warningStock: Number(formData.minStock||0),
       isEnabled: this.data.product.enabled,
       remarks: formData.remark,
-      imageUrl: this.data.tempImagePath
+      imageUrl: this.data.tempImagePath,
+      imageOriginalName: this.data.product.imageName || ''
     };
     
     wx.showLoading({ title: '保存中...' });

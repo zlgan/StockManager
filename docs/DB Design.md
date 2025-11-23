@@ -135,7 +135,6 @@
 ```javascript
 {
   "_id": "string",             // 类型唯一标识
-  "shopId": "string",          // 店铺ID
   "inboundType": [string],     // 入库类型
   "outboundType": [string],    // 出库类型
   "productUnit":[string],      // 产品单位（个、箱、瓶等）
