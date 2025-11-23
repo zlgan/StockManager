@@ -30,8 +30,10 @@ Page({
         isAddMode: true,
         isEditMode: false
       });
+      this.loadShopPermissions()
     } else if (options.id) {
       this.loadStaffDetail(options.id);
+      this.loadShopPermissions()
     }
   },
 
@@ -39,38 +41,18 @@ Page({
    * 加载员工详情
    */
   loadStaffDetail(staffId) {
-    // 模拟从服务器获取员工详情，实际项目中应该调用API
-    const mockStaffData = {
-      1: {
-        id: 1,
-        username: '张飞虎123',
-        password: '123456',
-        realName: '张飞',
-        phone: '13800138001',
-        remark: '',
-        canStockIn: true,
-        canStockOut: true
-      },
-      2: {
-        id: 2,
-        username: 'admin',
-        password: '123456',
-        realName: '管理员',
-        phone: '13800138002',
-        remark: '系统管理员',
-        canStockIn: true,
-        canStockOut: true
-      }
-    };
-
-    const staffInfo = mockStaffData[staffId] || {};
-    const currentTime = new Date().toLocaleString('zh-CN');
-    
-    this.setData({
-      staffInfo: staffInfo,
-      originalStaffInfo: JSON.parse(JSON.stringify(staffInfo)),
-      updateTime: currentTime
-    });
+    const db = wx.cloud.database()
+    db.collection('users').doc(staffId).get().then(res=>{
+      const u = res.data || {}
+      const currentTime = new Date().toLocaleString('zh-CN')
+      this.setData({
+        staffInfo: { id: u._id, username: u.username||'', password: '', realName: u.realName||'', phone: u.phone||'', remark: u.remarks||'', canStockIn: true, canStockOut: true },
+        originalStaffInfo: JSON.parse(JSON.stringify(this.data.staffInfo)),
+        updateTime: currentTime,
+        isEditMode: false,
+        isAddMode: false
+      })
+    })
   },
 
   /**
@@ -146,31 +128,31 @@ Page({
       return;
     }
 
-    // 模拟保存操作
-    wx.showLoading({
-      title: isAddMode ? '添加中...' : '保存中...'
-    });
-
-    setTimeout(() => {
-      wx.hideLoading();
-      wx.showToast({
-        title: isAddMode ? '添加成功' : '保存成功',
-        icon: 'success'
-      });
-
-      if (isAddMode) {
-        // 添加模式下返回列表页
-        setTimeout(() => {
-          wx.navigateBack();
-        }, 1500);
-      } else {
-        // 编辑模式下退出编辑状态
-        this.setData({
-          isEditMode: false,
-          updateTime: new Date().toLocaleString('zh-CN')
-        });
-      }
-    }, 1000);
+    wx.showLoading({ title: isAddMode ? '添加中...' : '保存中...' })
+    const user = wx.getStorageSync('currentUser') || {}
+    const shopId = user.shopId || ''
+    if (isAddMode) {
+      const payload = { action: 'add', shopId, data: { username: staffInfo.username.trim(), password: staffInfo.password.trim(), realName: staffInfo.realName.trim(), phone: staffInfo.phone.trim(), remark: staffInfo.remark||'' } }
+      wx.cloud.callFunction({ name: 'staffService', data: payload }).then(()=>{
+        wx.hideLoading()
+        wx.showToast({ title: '添加成功', icon: 'success' })
+        setTimeout(()=>{ wx.navigateBack() }, 800)
+      }).catch(err=>{
+        wx.hideLoading()
+        const msg=(err&&err.errMsg)||''
+        wx.showToast({ title: msg.includes('USERNAME_EXISTS')?'用户名已存在':'保存失败', icon:'none' })
+      })
+    } else {
+      const payload = { action: 'update', shopId, id: staffInfo.id, data: { realName: staffInfo.realName.trim(), phone: staffInfo.phone.trim(), remark: staffInfo.remark||'', password: staffInfo.password.trim() } }
+      wx.cloud.callFunction({ name: 'staffService', data: payload }).then(()=>{
+        wx.hideLoading()
+        wx.showToast({ title: '保存成功', icon: 'success' })
+        this.setData({ isEditMode: false, updateTime: new Date().toLocaleString('zh-CN') })
+      }).catch(()=>{
+        wx.hideLoading()
+        wx.showToast({ title: '保存失败', icon:'none' })
+      })
+    }
   },
 
   /**
@@ -210,15 +192,28 @@ Page({
    * 权限开关处理
    */
   onStockInChange(e) {
-    this.setData({
-      'staffInfo.canStockIn': !e.detail.value
-    });
+    const user = wx.getStorageSync('currentUser') || {}
+    const shopId = user.shopId || ''
+    const disableInbound = e.detail.value
+    wx.cloud.callFunction({ name: 'shopService', data: { action: 'updateStaffPermissions', shopId, disableInbound, disableOutbound: !this.data.staffInfo ? false : !this.data.staffInfo.canStockOut } })
+    this.setData({ 'staffInfo.canStockIn': !disableInbound })
   },
 
   onStockOutChange(e) {
-    this.setData({
-      'staffInfo.canStockOut': !e.detail.value
-    });
+    const user = wx.getStorageSync('currentUser') || {}
+    const shopId = user.shopId || ''
+    const disableOutbound = e.detail.value
+    wx.cloud.callFunction({ name: 'shopService', data: { action: 'updateStaffPermissions', shopId, disableOutbound, disableInbound: !this.data.staffInfo ? false : !this.data.staffInfo.canStockIn } })
+    this.setData({ 'staffInfo.canStockOut': !disableOutbound })
+  },
+
+  loadShopPermissions(){
+    const user = wx.getStorageSync('currentUser') || {}
+    const shopId = user.shopId || ''
+    wx.cloud.callFunction({ name: 'shopService', data: { action: 'getStaffPermissions', shopId } }).then(res=>{
+      const perms = (res && res.result && res.result.staffPermissions) || { disableInbound:false, disableOutbound:false }
+      this.setData({ 'staffInfo.canStockIn': !perms.disableInbound, 'staffInfo.canStockOut': !perms.disableOutbound })
+    })
   },
 
   /**

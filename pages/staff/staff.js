@@ -28,32 +28,13 @@ Page({
    * 加载员工列表
    */
   loadStaffList() {
-    // 模拟员工数据，实际项目中应该从服务器获取
-    const staffList = [
-      {
-        id: 1,
-        username: '张飞虎123',
-        realName: '张飞',
-        phone: '13800138001',
-        password: '123456',
-        canStockIn: true,
-        canStockOut: true
-      },
-      {
-        id: 2,
-        username: 'admin',
-        realName: '管理员',
-        phone: '13800138002',
-        password: '123456',
-        canStockIn: true,
-        canStockOut: true
-      }
-    ];
-
-    this.setData({
-      staffList: staffList,
-      filteredStaffList: staffList
-    });
+    const user = wx.getStorageSync('currentUser') || {}
+    const shopId = user.shopId || ''
+    const db = wx.cloud.database()
+    db.collection('users').where({ shopId, role: 'staff', status: 'active' }).get().then(res=>{
+      const list = (res.data||[]).map(u=>({ id: u._id, username: u.username, realName: u.realName||'', phone: u.phone||'' }))
+      this.setData({ staffList: list, filteredStaffList: list })
+    })
   },
 
   /**

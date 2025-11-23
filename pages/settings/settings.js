@@ -26,23 +26,35 @@ Page({
    * 加载设置数据
    */
   loadSettings() {
-    // 从本地存储加载设置
-    const settings = wx.getStorageSync('systemSettings') || this.data.settings;
-    this.setData({
-      settings: settings
-    });
+    const user = wx.getStorageSync('currentUser') || {}
+    const shopId = user.shopId || ''
+    wx.cloud.callFunction({ name: 'shopService', data: { action: 'getSettings', shopId } }).then(res=>{
+      const perms = (res && res.result && res.result.staffPermissions) || {}
+      const merged = {
+        disableStockPoint: !!perms.disableStockPoint,
+        hideInboundPrice: !!perms.hideInboundPrice,
+        ownRecordsOnly: !!perms.ownRecordsOnly,
+        adminApproval: !!perms.adminApproval,
+        hideInventory: !!perms.hideInventory,
+        disableProductEdit: !!perms.disableProductEdit,
+        disableInbound: !!perms.disableInbound,
+        disableOutbound: !!perms.disableOutbound
+      }
+      this.setData({ settings: { ...this.data.settings, ...merged } })
+    })
   },
 
   /**
    * 保存设置到本地存储
    */
   saveSettings() {
-    wx.setStorageSync('systemSettings', this.data.settings);
-    wx.showToast({
-      title: '设置已保存',
-      icon: 'success',
-      duration: 1500
-    });
+    const user = wx.getStorageSync('currentUser') || {}
+    const shopId = user.shopId || ''
+    wx.cloud.callFunction({ name: 'shopService', data: { action: 'updateSettings', shopId, settings: this.data.settings } }).then(()=>{
+      wx.showToast({ title: '设置已保存', icon: 'success', duration: 1500 })
+    }).catch(()=>{
+      wx.showToast({ title: '保存失败', icon: 'none' })
+    })
   },
 
   /**
