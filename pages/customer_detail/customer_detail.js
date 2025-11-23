@@ -15,15 +15,7 @@ Page({
       serviceMonths: null,
       remark: ''
     },
-    // 产品列表（模拟数据）
-    productList: [
-      { id: 1, name: '无线充电器', price: 99.00, selected: false },
-      { id: 2, name: 'Type-C数据线', price: 29.00, selected: false },
-      { id: 3, name: '蓝牙耳机', price: 199.00, selected: false },
-      { id: 4, name: '手机壳', price: 39.00, selected: false },
-      { id: 5, name: '移动电源', price: 129.00, selected: false },
-      { id: 6, name: '车载充电器', price: 59.00, selected: false }
-    ],
+    productList: [],
     selectedProducts: [], // 已选择的产品
     showProductModal: false, // 是否显示产品选择弹窗
     // 售后周期选项（1-120个月）
@@ -37,6 +29,7 @@ Page({
   onLoad(options) {
     // 初始化售后周期选项
     this.initServiceMonthOptions();
+    this.loadAvailableProducts()
     
     // 获取页面参数
     if (options.mode) {
@@ -47,9 +40,9 @@ Page({
     
     if (options.id && options.mode === 'edit') {
       this.setData({
-        customerId: parseInt(options.id)
+        customerId: options.id
       });
-      this.loadCustomerInfo(parseInt(options.id));
+      this.loadCustomerInfo(options.id);
     }
     
     // 设置导航栏标题
@@ -78,54 +71,25 @@ Page({
    * 加载客户信息
    */
   loadCustomerInfo(id) {
-    // 模拟从服务器获取客户信息
-    const mockCustomers = [
-      {
-        id: 1,
-        name: '北京科技有限公司',
-        code: 'CUS001',
-        address: '北京市朝阳区科技园区168号',
-        contactPerson: '张总',
-        phone: '13800138001',
-        serviceMonths: 12,
-        products: [
-          { id: 1, name: '无线充电器', price: 99.00 },
-          { id: 2, name: 'Type-C数据线', price: 29.00 }
-        ],
-        remark: '重要客户，长期合作伙伴'
-      },
-      {
-        id: 2,
-        name: '上海电子商务有限公司',
-        code: 'CUS002',
-        address: '上海市浦东新区金融中心大厦A座',
-        contactPerson: '李经理',
-        phone: '13900139002',
-        serviceMonths: 24,
-        products: [
-          { id: 3, name: '蓝牙耳机', price: 199.00 },
-          { id: 4, name: '手机壳', price: 39.00 }
-        ],
-        remark: '电商平台客户'
-      }
-    ];
-    
-    const customer = mockCustomers.find(c => c.id === id);
-    if (customer) {
+    const db = wx.cloud.database()
+    db.collection('customers').doc(id).get().then(res=>{
+      const c = res.data
+      if(!c) return
+      const selected = (c.availableProducts||[]).map(p=>({ id: p.productId||p.id||p._id, name: p.name }))
       this.setData({
         customerInfo: {
-          name: customer.name,
-          code: customer.code,
-          address: customer.address,
-          contactPerson: customer.contactPerson,
-          phone: customer.phone,
-          serviceMonths: customer.serviceMonths,
-          remark: customer.remark
+          name: c.name||'',
+          code: c.code||'',
+          address: c.address||'',
+          contactPerson: c.contactPerson||'',
+          phone: c.phone||'',
+          serviceMonths: c.serviceMonths||null,
+          remark: c.remarks||''
         },
-        selectedProducts: customer.products || [],
-        selectedServiceMonthIndex: customer.serviceMonths ? customer.serviceMonths - 1 : 0
-      });
-    }
+        selectedProducts: selected,
+        selectedServiceMonthIndex: c.serviceMonths ? c.serviceMonths - 1 : 0
+      })
+    })
   },
 
   /**
@@ -189,10 +153,7 @@ Page({
     // 根据已选择的产品更新产品列表的选中状态
     const productList = this.data.productList.map(product => {
       const isSelected = this.data.selectedProducts.some(selected => selected.id === product.id);
-      return {
-        ...product,
-        selected: isSelected
-      };
+      return { ...product, selected: isSelected };
     });
     
     this.setData({
@@ -241,7 +202,7 @@ Page({
    * 确认产品选择
    */
   confirmProductSelection() {
-    const selectedProducts = this.data.productList.filter(product => product.selected);
+    const selectedProducts = this.data.productList.filter(product => product.selected).map(p=>({ id: p.id, name: p.name }))
     this.setData({
       selectedProducts: selectedProducts,
       showProductModal: false
@@ -340,25 +301,31 @@ Page({
     
     const customerData = {
       ...this.data.customerInfo,
-      products: this.data.selectedProducts
+      availableProducts: this.data.selectedProducts.map(p=>({ productId: p.id, name: p.name }))
     };
-    
-    // 模拟保存到服务器
-    wx.showLoading({
-      title: '保存中...'
-    });
-    
-    setTimeout(() => {
-      wx.hideLoading();
-      wx.showToast({
-        title: this.data.mode === 'add' ? '新增成功' : '保存成功',
-        icon: 'success'
-      });
-      
-      setTimeout(() => {
-        wx.navigateBack();
-      }, 1500);
-    }, 1000);
+    wx.showLoading({ title: '保存中...' })
+    const user = wx.getStorageSync('currentUser') || {}
+    const shopId = user.shopId || ''
+    const payload = this.data.mode==='add' ? { action: 'add', shopId, data: { name: customerData.name.trim(), code: customerData.code.trim(), address: customerData.address||'', contactPerson: customerData.contactPerson||'', phone: customerData.phone||'', serviceMonths: Number(customerData.serviceMonths||0), remarks: customerData.remark||'', availableProducts: customerData.availableProducts, createdBy: user._id } } : { action: 'update', id: this.data.customerId, shopId, data: { name: customerData.name.trim(), code: customerData.code.trim(), address: customerData.address||'', contactPerson: customerData.contactPerson||'', phone: customerData.phone||'', serviceMonths: Number(customerData.serviceMonths||0), remarks: customerData.remark||'', availableProducts: customerData.availableProducts } }
+    wx.cloud.callFunction({ name: 'customerService', data: payload }).then(()=>{
+      wx.hideLoading()
+      wx.showToast({ title: this.data.mode==='add' ? '新增成功' : '保存成功', icon:'success' })
+      setTimeout(()=>{ wx.navigateBack() }, 800)
+    }).catch(err=>{
+      wx.hideLoading()
+      const msg = (err && err.errMsg) || '保存失败'
+      wx.showToast({ title: msg.includes('CODE_EXISTS')? '编号已存在' : '保存失败', icon:'none' })
+    })
+  },
+
+  loadAvailableProducts(){
+    const user = wx.getStorageSync('currentUser') || {}
+    const shopId = user.shopId || ''
+    const db = wx.cloud.database()
+    db.collection('products').where({ shopId, isEnabled: true }).get().then(res=>{
+      const list = (res.data||[]).map(p=>({ id: p._id, name: p.name, selected: false }))
+      this.setData({ productList: list })
+    })
   },
 
   /**
