@@ -584,3 +584,4 @@ SOLO Coder
 - 出库成本采用加权平均：读取 inventoryBalances.avgCost 计成本； avgCost 在出库时保持不变
 - 修改单据用“差额补记”确保审计与台账可追溯，同时同步结存与统计
 - 若启用审批，出库仅在 approved 后生效，才写台账与结存，并更新月度统计
+test
