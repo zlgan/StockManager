@@ -141,173 +141,6 @@
 }
 ```
 
-### 8. inbound_bills（入库单表）
-
-**用途：** 存储入库单据主信息
-
-**字段设计：**
-```javascript
-{
-  "_id": "string",              // 入库单唯一标识
-  "user_id": "string",          // 关联的用户ID（店主）
-  "bill_no": "string",          // 单据号，自动生成
-  "bill_type_id": "string",     // 入库类型ID
-  "bill_date": "date",          // 入库日期
-  "supplier_id": "string",      // 供应商ID
-  "total_quantity": "number",   // 总数量
-  "total_amount": "number",     // 总金额
-  "remarks": "string",          // 备注信息
-  "status": "string",           // 单据状态：draft（草稿）、confirmed（已确认）、approved（已审批）
-  "approval_status": "string",  // 审批状态：pending（待审批）、approved（已通过）、rejected（已拒绝）
-  "approved_by": "string",      // 审批人ID
-  "approved_at": "date",        // 审批时间
-  "created_at": "date",         // 创建时间
-  "updated_at": "date",         // 更新时间
-  "created_by": "string"        // 创建人ID
-}
-```
-
-**示例数据：**
-```javascript
-{
-  "_id": "inbound_001",
-  "user_id": "user_001",
-  "bill_no": "IN202401150001",
-  "bill_type_id": "bill_type_001",
-  "bill_date": "2024-01-15T00:00:00.000Z",
-  "supplier_id": "supplier_001",
-  "total_quantity": 50,
-  "total_amount": 125.0,
-  "remarks": "月度采购",
-  "status": "confirmed",
-  "approval_status": "approved",
-  "approved_by": "user_001",
-  "approved_at": "2024-01-15T09:00:00.000Z",
-  "created_at": "2024-01-15T08:30:00.000Z",
-  "updated_at": "2024-01-15T09:00:00.000Z",
-  "created_by": "staff_001"
-}
-```
-
-### 9. outbound_bills（出库单表）
-
-**用途：** 存储出库单据主信息
-
-**字段设计：**
-```javascript
-{
-  "_id": "string",              // 出库单唯一标识
-  "user_id": "string",          // 关联的用户ID（店主）
-  "bill_no": "string",          // 单据号，自动生成
-  "bill_type_id": "string",     // 出库类型ID
-  "bill_date": "date",          // 出库日期
-  "customer_id": "string",      // 客户ID
-  "total_quantity": "number",   // 总数量
-  "total_amount": "number",     // 总金额
-  "remarks": "string",          // 备注信息
-  "status": "string",           // 单据状态：draft（草稿）、confirmed（已确认）、approved（已审批）
-  "approval_status": "string",  // 审批状态：pending（待审批）、approved（已通过）、rejected（已拒绝）
-  "approved_by": "string",      // 审批人ID
-  "approved_at": "date",        // 审批时间
-  "created_at": "date",         // 创建时间
-  "updated_at": "date",         // 更新时间
-  "created_by": "string"        // 创建人ID
-}
-```
-
-**示例数据：**
-```javascript
-{
-  "_id": "outbound_001",
-  "user_id": "user_001",
-  "bill_no": "OUT202401150001",
-  "bill_type_id": "bill_type_002",
-  "bill_date": "2024-01-15T00:00:00.000Z",
-  "customer_id": "customer_001",
-  "total_quantity": 20,
-  "total_amount": 60.0,
-  "remarks": "日常销售",
-  "status": "confirmed",
-  "approval_status": "approved",
-  "approved_by": "user_001",
-  "approved_at": "2024-01-15T14:00:00.000Z",
-  "created_at": "2024-01-15T13:30:00.000Z",
-  "updated_at": "2024-01-15T14:00:00.000Z",
-  "created_by": "staff_001"
-}
-```
-
-### 10. bill_items（单据明细表）
-
-**用途：** 存储入库和出库单据的产品明细信息
-
-**字段设计：**
-```javascript
-{
-  "_id": "string",              // 明细唯一标识
-  "user_id": "string",          // 关联的用户ID（店主）
-  "bill_id": "string",          // 关联的单据ID（入库单或出库单）
-  "bill_type": "string",        // 单据类型：inbound（入库）、outbound（出库）
-  "product_id": "string",       // 产品ID
-  "product_name": "string",     // 产品名称（冗余存储，防止产品删除后查询问题）
-  "product_model": "string",    // 产品型号（冗余存储）
-  "product_unit": "string",     // 产品单位（冗余存储）
-  "quantity": "number",         // 数量
-  "unit_price": "number",       // 单价
-  "total_price": "number",      // 小计金额
-  "stock_before": "number",     // 操作前库存
-  "stock_after": "number",      // 操作后库存
-  "line_no": "number",          // 行号
-  "created_at": "date",         // 创建时间
-  "updated_at": "date",         // 更新时间
-  "created_by": "string"        // 创建人ID
-}
-```
-
-**示例数据：**
-```javascript
-[
-  {
-    "_id": "bill_item_001",
-    "user_id": "user_001",
-    "bill_id": "inbound_001",
-    "bill_type": "inbound",
-    "product_id": "product_001",
-    "product_name": "可口可乐",
-    "product_model": "COCA001",
-    "product_unit": "瓶",
-    "quantity": 50,
-    "unit_price": 2.5,
-    "total_price": 125.0,
-    "stock_before": 50,
-    "stock_after": 100,
-    "line_no": 1,
-    "created_at": "2024-01-15T08:30:00.000Z",
-    "updated_at": "2024-01-15T08:30:00.000Z",
-    "created_by": "staff_001"
-  },
-  {
-    "_id": "bill_item_002",
-    "user_id": "user_001",
-    "bill_id": "outbound_001",
-    "bill_type": "outbound",
-    "product_id": "product_001",
-    "product_name": "可口可乐",
-    "product_model": "COCA001",
-    "product_unit": "瓶",
-    "quantity": 20,
-    "unit_price": 3.0,
-    "total_price": 60.0,
-    "stock_before": 100,
-    "stock_after": 80,
-    "line_no": 1,
-    "created_at": "2024-01-15T13:30:00.000Z",
-    "updated_at": "2024-01-15T13:30:00.000Z",
-    "created_by": "staff_001"
-  }
-]
-```
-
 
 
 ## 数据关系说明
@@ -317,9 +150,6 @@
 1. **用户与其他实体**：所有业务数据都通过 `user_id` 关联到具体的店主用户
 2. **产品与类别**：products.category_id → categories._id
 3. **产品与供应商**：products.supplier_id → suppliers._id
-4. **入库单与供应商**：inbound_bills.supplier_id → suppliers._id
-5. **出库单与客户**：outbound_bills.customer_id → customers._id
-6. **单据与明细**：bill_items.bill_id → inbound_bills._id 或 outbound_bills._id
 7. **明细与产品**：bill_items.product_id → products._id
 8. **单据与类型**：inbound_bills.bill_type_id → bill_types._id
 
@@ -337,25 +167,13 @@
 1. **users集合**：
    - username（唯一索引）
    - _openid（唯一索引）
-
 2. **staff集合**：
    - user_id + username（复合唯一索引）
    - user_id + status（复合索引）
-
 3. **products集合**：
    - user_id + model（复合唯一索引）
    - user_id + category_id（复合索引）
    - user_id + name（复合索引，支持搜索）
-
-4. **bill_items集合**：
-   - bill_id（索引）
-   - user_id + bill_type + created_at（复合索引，支持按时间查询）
-   - product_id（索引）
-
-5. **inbound_bills/outbound_bills集合**：
-   - user_id + bill_date（复合索引）
-   - user_id + bill_no（复合唯一索引）
-   - user_id + status（复合索引）
 
 ## 数据安全
 
