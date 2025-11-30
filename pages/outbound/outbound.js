@@ -1,27 +1,26 @@
 // outbound.js
 Page({
   data: {
-    billNo: 'CK' + new Date().getFullYear() + 
-            (new Date().getMonth() + 1).toString().padStart(2, '0') + 
-            new Date().getDate().toString().padStart(2, '0') + 
-            Math.floor(Math.random() * 1000).toString().padStart(3, '0'),
+    billNo: '',
     date: new Date().toISOString().split('T')[0],
     typeIndex: -1,
-    typeOptions: ['销售出库', '退货出库', '调拨出库', '增加配件出库', '折旧出库'],
+    typeOptions: [],
     customerIndex: -1,
-    customerOptions: ['广州手机配件商城', '深圳电子市场', '东莞数码专卖店'],
-    productOptions: ['苹果手机壳', 'Type-C数据线', '无线充电器', '蓝牙耳机', '手机支架'],
+    customerOptions: [],
     products: [
       {
-        id: 1,
+        productId: '',
         name: '',
-        quantity: 1,
+        quantity: '',
         price: '',
         amount: 0,
-        productIndex: -1,
-        stock: 100,
+        stock: 0,
         model: '',
-        imageUrl: ''
+        unit: '',
+        specification: '',
+        imageUrl: '',
+        suggestions: [],
+        showSuggestions: false
       }
     ],
     remark: '',
@@ -35,15 +34,23 @@ Page({
     const user=wx.getStorageSync('currentUser')||{}
     const shopId=user.shopId||''
     const role=user.role||''
+    const db=wx.cloud.database(); const _=db.command
     if(role==='staff'){
-      const db=wx.cloud.database()
       db.collection('shops').doc(shopId).get().then(res=>{
         const p=(res.data&&res.data.staffPermissions)||{}
         const disabled=!!p.disableOutbound
         this.setData({permissions:p,canSubmit:!disabled})
         if(disabled){ wx.showToast({title:'已禁用出库权限',icon:'none'}) }
-      }).catch(err=>{ console.error(err); throw err })
+      }).catch(err=>{ console.error(err) })
     }
+    db.collection('config').limit(1).get().then(r=>{
+      const cfg=(r.data&&r.data[0])||{}
+      const opts=cfg.outboundType||[]
+      this.setData({typeOptions:opts})
+    })
+    db.collection('customers').where({shopId}).field({name:true}).orderBy('name','asc').get().then(r=>{
+      this.setData({customerOptions:(r.data||[]).map(x=>x.name)})
+    })
   },
   
   navigateBack: function() {
@@ -68,27 +75,7 @@ Page({
     });
   },
   
-  bindProductChange: function(e) {
-    const index = e.currentTarget.dataset.index;
-    const products = this.data.products;
-    const productIndex = parseInt(e.detail.value);
-    products[index].productIndex = productIndex;
-    
-    // 模拟获取库存数量
-    const stockMap = {
-      0: 100,
-      1: 200,
-      2: 50,
-      3: 80,
-      4: 120
-    };
-    
-    products[index].stock = stockMap[productIndex] || 0;
-    
-    this.setData({
-      products: products
-    });
-  },
+  
   
   inputQuantity: function(e) {
     const index = e.currentTarget.dataset.index;
@@ -114,13 +101,45 @@ Page({
     this.calculateTotal();
   },
   
+  selectSuggestion: function(e){
+    const index = e.currentTarget.dataset.index;
+    const sidx = e.currentTarget.dataset.sidx;
+    const products = this.data.products;
+    const sel = products[index].suggestions[sidx]
+    const user=wx.getStorageSync('currentUser')||{}
+    const shopId=user.shopId||''
+    const db=wx.cloud.database()
+    products[index].productId=sel._id
+    products[index].name=sel.name
+    products[index].model=sel.code||products[index].model
+    products[index].unit=sel.unit||''
+    products[index].specification=sel.specification||''
+    products[index].imageUrl=sel.imageUrl||products[index].imageUrl
+    products[index].price=sel.outboundPrice||products[index].price
+    products[index].showSuggestions=false
+    this.setData({products})
+    this.calculateTotal()
+    db.collection('inventoryBalances').where({shopId,productId:sel._id}).limit(1).get().then(r=>{
+      const b=(r.data&&r.data[0])||null
+      products[index].stock=b?b.quantity:0
+      this.setData({products})
+    })
+  },
+  
   addProduct: function() {
     const products = this.data.products;
     products.push({
-      productIndex: -1,
+      productId: '',
+      name: '',
       stock: 0,
       quantity: '',
-      price: ''
+      price: '',
+      model: '',
+      unit: '',
+      specification: '',
+      imageUrl: '',
+      suggestions: [],
+      showSuggestions: false
     });
     
     this.setData({
@@ -180,6 +199,7 @@ Page({
         this.setData({
           products: products
         });
+        this.linkByModel(index, model)
         wx.showToast({
           title: '扫码成功',
           icon: 'success'
@@ -202,7 +222,10 @@ Page({
     const db=wx.cloud.database(); const _=db.command
     if(value){
       db.collection('products').where({shopId,name:_.regex({regexp:value,options:'i'})}).limit(20).get().then(r=>{
-        this.setData({productOptions:(r.data||[]).map(p=>p.name)})
+        const list=(r.data||[])
+        products[index].suggestions=list
+        products[index].showSuggestions=true
+        this.setData({products})
       })
     }
   },
@@ -216,6 +239,34 @@ Page({
     this.setData({
       products: products
     });
+    if(value){ this.linkByModel(index, value) }
+  },
+
+  linkByModel: function(index, code){
+    const user=wx.getStorageSync('currentUser')||{}
+    const shopId=user.shopId||''
+    const db=wx.cloud.database()
+    db.collection('products').where({shopId,code}).limit(1).get().then(r=>{
+      const p=(r.data&&r.data[0])
+      if(!p) return
+      const products=this.data.products
+      products[index].productId=p._id
+      products[index].name=p.name||products[index].name||''
+      products[index].price=(p.outboundPrice||products[index].price||0)
+      products[index].unit=p.unit||products[index].unit||''
+      products[index].specification=p.specification||products[index].specification||''
+      products[index].imageUrl=p.imageUrl||products[index].imageUrl||''
+      products[index].amount=(Number(products[index].quantity)||0)*(Number(products[index].price)||0)
+      this.setData({products})
+      return db.collection('inventoryBalances').where({shopId,productId:p._id}).limit(1).get()
+    }).then(rs=>{
+      if(!rs) return
+      const b=(rs.data&&rs.data[0])||{quantity:0}
+      const products=this.data.products
+      products[index].stock=Number(b.quantity)||0
+      this.setData({products})
+      this.calculateTotal()
+    })
   },
   
   // 选择图片
@@ -275,9 +326,9 @@ Page({
     
     let valid = true;
     this.data.products.forEach((product, index) => {
-      if (product.productIndex === -1) {
+      if (!product.name) {
         wx.showToast({
-          title: `请选择第${index + 1}个产品`,
+          title: `请输入第${index + 1}个产品名称`,
           icon: 'none'
         });
         valid = false;
@@ -293,7 +344,7 @@ Page({
         return;
       }
       
-      if (parseInt(product.quantity) > product.stock) {
+      if (product.productId && Number(product.quantity) > Number(product.stock)) {
         wx.showToast({
           title: `第${index + 1}个产品的出库数量不能大于库存数量`,
           icon: 'none'
@@ -320,12 +371,15 @@ Page({
     const billType=this.data.typeOptions[this.data.typeIndex]
     const billDate=this.data.date+'T00:00:00.000Z'
     const counterparty={customerName:this.data.customerOptions[this.data.customerIndex]||''}
-    const items=this.data.products.map((p,i)=>({lineNo:i+1,productName:this.data.productOptions[p.productIndex]||p.name,productCode:p.model||'',unit:'',specification:'',quantity:Number(p.quantity),unitPrice:Number(p.price)}))
+    const items=this.data.products.map((p,i)=>({lineNo:i+1,productId:p.productId||'',productName:p.name,productCode:p.model||'',unit:p.unit||'',specification:p.specification||'',quantity:Number(p.quantity),unitPrice:Number(p.price)}))
     if(!this.data.canSubmit){ wx.showToast({title:'无出库权限',icon:'none'}); return }
     wx.showLoading({title:'提交中'})
-    wx.cloud.callFunction({name:'stockService',data:{action:'createBill',shopId,direction:'out',billType,billDate,counterparty,items,createdBy,remarks:this.data.remark||''}}).then(()=>{
-      wx.hideLoading(); wx.showToast({title:'出库成功',icon:'success'})
-      setTimeout(()=>{ wx.navigateBack() },800)
+    wx.cloud.callFunction({name:'stockService',data:{action:'createBill',shopId,direction:'out',billType,billDate,counterparty,items,createdBy,remarks:this.data.remark||''}}).then(res=>{
+      wx.hideLoading();
+      const r=(res&&res.result)||{}
+      this.setData({billNo:r.billNo||''})
+      wx.showToast({title:'出库成功',icon:'success'})
+      setTimeout(()=>{ wx.navigateBack() },1000)
     }).catch(err=>{ wx.hideLoading(); wx.showToast({title: (err&&err.errMsg)||'提交失败',icon:'none'}) })
   }
 });

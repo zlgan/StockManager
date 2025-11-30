@@ -326,7 +326,7 @@ Page({
 
     // 跳转到单据详情页面
     wx.navigateTo({
-      url: `/pages/bill_detail/bill_detail?id=${billId}&mode=view`
+      url: `/pages/bill_detail/bill_detail?id=${billId}&mode=edit`
     });
   },
 

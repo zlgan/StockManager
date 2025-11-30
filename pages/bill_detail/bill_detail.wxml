@@ -89,8 +89,14 @@
         <view class="form-group">
           <view class="form-row">
             <text class="form-label">产品型号</text>
-            <view class="form-row-content">
-              <view class="form-value">{{item.productModel}}</view>
+            <view class="form-row">
+              <input wx:if="{{mode === 'edit'}}" class="input flex-grow" placeholder="请输入产品型号 / 扫一扫" value="{{item.productModel}}" data-index="{{index}}" data-field="productModel" bindinput="updateProductField" />
+              <view wx:if="{{mode === 'edit'}}" class="btn-icon" bindtap="scanModel" data-index="{{index}}">
+                <image class="scan-image" src="/images/scan.png" mode="aspectFit"></image>
+              </view>
+              <view wx:else class="form-row-content">
+                <view class="form-value">{{item.productModel}}</view>
+              </view>
             </view>
           </view>
         </view>
@@ -100,7 +106,17 @@
           <view class="form-row">
             <text class="form-label">产品名称</text>
             <view class="form-row-content">
-              <view class="form-value">{{item.productName}}</view>
+              <view class="form-control-wrapper">
+                <input wx:if="{{mode === 'edit'}}" class="input flex-grow" placeholder="请输入产品名称" value="{{item.productName}}" data-index="{{index}}" data-field="productName" bindinput="updateProductField" />
+                <view wx:else class="form-value">{{item.productName}}</view>
+                <view class="suggestions-container" wx:if="{{showSuggestions && currentEditIndex===index}}">
+                  <view class="suggestions-list">
+                    <block wx:for="{{filteredProducts}}" wx:key="_id" wx:for-item="p">
+                      <view class="suggestion-item" bindtap="selectProduct" data-id="{{p._id}}">{{p.name}} {{p.code ? '('+p.code+')' : ''}}</view>
+                    </block>
+                  </view>
+                </view>
+              </view>
             </view>
           </view>
         </view>
@@ -126,7 +142,7 @@
         <!-- 数量 -->
         <view class="form-group">
           <view class="form-row">
-            <text class="form-label">{{billData.type === '入库单' ? '入库数量' : '出库数量'}} <text class="required">*</text></text>
+            <view class="form-label"><text>{{billData.type === '入库单' ? '入库数量' : '出库数量'}}</text><text class="required">*</text></view>
             <view class="form-row-content">
               <input wx:if="{{mode === 'edit'}}" 
                      class="input" 
@@ -144,7 +160,7 @@
         <!-- 单价 -->
         <view class="form-group">
           <view class="form-row">
-            <text class="form-label">{{billData.type === '入库单' ? '入库单价' : '出库单价'}} <text class="required">*</text></text>
+            <view class="form-label"><text>{{billData.type === '入库单' ? '入库单价' : '出库单价'}}</text><text class="required">*</text></view>
             <view class="form-row-content">
               <view class="price-input">
                 <text class="price-symbol">¥</text>

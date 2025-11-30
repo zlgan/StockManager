@@ -6,7 +6,7 @@
       <view class="form-group">
         <view class="form-label">单据号</view>
         <view class="form-control-wrapper">
-          <input class="form-control bg-gray flex-grow" value="{{billNo}}" disabled name="billNo" />
+          <input class="form-control bg-gray flex-grow" value="{{billNo}}" placeholder="保存后自动生成" disabled name="billNo" />
         </view>
       </view>
       
@@ -67,7 +67,16 @@
           <view class="form-group">
             <view class="form-label">产品名称 <text class="required">*</text></view>
             <view class="form-row">
-              <input class="form-control flex-grow" placeholder="请输入产品名称" value="{{item.name}}" bindinput="inputName" data-index="{{index}}" />
+              <view class="form-control-wrapper">
+                <input class="form-control flex-grow" placeholder="请输入产品名称" value="{{item.name}}" bindinput="inputName" data-index="{{index}}" />
+                <view class="suggestions-container" wx:if="{{item.showSuggestions}}">
+                  <view class="suggestions-list">
+                    <block wx:for="{{item.suggestions}}" wx:key="_id" wx:for-item="s" wx:for-index="si">
+                      <view class="suggestion-item" bindtap="selectSuggestion" data-index="{{index}}" data-sidx="{{si}}">{{s.name}}</view>
+                    </block>
+                  </view>
+                </view>
+              </view>
             </view>
           </view>
           

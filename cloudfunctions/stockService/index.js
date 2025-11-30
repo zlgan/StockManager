@@ -9,7 +9,9 @@ async function getProductByName(shopId,name){
 async function ensureBillNo(shopId,direction,dateStr){
   const prefix=direction==='in'?'IN':'OUT'
   const day=dateStr.slice(0,10).replace(/-/g,'')
-  const r=await db.collection('stockBills').where({shopId,direction,billNo:db.RegExp({regexp:'^'+prefix+day})}).count()
+  const startNo=prefix+day+'0000'
+  const endNo=prefix+day+'9999'
+  const r=await db.collection('stockBills').where({shopId,direction,billNo:_.gte(startNo).and(_.lte(endNo))}).count()
   const seq=('0000'+(r.total+1)).slice(-4)
   return prefix+day+seq
 }
@@ -114,14 +116,17 @@ exports.main=async(event)=>{
   }
   if(action==='adjustBillDelta'){
     const {billId,newItems,createdBy}=event
+    console.log('adjustBillDelta start',{billId,len:(newItems&&newItems.length)||0})
     const bill=await db.collection('stockBills').doc(billId).get()
     const shopId=bill.data.shopId
     const direction=bill.data.direction
     const oldItems=await db.collection('stockItems').where({billId}).get()
+    console.log('adjustBillDelta fetched oldItems',{count:(oldItems.data&&oldItems.data.length)||0})
     const mapOld={}
     (oldItems.data||[]).forEach(it=>{mapOld[it.productId]=it})
     let totalQty=0,totalAmt=0
     for(const raw of newItems){
+      console.log('adjustBillDelta iterate',{pid:raw.productId,pname:raw.productName,qty:raw.quantity,price:raw.unitPrice})
       let pid=raw.productId, pname=raw.productName
       if(!pid){
         const p=await getProductByName(shopId,pname)
@@ -180,6 +185,7 @@ exports.main=async(event)=>{
         await updateStatsMonthly(shopId,y,m,{inboundAmount:costAdj})
       }
     }
+    console.log('adjustBillDelta done totals',{totalQty,totalAmt})
     await db.collection('stockBills').doc(billId).update({data:{totals:{totalQuantity:totalQty,totalAmount:totalAmt},updatedAt:new Date()}})
     return {ok:true}
   }

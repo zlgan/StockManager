@@ -80,7 +80,7 @@
       </view>
       
       <view class="search-box">
-        <input type="text" class="search-input" placeholder="搜索产品名称/编码" model:value="{{searchKeyword}}" bindinput="onSearchInput"/>
+        <input type="text" class="search-input" placeholder="搜索产品名称/编码" value="{{searchKeyword}}" bindinput="onSearchInput"/>
         <view class="search-btn" bindtap="searchProducts">
           <text class="iconfont icon-search"></text>
         </view>
