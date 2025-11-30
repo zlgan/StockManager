@@ -13,9 +13,9 @@ Page({
     filteredProducts: [],
     suggestIndex: -1,
     
-    supplierOptions: ['广州电子科技有限公司', '深圳数码配件厂', '东莞塑胶制品有限公司'],
-    productOptions: ['苹果手机壳', 'Type-C数据线', '无线充电器'],
-    inboundTypeOptions: ['采购入库', '退货入库', '调拨入库', '增加配件出库', '折旧入库'],
+    supplierOptions: [],
+    productOptions: [],
+    inboundTypeOptions: [],
     products: [
       {
         id: 1,
@@ -25,6 +25,8 @@ Page({
         amount: 0,
         productIndex: -1,
         model: '',
+        unit: '',
+        specification: '',
         imageUrl: ''
       }
     ],
@@ -42,28 +44,41 @@ Page({
       { id: 4, name: '增加配件出库' },
       { id: 5, name: '折旧入库' }
     ],
-    productList: [
-      { id: 1, name: '苹果手机壳', model: 'IP-12-C', stock: 100, price: 15.5, imageUrl: '/images/product-placeholder.png' },
-      { id: 2, name: 'Type-C数据线', model: 'TC-100', stock: 200, price: 12.8, imageUrl: '/images/product-placeholder.png' },
-      { id: 3, name: '无线充电器', model: 'WC-01', stock: 50, price: 68, imageUrl: '/images/product-placeholder.png' },
-      { id: 4, name: '蓝牙耳机', model: 'BT-X5', stock: 75, price: 129, imageUrl: '/images/product-placeholder.png' },
-      { id: 5, name: '手机支架', model: 'MS-02', stock: 150, price: 9.9, imageUrl: '/images/product-placeholder.png' },
-      { id: 6, name: '手机钢化膜', model: 'SP-IP12', stock: 300, price: 5.5, imageUrl: '/images/product-placeholder.png' },
-      { id: 7, name: '移动电源', model: 'PB-10000', stock: 80, price: 89, imageUrl: '/images/product-placeholder.png' },
-      { id: 8, name: '手机壳-华为', model: 'HC-P40', stock: 120, price: 18, imageUrl: '/images/product-placeholder.png' },
-      { id: 9, name: '苹果快充头', model: 'AC-20W', stock: 90, price: 49, imageUrl: '/images/product-placeholder.png' },
-      { id: 10, name: '手机指环支架', model: 'FR-01', stock: 200, price: 7.5, imageUrl: '/images/product-placeholder.png' }
-    ]
+    productList: []
+    ,
+    permissions: null,
+    canSubmit: true
   },
 
   onLoad: function (options) {
-    // 页面加载时执行
+    const user=wx.getStorageSync('currentUser')||{}
+    const shopId=user.shopId||''
+    const role=user.role||''
+    const db=wx.cloud.database()
+    // 权限
+    if(role==='staff'){
+      db.collection('shops').doc(shopId).get().then(res=>{
+        const p=(res.data&&res.data.staffPermissions)||{}
+        const disabled=!!p.disableInbound
+        this.setData({permissions:p,canSubmit:!disabled})
+        if(disabled){ wx.showToast({title:'已禁用入库权限',icon:'none'}) }
+      }).catch(err=>{ console.error(err); throw err })
+    }
+    // 入库类型
+    db.collection('config').get().then(r=>{
+      const types=[...new Set((r.data||[]).flatMap(x=>x.inboundType||[]))]
+      this.setData({inboundTypeOptions:types})
+    })
+    // 供应商
+    db.collection('suppliers').where({shopId,status:'active'}).field({name:true}).limit(100).get().then(r=>{
+      this.setData({supplierOptions:(r.data||[]).map(x=>x.name)})
+    })
   },
 
   // 选择入库类型
   bindTypeChange: function(e) {
     const index = e.detail.value;
-    const type = this.data.typeOptions[index];
+    const type = this.data.inboundTypeOptions[index];
     this.setData({
       inboundType: type,
       typeIndex: index
@@ -139,6 +154,8 @@ Page({
       price: '',
       amount: 0,
       model: '',
+      unit: '',
+      specification: '',
       imageUrl: ''
     };
     
@@ -214,6 +231,7 @@ Page({
         this.setData({
           products: products
         });
+        this.linkByModel(index, model);
         wx.showToast({
           title: '扫码成功',
           icon: 'success'
@@ -246,16 +264,14 @@ Page({
       return;
     }
     
-    // 过滤匹配的产品
-    const filtered = this.data.productList.filter(product => 
-      product.name.toLowerCase().indexOf(keyword.toLowerCase()) !== -1
-    );
-    
-    this.setData({
-      filteredProducts: filtered,
-      currentEditIndex: index,
-      showSuggestions: true
-    });
+    const user=wx.getStorageSync('currentUser')||{}
+    const shopId=user.shopId||''
+    const db=wx.cloud.database()
+    const _=db.command
+    db.collection('products').where({shopId,name:_.regex({regexp:keyword,options:'i'})}).limit(20).get().then(res=>{
+      const filtered=(res.data||[]).map(p=>({id:p._id,name:p.name,model:p.code,price:p.inboundPrice||0,imageUrl:p.imageUrl||''}))
+      this.setData({filteredProducts:filtered,currentEditIndex:index,showSuggestions:true})
+    })
   },
   
   // 显示建议列表
@@ -284,26 +300,28 @@ Page({
   
   // 选择产品
   selectProduct: function(e) {
-    const { name, id, index } = e.currentTarget.dataset;
+    const { name, id } = e.currentTarget.dataset;
     const productIndex = this.data.currentEditIndex;
-    const selectedProduct = this.data.productList.find(p => p.id === id);
+    const selectedProduct = this.data.filteredProducts.find(p => p.id === id) || {};
     
     // 更新产品信息
     const products = this.data.products;
     products[productIndex].name = name;
+    products[productIndex].productId = id;
     products[productIndex].model = selectedProduct.model;
     products[productIndex].price = selectedProduct.price;
-    products[productIndex].stock = selectedProduct.stock;
-    products[productIndex].imageUrl = selectedProduct.imageUrl;
-    products[productIndex].amount = products[productIndex].quantity * selectedProduct.price;
-    
-    this.setData({
-      products: products,
-      showSuggestions: false,
-      filteredProducts: []
-    });
-    
-    this.calculateTotal();
+    // 查询当前库存
+    const user=wx.getStorageSync('currentUser')||{}
+    const shopId=user.shopId||''
+    const db=wx.cloud.database()
+    db.collection('inventoryBalances').where({shopId,productId:id}).limit(1).get().then(r=>{
+      const b=(r.data&&r.data[0])||{quantity:0}
+      products[productIndex].stock = b.quantity||0;
+      products[productIndex].imageUrl = selectedProduct.imageUrl;
+      products[productIndex].amount = (products[productIndex].quantity||0) * (selectedProduct.price||0);
+      this.setData({products,showSuggestions:false,filteredProducts:[]});
+      this.calculateTotal();
+    })
   },
   
   // 输入产品型号
@@ -315,6 +333,34 @@ Page({
     this.setData({
       products: products
     });
+    if(value){ this.linkByModel(index, value) }
+  },
+
+  linkByModel: function(index, code){
+    const user=wx.getStorageSync('currentUser')||{}
+    const shopId=user.shopId||''
+    const db=wx.cloud.database()
+    db.collection('products').where({shopId,code}).limit(1).get().then(r=>{
+      const p=(r.data&&r.data[0])
+      if(!p) return
+      const products=this.data.products
+      products[index].productId=p._id
+      products[index].name=p.name||products[index].name||''
+      products[index].price=(p.inboundPrice||products[index].price||0)
+      products[index].unit=p.unit||products[index].unit||''
+      products[index].specification=p.specification||products[index].specification||''
+      products[index].imageUrl=p.imageUrl||products[index].imageUrl||''
+      products[index].amount=(products[index].quantity||0)*(products[index].price||0)
+      this.setData({products})
+      return db.collection('inventoryBalances').where({shopId,productId:p._id}).limit(1).get()
+    }).then(rs=>{
+      if(!rs) return
+      const b=(rs.data&&rs.data[0])||{quantity:0}
+      const products=this.data.products
+      products[index].stock=b.quantity||0
+      this.setData({products})
+      this.calculateTotal()
+    })
   },
   
   // 选择图片
@@ -390,23 +436,19 @@ Page({
     
     if (!valid) return;
     
-    // 提交数据
-    wx.showLoading({
-      title: '提交中',
-    });
-    
-    setTimeout(() => {
-      wx.hideLoading();
-      wx.showToast({
-        title: '提交成功',
-        icon: 'success'
-      });
-      
-      // 返回首页
-      setTimeout(() => {
-        wx.navigateBack();
-      }, 1500);
-    }, 1000);
+    const user=wx.getStorageSync('currentUser')||{}
+    const shopId=user.shopId||''
+    const createdBy=user._id||''
+    const billType=this.data.inboundType
+    const billDate=this.data.date+'T00:00:00.000Z'
+    const counterparty={supplierName:this.data.supplier}
+    const items=this.data.products.map((p,i)=>({lineNo:i+1,productId:p.productId,productName:p.name,productCode:p.model||'',unit:p.unit||'',specification:p.specification||'',quantity:Number(p.quantity),unitPrice:Number(p.price)}))
+    if(!this.data.canSubmit){ wx.showToast({title:'无入库权限',icon:'none'}); return }
+    wx.showLoading({title:'提交中'})
+    wx.cloud.callFunction({name:'stockService',data:{action:'createBill',shopId,direction:'in',billType,billDate,counterparty,items,createdBy,remarks:this.data.remark||''}}).then(()=>{
+      wx.hideLoading(); wx.showToast({title:'提交成功',icon:'success'})
+      setTimeout(()=>{ wx.navigateBack() },800)
+    }).catch(err=>{ wx.hideLoading(); wx.showToast({title: (err&&err.errMsg)||'提交失败',icon:'none'}) })
   },
 
   // 取消

@@ -17,7 +17,11 @@ Page({
     totalCount: 0,
     showExportSuccess: false,
     bills: [],
-    sourceBills: []
+    sourceBills: [],
+    pageSize: 20,
+    page: 0,
+    hasMore: true,
+    loading: false
   },
 
   /**
@@ -25,7 +29,7 @@ Page({
    */
   onLoad: function (options) {
     this.initDateRange();
-    this.loadBillData();
+    this.loadBillData(true);
   },
 
   /**
@@ -329,120 +333,51 @@ Page({
   /**
    * 加载单据数据（模拟数据）
    */
-  loadBillData: function() {
-    // 模拟单据数据
-    const mockBills = [
-      {
-        id: '001',
-        type: 'inbound',
-        billNumber: 'RK20240115001',
-        date: '2024-01-15',
-        billTypeName: '采购入库',
-        totalAmount: '15,000.00',
-        creator: '张三',
-        createTime: '2024-01-15 10:30',
-        supplier: '广州电子科技有限公司',
-        products: [
-          { name: 'iPhone 15 Pro', quantity: 10 }
-        ]
-      },
-      {
-        id: '002',
-        type: 'outbound',
-        billNumber: 'CK20240116001',
-        date: '2024-01-16',
-        billTypeName: '销售出库',
-        totalAmount: '8,000.00',
-        creator: '李四',
-        createTime: '2024-01-16 14:20',
-        customer: '深圳华强客户',
-        products: [
-          { name: 'iPhone 15 Pro', quantity: 5 }
-        ]
-      },
-      {
-        id: '003',
-        type: 'inbound',
-        billNumber: 'RK20240117001',
-        date: '2024-01-17',
-        billTypeName: '采购入库',
-        totalAmount: '32,000.00',
-        creator: '张三',
-        createTime: '2024-01-17 09:15',
-        supplier: '北京科技有限公司',
-        products: [
-          { name: 'MacBook Pro', quantity: 8 },
-          { name: 'iPad Air', quantity: 15 }
-        ]
-      },
-      {
-        id: '004',
-        type: 'outbound',
-        billNumber: 'CK20240118001',
-        date: '2024-01-18',
-        billTypeName: '销售出库',
-        totalAmount: '12,000.00',
-        creator: '王五',
-        createTime: '2024-01-18 16:45',
-        customer: '广州天河客户',
-        products: [
-          { name: 'MacBook Pro', quantity: 3 },
-          { name: 'iPad Air', quantity: 8 }
-        ]
-      },
-      {
-        id: '005',
-        type: 'inbound',
-        billNumber: 'RK20240119001',
-        date: '2024-01-19',
-        billTypeName: '采购入库',
-        totalAmount: '25,600.00',
-        creator: '赵六',
-        createTime: '2024-01-19 11:20',
-        supplier: '深圳数码配件厂',
-        products: [
-          { name: 'AirPods Pro', quantity: 50 },
-          { name: 'Apple Watch', quantity: 20 }
-        ]
-      },
-      {
-        id: '006',
-        type: 'outbound',
-        billNumber: 'CK20240120001',
-        date: '2024-01-20',
-        billTypeName: '销售出库',
-        totalAmount: '18,500.00',
-        creator: '钱七',
-        createTime: '2024-01-20 15:30',
-        customer: '北京中关村客户',
-        products: [
-          { name: 'AirPods Pro', quantity: 30 },
-          { name: 'Apple Watch', quantity: 15 }
-        ]
-      }
-    ];
-    
-    console.log('Loading bill data:', mockBills);
-    
-    this.setData({
-      sourceBills: mockBills
-    });
-    
-    // 初始显示所有数据
-    this.setData({
-      bills: mockBills,
-      totalCount: mockBills.length
-    });
-    
-    console.log('Bills loaded:', this.data.bills);
-  }
+  loadBillData: function(reset) {
+    const user=wx.getStorageSync('currentUser')||{}
+    const shopId=user.shopId||''
+    const db=wx.cloud.database()
+    let {page,pageSize}=this.data
+    if(reset){ page=0; this.setData({page:0,hasMore:true,sourceBills:[],bills:[]}) }
+    this.setData({loading:true})
+    db.collection('stockBills').where({shopId}).orderBy('billDate','desc').skip(page*pageSize).limit(pageSize).get().then(res=>{
+      const chunk=(res.data||[]).map(b=>({
+        id:b._id,
+        type:b.direction==='in'?'inbound':'outbound',
+        billNumber:b.billNo,
+        date:(b.billDate&&b.billDate.slice)?b.billDate.slice(0,10):new Date(b.billDate).toISOString().slice(0,10),
+        billTypeName:b.billType,
+        totalAmount:(b.totals&&b.totals.totalAmount||0).toFixed? (b.totals.totalAmount).toFixed(2): (b.totals&&b.totals.totalAmount)||0,
+        creator:b.createdBy,
+        createTime: new Date(b.createdAt).toISOString().replace('T',' ').slice(0,16),
+        supplier:b.counterparty&&b.counterparty.supplierName,
+        customer:b.counterparty&&b.counterparty.customerName,
+        products: []
+      }))
+      const merged=[...this.data.sourceBills,...chunk]
+      const hasMore=(chunk.length===pageSize)
+      const pageNext=page+1
+      const filtered=this.applyFiltersWith(merged)
+      this.setData({sourceBills:merged,bills:filtered,totalCount:filtered.length,hasMore,page:pageNext,loading:false})
+    })
+  },
 
+  
+  onReachBottom: function(){
+    if(this.data.loading||!this.data.hasMore) return
+    this.loadBillData(false)
+  }
   ,
   /**
    * 根据当前筛选条件过滤数据
    */
   applyFilters: function() {
-    const { sourceBills, searchKeyword, startDate, endDate, billTypeIndex, suppliers, supplierIndex, customers, customerIndex } = this.data;
+    const { sourceBills } = this.data;
+    return this.applyFiltersWith(sourceBills)
+  }
+  ,
+  applyFiltersWith: function(sourceBills){
+    const { searchKeyword, startDate, endDate, billTypes, billTypeIndex, suppliers, supplierIndex, customers, customerIndex } = this.data;
     const keyword = (searchKeyword || '').trim();
     const typeMap = { 1: 'inbound', 2: 'outbound' };
     const selectedType = billTypeIndex === 0 ? null : typeMap[billTypeIndex];
@@ -452,7 +387,7 @@ Page({
     const start = startDate ? new Date(startDate).getTime() : null;
     const end = endDate ? new Date(endDate).getTime() : null;
 
-    return (sourceBills || []).filter(bill => {
+    const list=(sourceBills || []).filter(bill => {
       // 类型
       if (selectedType && bill.type !== selectedType) return false;
       // 日期
@@ -472,5 +407,6 @@ Page({
       }
       return true;
     });
+    return list
   }
 })

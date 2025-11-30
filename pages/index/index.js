@@ -81,8 +81,20 @@ Page({
   },
 
   loadPageData: function() {
-    // 可以在这里加载实际数据
-    console.log('用户已登录，加载首页数据');
+    const user=wx.getStorageSync('currentUser')||{}
+    const shopId=user.shopId||''
+    wx.cloud.callFunction({name:'stockService',data:{action:'homeOverview',shopId}}).then(res=>{
+      const d=res.result||{}
+      const todayStats={
+        inbound:{count:d.today&&d.today.inbound?d.today.inbound.count:0,amount:(d.today&&d.today.inbound?d.today.inbound.amount:0).toFixed?d.today.inbound.amount.toFixed(2):d.today&&d.today.inbound?d.today.inbound.amount:0},
+        outbound:{count:d.today&&d.today.outbound?d.today.outbound.count:0,amount:(d.today&&d.today.outbound?d.today.outbound.amount:0).toFixed?d.today.outbound.amount.toFixed(2):d.today&&d.today.outbound?d.today.outbound.amount:0}
+      }
+      const recentRecords={
+        inbound:(d.recent||[]).filter(x=>x.direction==='in').map(x=>({id:x.billRef&&x.billRef.billId,productName:x.productName,type:'入库',quantity:x.quantity,unit:'',amount:(x.amount||0).toFixed(2),time:new Date(x.createdAt).toISOString().replace('T',' ').slice(0,16)})),
+        outbound:(d.recent||[]).filter(x=>x.direction==='out').map(x=>({id:x.billRef&&x.billRef.billId,productName:x.productName,type:'出库',quantity:x.quantity,unit:'',amount:(x.amount||0).toFixed(2),time:new Date(x.createdAt).toISOString().replace('T',' ').slice(0,16)}))
+      }
+      this.setData({todayStats,recentRecords})
+    })
   },
   
   navigateToInbound: function() {
@@ -107,7 +119,7 @@ Page({
     const id = e.currentTarget.dataset.id;
     const type = e.currentTarget.dataset.type;
     wx.navigateTo({
-      url: `/pages/bill-detail/bill-detail?id=${id}&type=${type}`
+      url: `/pages/bill_detail/bill_detail?id=${id}&type=${type}`
     });
   }
 });

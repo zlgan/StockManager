@@ -57,44 +57,18 @@ Page({
    * 加载单据详情
    */
   loadBillDetail: function(billId) {
-    // 模拟从后端获取单据详情数据
-    // 实际应用中这里应该调用API
-    const mockBillData = {
-      id: billId,
-      billNumber: 'RK202312010001',
-      type: '入库单',
-      date: '2023-12-01',
-      supplier: '广州电子科技有限公司',
-      products: [
-        {
-          productNumber: 'P001',
-          productModel: 'iPhone 15',
-          productName: 'iPhone 15 128GB 黑色',
-          quantity: 10,
-          price: 5999.00
-        },
-        {
-          productNumber: 'P002',
-          productModel: 'iPad Air',
-          productName: 'iPad Air 256GB WiFi版',
-          quantity: 5,
-          price: 4599.00
-        }
-      ],
-      remark: '首批进货，质量检验合格',
-      creator: '张三',
-      createTime: '2023-12-01 10:30:00'
-    };
-
-    // 设置供应商选择器的索引
-    const supplierIndex = this.data.supplierList.findIndex(item => item === mockBillData.supplier);
-    
-    this.setData({
-      billData: mockBillData,
-      supplierIndex: supplierIndex >= 0 ? supplierIndex : 0
-    });
-
-    this.calculateTotal();
+    const db=wx.cloud.database()
+    db.collection('stockBills').doc(billId).get().then(r=>{
+      const b=r.data
+      db.collection('stockItems').where({billId}).get().then(rs=>{
+        const pro=(rs.data||[]).map(it=>({productNumber: it.productId, productModel: it.productCode, productName: it.productName, quantity: it.quantity, price: it.unitPrice}))
+        const type=b.direction==='in'?'入库单':'出库单'
+        const data={ id: billId, billNumber: b.billNo, type, date: new Date(b.billDate).toISOString().slice(0,10), supplier: (b.counterparty&&b.counterparty.supplierName)|| (b.counterparty&&b.counterparty.customerName)||'', products: pro, remark: b.remarks||'', creator: b.createdBy||'', createTime: new Date(b.createdAt).toISOString().replace('T',' ').slice(0,16)}
+        const supplierIndex=this.data.supplierList.findIndex(item=>item===data.supplier)
+        this.setData({ billData: data, supplierIndex: supplierIndex>=0?supplierIndex:0 })
+        this.calculateTotal()
+      })
+    })
   },
 
   /**
@@ -275,36 +249,13 @@ Page({
       title: '保存中...'
     });
 
-    // 模拟保存操作
-    setTimeout(() => {
-      wx.hideLoading();
-      wx.showToast({
-        title: '保存成功',
-        icon: 'success'
-      });
-
-      // 切换回查看模式
-      this.setData({
-        mode: 'view'
-      });
-    }, 1000);
-
-    // 实际应用中这里应该调用API保存数据
-    // wx.request({
-    //   url: '/api/bills/' + this.data.billId,
-    //   method: 'PUT',
-    //   data: this.data.billData,
-    //   success: (res) => {
-    //     wx.hideLoading();
-    //     wx.showToast({
-    //       title: '保存成功',
-    //       icon: 'success'
-    //     });
-    //     this.setData({
-    //       mode: 'view'
-    //     });
-    //   }
-    // });
+    const user=wx.getStorageSync('currentUser')||{}
+    const createdBy=user._id||''
+    const newItems=(this.data.billData.products||[]).map((p,i)=>({lineNo:i+1,productId:p.productNumber,productName:p.productName,productCode:p.productModel||'',quantity:Number(p.quantity),unitPrice:Number(p.price)}))
+    wx.cloud.callFunction({name:'stockService',data:{action:'adjustBillDelta',billId:this.data.billId,newItems,createdBy}}).then(()=>{
+      wx.hideLoading(); wx.showToast({title:'保存成功',icon:'success'})
+      this.setData({mode:'view'})
+    }).catch(()=>{ wx.hideLoading(); wx.showToast({title:'保存失败',icon:'none'}) })
   },
 
   /**

@@ -2,6 +2,7 @@ const cloud=require('wx-server-sdk')
 cloud.init({env:cloud.DYNAMIC_CURRENT_ENV})
 const db=cloud.database()
 exports.main=async(event)=>{
+  try{
   const action=event.action
   const shopId=(event.shopId||'').trim()
   if(!shopId)throw new Error('NO_SHOP')
@@ -22,4 +23,8 @@ exports.main=async(event)=>{
     return { ok:true }
   }
   throw new Error('UNKNOWN_ACTION')
+  }catch(e){
+    console.error('shopService error',e)
+    throw e
+  }
 }

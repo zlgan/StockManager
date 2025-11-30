@@ -233,7 +233,6 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    // 加载统计数据
     this.loadStatisticsData();
   },
 
@@ -241,12 +240,23 @@ Page({
    * 加载统计数据
    */
   loadStatisticsData: function () {
-    // 这里模拟从服务器加载数据
-    // 实际应用中应该调用API获取真实数据
-    console.log('加载统计数据');
-    
-    // 模拟加载完成后的处理
-    wx.hideLoading();
+    const user=wx.getStorageSync('currentUser')||{}
+    const shopId=user.shopId||''
+    const year=parseInt(this.data.selectedYear||new Date().getFullYear())
+    const db=wx.cloud.database()
+    db.collection('statsMonthly').where({shopId,year}).orderBy('month','asc').get().then(res=>{
+      const md=(res.data||[]).map(x=>({month:x.month+'月',inbound:(x.inboundAmount||0).toFixed(2),outbound:(x.outboundAmount||0).toFixed(2),profit:(x.profit||0).toFixed(2)}))
+      this.setData({monthlyData:md})
+      if(this.chart){
+        setChartOption(this.chart,md)
+      }
+    })
+    db.collection('inventoryBalances').where({shopId}).get().then(res=>{
+      const products=(res.data||[]).map(p=>({id:p.productId,name:p.productName,code:p.productId,category:'',image:'',stock:p.quantity,averagePrice:(p.avgCost||0).toFixed(2),stockValue:((p.quantity||0)*(p.avgCost||0)).toFixed(2),lastInbound:'',records:[]}))
+      const productCount=products.length
+      const inventoryValue=((res.data||[]).reduce((s,p)=>s+(p.quantity||0)*(p.avgCost||0),0)).toFixed(2)
+      this.setData({products,productCount,inventoryValue})
+    })
   },
 
   /**

@@ -26,11 +26,24 @@ Page({
     ],
     remark: '',
     totalQuantity: 0,
-    totalAmount: '0.00'
+    totalAmount: '0.00',
+    permissions: null,
+    canSubmit: true
   },
   
   onLoad: function() {
-    // 可以在这里加载实际数据
+    const user=wx.getStorageSync('currentUser')||{}
+    const shopId=user.shopId||''
+    const role=user.role||''
+    if(role==='staff'){
+      const db=wx.cloud.database()
+      db.collection('shops').doc(shopId).get().then(res=>{
+        const p=(res.data&&res.data.staffPermissions)||{}
+        const disabled=!!p.disableOutbound
+        this.setData({permissions:p,canSubmit:!disabled})
+        if(disabled){ wx.showToast({title:'已禁用出库权限',icon:'none'}) }
+      }).catch(err=>{ console.error(err); throw err })
+    }
   },
   
   navigateBack: function() {
@@ -184,6 +197,14 @@ Page({
     this.setData({
       products: products
     });
+    const user=wx.getStorageSync('currentUser')||{}
+    const shopId=user.shopId||''
+    const db=wx.cloud.database(); const _=db.command
+    if(value){
+      db.collection('products').where({shopId,name:_.regex({regexp:value,options:'i'})}).limit(20).get().then(r=>{
+        this.setData({productOptions:(r.data||[]).map(p=>p.name)})
+      })
+    }
   },
   
   // 输入产品型号
@@ -293,24 +314,18 @@ Page({
     
     if (!valid) return;
     
-    // 提交表单
-    wx.showLoading({
-      title: '提交中...',
-    });
-    
-    // 模拟提交
-    setTimeout(() => {
-      wx.hideLoading();
-      wx.showToast({
-        title: '出库成功',
-        icon: 'success',
-        duration: 2000,
-        success: function() {
-          setTimeout(() => {
-            wx.navigateBack();
-          }, 2000);
-        }
-      });
-    }, 1500);
+    const user=wx.getStorageSync('currentUser')||{}
+    const shopId=user.shopId||''
+    const createdBy=user._id||''
+    const billType=this.data.typeOptions[this.data.typeIndex]
+    const billDate=this.data.date+'T00:00:00.000Z'
+    const counterparty={customerName:this.data.customerOptions[this.data.customerIndex]||''}
+    const items=this.data.products.map((p,i)=>({lineNo:i+1,productName:this.data.productOptions[p.productIndex]||p.name,productCode:p.model||'',unit:'',specification:'',quantity:Number(p.quantity),unitPrice:Number(p.price)}))
+    if(!this.data.canSubmit){ wx.showToast({title:'无出库权限',icon:'none'}); return }
+    wx.showLoading({title:'提交中'})
+    wx.cloud.callFunction({name:'stockService',data:{action:'createBill',shopId,direction:'out',billType,billDate,counterparty,items,createdBy,remarks:this.data.remark||''}}).then(()=>{
+      wx.hideLoading(); wx.showToast({title:'出库成功',icon:'success'})
+      setTimeout(()=>{ wx.navigateBack() },800)
+    }).catch(err=>{ wx.hideLoading(); wx.showToast({title: (err&&err.errMsg)||'提交失败',icon:'none'}) })
   }
 });

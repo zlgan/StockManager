@@ -14,9 +14,15 @@
   "_id": "string",             // 用户唯一标识，云开发自动生成
   "openId": "string",         // 微信用户openid，云开发自动生成
   "shopName": "string",        // 店铺名称
-  "staffPermissions": {        // 员工的权限设置
-    "disableInbound": false,   
-    "disableIoutbound": false
+  "staffPermissions": {         // 员工的权限设置（系统设置页开关）
+    "disableInbound": false,    // 禁用入库操作
+    "disableOutbound": false,   // 禁用出库操作
+    "adminApproval": false,     // 入/出库需要管理员审批
+    "hideInboundPrice": false,  // 员工隐藏入库产品价格
+    "ownRecordsOnly": false,    // 员工只能查看自己的入/出库记录
+    "hideInventory": false,     // 员工不能查看产品库存
+    "disableProductEdit": false,// 员工禁用产品编辑
+    "disableStockPoint": false  // 员工账号禁用库存点
   },
   "createdAt": "date",         // 创建时间
 }
@@ -149,7 +155,7 @@
 
 ```javascript
 {
-  "id": "string",                   // 单据主键（原 _id）
+  "_id": "string",                   // 单据主键
   "shopId": "string",               // 店铺ID（数据隔离）
   "direction": "string",            // 单据方向：in（入库）、out（出库）
   "billNo": "string",               // 单据号（按日期+序列生成）
@@ -193,7 +199,7 @@
 
 ```javascript
 {
-  "id": "SB202501150001",
+  "_id": "SB202501150001",
   "shopId": "shop_001",
   "direction": "in",
   "billNo": "IN202501150001",
@@ -220,7 +226,7 @@
 
 ```javascript
 {
-  "id": "string",                   // 明细主键（原 _id）
+  "_id": "string",                   // 明细主键
   "shopId": "string",               // 店铺ID
   "billId": "string",               // 关联 stockBills.id
   "direction": "string",            // in/out（与主表一致）
@@ -245,32 +251,31 @@
 }
 ```
 
-示例：
+### 10. inventoryBalances（库存结存/加权成本）
+
+用途：为库存盘点提供当前结存数量与加权平均成本，支持出库成本计算与盘点展示
+
+字段设计：
 
 ```javascript
 {
-  "id": "SI202501150001_1",
-  "shopId": "shop_001",
-  "billId": "SB202501150001",
-  "direction": "in",
-  "lineNo": 1,
-  "productId": "prod_001",
-  "productName": "可口可乐",
-  "productCode": "COCA001",
-  "unit": "瓶",
-  "specification": "500ml",
-  "quantity": 50,
-  "unitPrice": 2.5,
-  "amount": 125.0,
-  "stockBefore": 50,
-  "stockAfter": 100,
-  "createdAt": "2025-01-15T08:30:00.000Z",
-  "updatedAt": "2025-01-15T08:30:00.000Z",
-  "createdBy": "user_staff_001"
+  "id": "string",                   // 主键（原 _id）
+  "shopId": "string",               // 店铺ID
+  "productId": "string",            // 产品ID
+  "productName": "string",          // 产品名称（冗余）
+
+  "quantity": "number",             // 当前结存数量
+  "avgCost": "number",              // 当前加权平均成本（单价）
+  "totalCost": "number",            // 当前结存总成本（quantity × avgCost）
+
+  "updatedAt": "date",              // 最近更新时间
+  "updatedBy": "string"             // 最近更新人（系统/用户）
 }
 ```
 
-### 10. stockLedger（库存台账）
+索
+
+### 11. stockLedger（库存台账）
 
 用途：记录产品的每一次出入库流水（面向统计与快速盘点），由业务写入或定时任务生成
 
@@ -278,7 +283,7 @@
 
 ```javascript
 {
-  "id": "string",                   // 台账主键（原 _id）
+  "_id": "string",                   // 台账主键
   "shopId": "string",               // 店铺ID
   "productId": "string",            // 产品ID
   "productName": "string",          // 产品名称（冗余）
@@ -298,7 +303,7 @@
 }
 ```
 
-### 11. statsMonthly（月度统计汇总）
+### 12. statsMonthly（月度统计汇总）
 
 用途：为统计模块的收益分析提供快速查询的月度聚合数据，减少每次扫描台账的压力
 
@@ -306,7 +311,7 @@
 
 ```javascript
 {
-  "id": "string",                   // 主键（原 _id）
+  " _id": "string",                   // 主键
   "shopId": "string",               // 店铺ID
   "year": "number",                 // 年（YYYY）
   "month": "number",                // 月（1-12）
@@ -326,13 +331,14 @@
 
 ## 数据关系说明
 
-### 主要关系
+### 主要关系（驼峰字段与新集合）
 
-1. **用户与其他实体**：所有业务数据都通过 `user_id` 关联到具体的店主用户
-2. **产品与类别**：products.category_id → categories._id
-3. **产品与供应商**：products.supplier_id → suppliers._id
-7. **明细与产品**：bill_items.product_id → products._id
-8. **单据与类型**：inbound_bills.bill_type_id → bill_types._id
+1. **用户与店铺**：users.shopId → shops._id
+2. **产品与类别**：products.categoryId → categories._id
+3. **产品与供应商**：products.supplierId → suppliers._id
+4. **单据与明细**：stockItems.billId → stockBills._id
+5. **明细与产品**：stockItems.productId → products._id
+6. **单据与类型**：stockBills.billType ∈ config.inboundType 或 config.outboundType
 
 ### 数据完整性
 
@@ -341,20 +347,36 @@
 3. **库存同步**：入库出库操作需要同步更新产品表的库存数量
 4. **审计日志**：所有重要操作都记录创建人、创建时间、更新人、更新时间
 
-## 索引建议
+## 索引建议（统一驼峰与新集合命名）
 
 ### 必要索引
 
-1. **users集合**：
+1. **users 集合**：
    - username（唯一索引）
-   - _openid（唯一索引）
-2. **staff集合**：
-   - user_id + username（复合唯一索引）
-   - user_id + status（复合索引）
-3. **products集合**：
-   - user_id + model（复合唯一索引）
-   - user_id + category_id（复合索引）
-   - user_id + name（复合索引，支持搜索）
+   - shopId + role（复合索引，用于列表与权限过滤）
+
+2. **products 集合**：
+   - shopId + code（复合唯一或普通索引，支持扫码/编码查询）
+   - shopId + name（复合索引，支持名称搜索）
+   - shopId + categoryId（复合索引，按类别过滤）
+
+3. **stockBills 集合**：
+   - shopId + billDate（复合索引，时间范围查询）
+   - shopId + billNo（唯一索引，单据号唯一）
+   - shopId + direction + status（复合索引，按入/出库与状态过滤）
+   - shopId + direction + billType（复合索引，按类型过滤）
+
+4. **stockItems 集合**：
+   - billId（索引，按单据关联查询明细）
+   - shopId + productId（复合索引，按产品维度查询明细）
+   - shopId + direction + createdAt（复合索引，支持时间序列查询）
+
+5. **stockLedger 集合**：
+   - shopId + productId + createdAt（复合索引，产品流水按时间查询）
+   - shopId + direction + createdAt（复合索引，入/出库流水统计）
+
+6. **statsMonthly 集合**：
+   - shopId + year + month（唯一索引，月度汇总唯一）
 
 ## 数据安全
 
