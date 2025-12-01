@@ -1,9 +1,9 @@
 
 ## Memo
-https://mp.weixin.qq.com/wxamp/devprofile/get_profile?token=413127723&lang=zh_CN
-腾讯云控制台 https://cloud.tencent.com/login
-微信小程序管理后台 https://mp.weixin.qq.com/
-控制台数据库高级操作（适合运维） https://developers.weixin.qq.com/miniprogram/dev/wxcloudservice/wxcloud/guide/database/console-dbscript.html
+1. https://mp.weixin.qq.com/wxamp/devprofile/get_profile?token=413127723&lang=zh_CN
+2. 腾讯云控制台 https://cloud.tencent.com/login
+3. 微信小程序管理后台 https://mp.weixin.qq.com/
+4. 控制台数据库高级操作（适合运维） https://developers.weixin.qq.com/miniprogram/dev/wxcloudservice/wxcloud/guide/database/console-dbscript.html
 
 ## to do list 
 1. 云存储最好能记录文件的原始名称
