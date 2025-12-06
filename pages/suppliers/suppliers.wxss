@@ -89,8 +89,10 @@
 
 .supplier-header {
   display: flex;
+  flex-wrap: wrap;
+  row-gap: 8rpx;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 10rpx;
 }
 
@@ -98,11 +100,13 @@
   font-size: 32rpx;
   font-weight: 500;
   color: #333;
+  word-break: break-all;
 }
 
 .supplier-code {
   font-size: 24rpx;
   color: #666;
+  word-break: break-all;
 }
 
 .supplier-contact {

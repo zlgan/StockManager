@@ -65,7 +65,9 @@ Page({
    */
   checkCanRegister() {
     const { name, username, password, confirmPassword } = this.data;
-    const canRegister = name.trim() && username.trim() && password.trim() && 
+    const uLen=(username||'').trim().length
+    const pLen=(password||'').trim().length
+    const canRegister = name.trim() && uLen>=3 && uLen<=10 && pLen>=6 && pLen<=20 && 
                        confirmPassword.trim() && password === confirmPassword;
     this.setData({
       canRegister
@@ -94,12 +96,20 @@ Page({
       });
       return;
     }
+    if (username.trim().length<3 || username.trim().length>10) {
+      wx.showToast({ title: '用户名长度3-10字符', icon: 'none' });
+      return;
+    }
 
     if (!password.trim()) {
       wx.showToast({
         title: '请输入密码',
         icon: 'none'
       });
+      return;
+    }
+    if (password.trim().length<6 || password.trim().length>20) {
+      wx.showToast({ title: '密码长度6-20字符', icon: 'none' });
       return;
     }
 
@@ -114,22 +124,23 @@ Page({
     try {
       wx.showLoading({ title: '处理中', mask: true })
       const res = await wx.cloud.callFunction({ name: 'registerUser', data: { shopName: name.trim(), username: username.trim(), password: password.trim() } })
-      const currentUser = res && res.result && res.result.currentUser
-      if (!currentUser) {
+      const r = (res && res.result) || {}
+      if (r.ok && r.currentUser) {
+        wx.setStorageSync('currentUser', r.currentUser)
+        wx.setStorageSync('isLoggedIn', true)
         wx.hideLoading()
-        wx.showToast({ title: '注册失败，请重试', icon: 'none' })
+        wx.showToast({ title: '注册成功', icon: 'success' })
+        setTimeout(() => { wx.reLaunch({ url: '/pages/profile/profile' }) }, 800)
         return
       }
-      wx.setStorageSync('currentUser', currentUser)
-      wx.setStorageSync('isLoggedIn', true)
+      const map = { USERNAME_EXISTS: '用户名已存在', INVALID_PARAMS: '参数不完整或格式不正确', INTERNAL_ERROR: '服务器异常，请稍后重试' }
+      const msg = r.message || map[r.code] || '注册失败，请重试'
       wx.hideLoading()
-      wx.showToast({ title: '注册成功', icon: 'success' })
-      setTimeout(() => {
-        wx.reLaunch({ url: '/pages/profile/profile' })
-      }, 800)
+      wx.showToast({ title: msg, icon: 'none' })
     } catch (err) {
+      console.error(err)
       wx.hideLoading()
-      wx.showToast({ title: '注册失败，请重试', icon: 'none' })
+      wx.showToast({ title: '网络异常或服务器错误1', icon: 'none' })
     }
   },
 

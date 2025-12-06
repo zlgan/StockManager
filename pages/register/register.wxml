@@ -20,7 +20,7 @@
       <text class="label">用户名</text>
       <input 
         class="input" 
-        placeholder="请输入用户名" 
+        placeholder="请输入用户名（3-10字符）" 
         value="{{username}}" 
         bindinput="onUsernameInput"
         maxlength="20"
@@ -31,7 +31,7 @@
       <text class="label">密码</text>
       <input 
         class="input" 
-        placeholder="请输入密码" 
+        placeholder="请输入密码（6-20字符）" 
         value="{{password}}" 
         bindinput="onPasswordInput"
         password="{{true}}"

@@ -188,7 +188,7 @@ Page({
       db.collection('products').where({shopId}).field({name:true,code:true,categoryName:true,imageUrl:true,warningStock:true}).get()
     ]).then(([resBal,resProd])=>{
       const balances=resBal.data||[]
-      const prodMap={}
+      const prodMap={};
       (resProd.data||[]).forEach(p=>{ prodMap[p._id]=p })
       const products=balances.map(b=>{
         const p=prodMap[b.productId]||{}

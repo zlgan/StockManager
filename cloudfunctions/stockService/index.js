@@ -122,7 +122,7 @@ exports.main=async(event)=>{
     const direction=bill.data.direction
     const oldItems=await db.collection('stockItems').where({billId}).get()
     console.log('adjustBillDelta fetched oldItems',{count:(oldItems.data&&oldItems.data.length)||0})
-    const mapOld={}
+    const mapOld={};
     (oldItems.data||[]).forEach(it=>{mapOld[it.productId]=it})
     let totalQty=0,totalAmt=0
     for(const raw of newItems){
