@@ -1,11 +1,17 @@
+//导入云开发 SDK,cloud 变量成为操作云开发功能的入口对象
 const cloud=require('wx-server-sdk')
+//这个配置表示云函数会自动使用调用该云函数的小程序客户端所在的环境
 cloud.init({env:cloud.DYNAMIC_CURRENT_ENV})
+//获取数据库实例
 const db=cloud.database()
+//获取数据库操作指令构造器
 const _=db.command
 async function getProductByName(shopId,name){
   const r=await db.collection('products').where({shopId,name}).limit(1).get()
   return r.data&&r.data[0]
 }
+
+//生成出库入库单号IN202512020001
 async function ensureBillNo(shopId,direction,dateStr){
   const prefix=direction==='in'?'IN':'OUT'
   const day=dateStr.slice(0,10).replace(/-/g,'')
@@ -33,9 +39,12 @@ async function applyInbound(shopId,item,createdBy,billRef){
   bal=bal.data&&bal.data[0]
   const oldQty=bal?bal.quantity:0
   const oldAvg=bal?bal.avgCost:0
+  //old total coast
   const oldTC=oldQty*oldAvg
   const newQty=oldQty+item.quantity
+  //new total coast
   const newTC=oldTC+item.quantity*item.unitPrice
+  //新的加权平均价
   const newAvg=newQty>0?newTC/newQty:0
   if(bal){
     await balCol.doc(bal._id).update({data:{quantity:newQty,avgCost:newAvg,totalCost:newTC,updatedAt:now,updatedBy:createdBy}})
