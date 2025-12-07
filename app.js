@@ -9,7 +9,6 @@ App({
         traceUser: true,
         env: "cloud1-1gb6hxc2a529122a"
       })
-      wx.cloud.callFunction({ name: 'initDb' }).catch(err => { console.error(err); throw err })
     }
     // 展示本地存储能力
     const logs = wx.getStorageSync('logs') || []

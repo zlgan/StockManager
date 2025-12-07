@@ -355,10 +355,18 @@ Page({
     const user=wx.getStorageSync('currentUser')||{}
     const createdBy=user._id||''
     const newItems=(this.data.billData.products||[]).map((p,i)=>({lineNo:i+1,productId:p.productNumber,productName:p.productName,productCode:p.productModel||'',quantity:Number(p.quantity),unitPrice:Number(p.price)}))
-    wx.cloud.callFunction({name:'stockService',data:{action:'adjustBillDelta',billId:this.data.billId,newItems,createdBy}}).then(()=>{
-      wx.hideLoading(); wx.showToast({title:'保存成功',icon:'success'})
+    wx.cloud.callFunction({name:'stockService',data:{action:'adjustBillDelta',billId:this.data.billId,newItems,createdBy}}).then(res=>{
+      const r=(res&&res.result)||{}
+      wx.hideLoading()
+      if(!(r.ok===undefined || r.ok===true)){
+        const map={ INVALID_PARAMS:'参数不完整', PRODUCT_NOT_FOUND:'产品不存在', NO_STOCK:'无库存记录', INSUFFICIENT_STOCK:'库存不足', INTERNAL_ERROR:'服务器异常，请稍后重试' }
+        const msg=r.message||map[r.code]||'保存失败'
+        wx.showToast({title: msg, icon:'none'})
+        return
+      }
+      wx.showToast({title:'保存成功',icon:'success'})
       this.setData({mode:'view'})
-    }).catch(()=>{ wx.hideLoading(); wx.showToast({title:'保存失败',icon:'none'}) })
+    }).catch(()=>{ wx.hideLoading(); wx.showToast({title:'网络异常或服务器错误',icon:'none'}) })
   },
 
   /**

@@ -35,6 +35,7 @@ Page({
     const shopId=user.shopId||''
     wx.cloud.callFunction({name:'stockService',data:{action:'homeOverview',shopId}}).then(res=>{
       const d=res.result||{}
+      if(d && d.ok===false){ const msg=d.message||'加载失败'; wx.showToast({title: msg, icon:'none'}); return }
       const todayStats={
         inbound:{count:d.today&&d.today.inbound?d.today.inbound.count:0,amount:(d.today&&d.today.inbound?d.today.inbound.amount:0).toFixed?d.today.inbound.amount.toFixed(2):d.today&&d.today.inbound?d.today.inbound.amount:0},
         outbound:{count:d.today&&d.today.outbound?d.today.outbound.count:0,amount:(d.today&&d.today.outbound?d.today.outbound.amount:0).toFixed?d.today.outbound.amount.toFixed(2):d.today&&d.today.outbound?d.today.outbound.amount:0}
@@ -44,7 +45,7 @@ Page({
         outbound:(d.recent||[]).filter(x=>x.direction==='out').map(x=>({id:x.billRef&&x.billRef.billId,productName:x.productName,type:'出库',quantity:x.quantity,unit:'',amount:(x.amount||0).toFixed(2),time:new Date(x.createdAt).toISOString().replace('T',' ').slice(0,16)}))
       }
       this.setData({todayStats,recentRecords})
-    })
+    }).catch(()=>{ wx.showToast({title:'网络异常或服务器错误',icon:'none'}) })
   },
   
   navigateToInbound: function() {

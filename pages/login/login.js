@@ -80,20 +80,22 @@ Page({
     try {
       wx.showLoading({ title: '登录中', mask: true })
       const res = await wx.cloud.callFunction({ name: 'loginUser', data: { username: username.trim(), password: password.trim() } })
-      const currentUser = res && res.result && res.result.currentUser
-      if (!currentUser) {
+      const r = (res && res.result) || {}
+      if (!(r.ok && r.currentUser)) {
+        const map = { INVALID_PARAMS:'参数不完整或格式不正确', USER_NOT_FOUND:'用户不存在', PASSWORD_INVALID:'用户名或密码错误', INTERNAL_ERROR:'服务器异常，请稍后重试' }
+        const msg = r.message || map[r.code] || '登录失败，请重试'
         wx.hideLoading()
-        wx.showToast({ title: '用户名或密码错误', icon: 'none' })
+        wx.showToast({ title: msg, icon: 'none' })
         return
       }
-      wx.setStorageSync('currentUser', currentUser)
+      wx.setStorageSync('currentUser', r.currentUser)
       wx.setStorageSync('isLoggedIn', true)
       wx.hideLoading()
       wx.showToast({ title: '登录成功', icon: 'success' })
       setTimeout(() => { wx.reLaunch({ url: '/pages/index/index' }) }, 800)
     } catch (err) {
       wx.hideLoading()
-      wx.showToast({ title: '登录失败，请重试', icon: 'none' })
+      wx.showToast({ title: '网络异常或服务器错误', icon: 'none' })
     }
   },
 

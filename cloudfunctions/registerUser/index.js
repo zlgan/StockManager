@@ -3,7 +3,6 @@ const crypto=require('crypto')
 cloud.init({env:cloud.DYNAMIC_CURRENT_ENV})
 const db=cloud.database()
 exports.main=async(event)=>{
-  throw new Error("test error")
   const shopName=(event.shopName||'').trim()
   const username=(event.username||'').trim()
   const password=(event.password||'').trim()

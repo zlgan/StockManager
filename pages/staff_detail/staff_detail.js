@@ -133,24 +133,37 @@ Page({
     const shopId = user.shopId || ''
     if (isAddMode) {
       const payload = { action: 'add', shopId, data: { username: staffInfo.username.trim(), password: staffInfo.password.trim(), realName: staffInfo.realName.trim(), phone: staffInfo.phone.trim(), remark: staffInfo.remark||'' } }
-      wx.cloud.callFunction({ name: 'staffService', data: payload }).then(()=>{
+      wx.cloud.callFunction({ name: 'staffService', data: payload }).then(res=>{
+        const r=(res&&res.result)||{}
         wx.hideLoading()
+        if(!(r.ok===undefined || r.ok===true)){
+          const map={ INVALID_PARAMS:'参数不完整', USERNAME_EXISTS:'用户名已存在', NO_SHOP:'未选择店铺', INTERNAL_ERROR:'服务器异常，请稍后重试' }
+          const msg=r.message||map[r.code]||'保存失败'
+          wx.showToast({ title: msg, icon:'none' })
+          return
+        }
         wx.showToast({ title: '添加成功', icon: 'success' })
         setTimeout(()=>{ wx.navigateBack() }, 800)
-      }).catch(err=>{
+      }).catch(()=>{
         wx.hideLoading()
-        const msg=(err&&err.errMsg)||''
-        wx.showToast({ title: msg.includes('USERNAME_EXISTS')?'用户名已存在':'保存失败', icon:'none' })
+        wx.showToast({ title:'网络异常或服务器错误', icon:'none' })
       })
     } else {
       const payload = { action: 'update', shopId, id: staffInfo.id, data: { realName: staffInfo.realName.trim(), phone: staffInfo.phone.trim(), remark: staffInfo.remark||'', password: staffInfo.password.trim() } }
-      wx.cloud.callFunction({ name: 'staffService', data: payload }).then(()=>{
+      wx.cloud.callFunction({ name: 'staffService', data: payload }).then(res=>{
+        const r=(res&&res.result)||{}
         wx.hideLoading()
+        if(!(r.ok===undefined || r.ok===true)){
+          const map={ INVALID_PARAMS:'参数不完整', USERNAME_EXISTS:'用户名已存在', NO_SHOP:'未选择店铺', INTERNAL_ERROR:'服务器异常，请稍后重试' }
+          const msg=r.message||map[r.code]||'保存失败'
+          wx.showToast({ title: msg, icon:'none' })
+          return
+        }
         wx.showToast({ title: '保存成功', icon: 'success' })
         this.setData({ isEditMode: false, updateTime: new Date().toLocaleString('zh-CN') })
       }).catch(()=>{
         wx.hideLoading()
-        wx.showToast({ title: '保存失败', icon:'none' })
+        wx.showToast({ title:'网络异常或服务器错误', icon:'none' })
       })
     }
   },
@@ -195,7 +208,10 @@ Page({
     const user = wx.getStorageSync('currentUser') || {}
     const shopId = user.shopId || ''
     const disableInbound = e.detail.value
-    wx.cloud.callFunction({ name: 'shopService', data: { action: 'updateStaffPermissions', shopId, disableInbound, disableOutbound: !this.data.staffInfo ? false : !this.data.staffInfo.canStockOut } })
+    wx.cloud.callFunction({ name: 'shopService', data: { action: 'updateStaffPermissions', shopId, disableInbound, disableOutbound: !this.data.staffInfo ? false : !this.data.staffInfo.canStockOut } }).then(res=>{
+      const r=(res&&res.result)||{}
+      if(r && r.ok===false){ const msg=r.message||'更新失败'; wx.showToast({title: msg, icon:'none'}) }
+    }).catch(()=>{ wx.showToast({ title:'网络异常或服务器错误', icon:'none' }) })
     this.setData({ 'staffInfo.canStockIn': !disableInbound })
   },
 
@@ -203,7 +219,10 @@ Page({
     const user = wx.getStorageSync('currentUser') || {}
     const shopId = user.shopId || ''
     const disableOutbound = e.detail.value
-    wx.cloud.callFunction({ name: 'shopService', data: { action: 'updateStaffPermissions', shopId, disableOutbound, disableInbound: !this.data.staffInfo ? false : !this.data.staffInfo.canStockIn } })
+    wx.cloud.callFunction({ name: 'shopService', data: { action: 'updateStaffPermissions', shopId, disableOutbound, disableInbound: !this.data.staffInfo ? false : !this.data.staffInfo.canStockIn } }).then(res=>{
+      const r=(res&&res.result)||{}
+      if(r && r.ok===false){ const msg=r.message||'更新失败'; wx.showToast({title: msg, icon:'none'}) }
+    }).catch(()=>{ wx.showToast({ title:'网络异常或服务器错误', icon:'none' }) })
     this.setData({ 'staffInfo.canStockOut': !disableOutbound })
   },
 
@@ -211,7 +230,9 @@ Page({
     const user = wx.getStorageSync('currentUser') || {}
     const shopId = user.shopId || ''
     wx.cloud.callFunction({ name: 'shopService', data: { action: 'getStaffPermissions', shopId } }).then(res=>{
-      const perms = (res && res.result && res.result.staffPermissions) || { disableInbound:false, disableOutbound:false }
+      const r=(res&&res.result)||{}
+      if(r && r.ok===false){ const msg=r.message||'加载失败'; wx.showToast({title: msg, icon:'none'}); return }
+      const perms = r.staffPermissions || { disableInbound:false, disableOutbound:false }
       this.setData({ 'staffInfo.canStockIn': !perms.disableInbound, 'staffInfo.canStockOut': !perms.disableOutbound })
     })
   },

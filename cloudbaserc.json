@@ -1,0 +1,105 @@
+{
+  "envId": "cloud1-1gb6hxc2a529122a",
+  "functionRoot": "./cloudfunctions",
+  "functions": [
+    {
+      "name": "stockService",
+      "runtime": "Nodejs16.13",
+      "timeout": 60,
+      "memorySize": 256,
+      "handler": "index.main",
+      "installDependency": true,
+      "code": { "src": "cloudfunctions/stockService", "ignore": ["node_modules/**", ".git/**"] }
+    },
+    {
+      "name": "staffService",
+      "runtime": "Nodejs16.13",
+      "timeout": 60,
+      "memorySize": 256,
+      "handler": "index.main",
+      "installDependency": true,
+      "code": { "src": "cloudfunctions/staffService", "ignore": ["node_modules/**", ".git/**"] }
+    },
+    {
+      "name": "shopService",
+      "runtime": "Nodejs16.13",
+      "timeout": 60,
+      "memorySize": 256,
+      "handler": "index.main",
+      "installDependency": true,
+      "code": { "src": "cloudfunctions/shopService", "ignore": ["node_modules/**", ".git/**"] }
+    },
+    {
+      "name": "customerService",
+      "runtime": "Nodejs16.13",
+      "timeout": 60,
+      "memorySize": 256,
+      "handler": "index.main",
+      "installDependency": true,
+      "code": { "src": "cloudfunctions/customerService", "ignore": ["node_modules/**", ".git/**"] }
+    },
+    {
+      "name": "supplierService",
+      "runtime": "Nodejs16.13",
+      "timeout": 60,
+      "memorySize": 256,
+      "handler": "index.main",
+      "installDependency": true,
+      "code": { "src": "cloudfunctions/supplierService", "ignore": ["node_modules/**", ".git/**"] }
+    },
+    {
+      "name": "productService",
+      "runtime": "Nodejs16.13",
+      "timeout": 60,
+      "memorySize": 256,
+      "handler": "index.main",
+      "installDependency": true,
+      "code": { "src": "cloudfunctions/productService", "ignore": ["node_modules/**", ".git/**"] }
+    },
+    {
+      "name": "categoryService",
+      "runtime": "Nodejs16.13",
+      "timeout": 60,
+      "memorySize": 256,
+      "handler": "index.main",
+      "installDependency": true,
+      "code": { "src": "cloudfunctions/categoryService", "ignore": ["node_modules/**", ".git/**"] }
+    },
+    {
+      "name": "registerUser",
+      "runtime": "Nodejs16.13",
+      "timeout": 60,
+      "memorySize": 256,
+      "handler": "index.main",
+      "installDependency": true,
+      "code": { "src": "cloudfunctions/registerUser", "ignore": ["node_modules/**", ".git/**"] }
+    },
+    {
+      "name": "loginUser",
+      "runtime": "Nodejs16.13",
+      "timeout": 60,
+      "memorySize": 256,
+      "handler": "index.main",
+      "installDependency": true,
+      "code": { "src": "cloudfunctions/loginUser", "ignore": ["node_modules/**", ".git/**"] }
+    },
+    {
+      "name": "login",
+      "runtime": "Nodejs16.13",
+      "timeout": 60,
+      "memorySize": 256,
+      "handler": "index.main",
+      "installDependency": true,
+      "code": { "src": "cloudfunctions/login", "ignore": ["node_modules/**", ".git/**"] }
+    },
+    {
+      "name": "initDb",
+      "runtime": "Nodejs16.13",
+      "timeout": 60,
+      "memorySize": 256,
+      "handler": "index.main",
+      "installDependency": true,
+      "code": { "src": "cloudfunctions/initDb", "ignore": ["node_modules/**", ".git/**"] }
+    }
+  ]
+}

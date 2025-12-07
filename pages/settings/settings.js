@@ -29,7 +29,9 @@ Page({
     const user = wx.getStorageSync('currentUser') || {}
     const shopId = user.shopId || ''
     wx.cloud.callFunction({ name: 'shopService', data: { action: 'getSettings', shopId } }).then(res=>{
-      const perms = (res && res.result && res.result.staffPermissions) || {}
+      const r=(res&&res.result)||{}
+      if(r && r.ok===false){ const msg=r.message||'加载失败'; wx.showToast({title: msg, icon:'none'}); return }
+      const perms = r.staffPermissions || {}
       const merged = {
         disableStockPoint: !!perms.disableStockPoint,
         hideInboundPrice: !!perms.hideInboundPrice,
@@ -50,11 +52,11 @@ Page({
   saveSettings() {
     const user = wx.getStorageSync('currentUser') || {}
     const shopId = user.shopId || ''
-    wx.cloud.callFunction({ name: 'shopService', data: { action: 'updateSettings', shopId, settings: this.data.settings } }).then(()=>{
+    wx.cloud.callFunction({ name: 'shopService', data: { action: 'updateSettings', shopId, settings: this.data.settings } }).then(res=>{
+      const r=(res&&res.result)||{}
+      if(r && r.ok===false){ const msg=r.message||'保存失败'; wx.showToast({title: msg, icon:'none'}); return }
       wx.showToast({ title: '设置已保存', icon: 'success', duration: 1500 })
-    }).catch(()=>{
-      wx.showToast({ title: '保存失败', icon: 'none' })
-    })
+    }).catch(()=>{ wx.showToast({ title: '网络异常或服务器错误', icon: 'none' }) })
   },
 
   /**

@@ -203,13 +203,20 @@ Page({
       const isEdit = this.data.mode!=='add' && this.data.productId
       const payload = isEdit ? { action: 'update', id: this.data.productId, shopId, data: productData } : { action: 'add', shopId, data: productData }
       return wx.cloud.callFunction({ name: 'productService', data: payload })
-    }).then(()=>{
+    }).then(res=>{
+      const r=(res&&res.result)||{}
       wx.hideLoading()
+      if(!(r.ok===undefined || r.ok===true)){
+        const map={ INVALID_PARAMS:'参数不完整', DUPLICATE:'已存在重复产品/编码', NO_SHOP:'未选择店铺', INTERNAL_ERROR:'服务器异常，请稍后重试' }
+        const msg=r.message||map[r.code]||'保存失败'
+        wx.showToast({ title: msg, icon: 'none' })
+        return
+      }
       wx.showToast({ title: '保存成功', icon: 'success' })
       setTimeout(()=>{ wx.navigateBack() }, 800)
     }).catch(()=>{
       wx.hideLoading()
-      wx.showToast({ title: '保存失败', icon: 'none' })
+      wx.showToast({ title: '网络异常或服务器错误', icon: 'none' })
     })
   }
 });

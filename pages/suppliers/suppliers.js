@@ -51,7 +51,7 @@ Page({
       const mapped = list.map(s=>({ id: s._id, name: s.name, code: s.code, address: s.address, contactPerson: s.contactPerson, phone: s.phone, remark: s.remarks }))
       this.setData({ suppliers: mapped })
       wx.showToast({ title: `找到 ${mapped.length} 个供应商`, icon: 'none' })
-    })
+    }).catch(()=>{ wx.showToast({ title:'网络异常或服务器错误', icon:'none' }) })
   },
 
   /**
@@ -88,6 +88,6 @@ Page({
     db.collection('suppliers').where({ shopId, status: 'active' }).get().then(res=>{
       const mapped = (res.data||[]).map(s=>({ id: s._id, name: s.name, code: s.code, address: s.address, contactPerson: s.contactPerson, phone: s.phone, remark: s.remarks }))
       this.setData({ suppliers: mapped, originalSuppliers: mapped })
-    })
+    }).catch(()=>{ wx.showToast({ title:'网络异常或服务器错误', icon:'none' }) })
   }
 })
