@@ -1,7 +1,7 @@
 // pages/inbound/inbound.js
 Page({
   data: {
-    billNo: 'RK' + new Date().toISOString().slice(0, 10).replace(/-/g, '') + '001',
+    billNo: '',
     date: new Date().toISOString().slice(0, 10),
     inboundType: '',
     supplier: '',

@@ -202,6 +202,11 @@
 3. 登录链接
    - 已有账户？立即登录
 
+4. 页面逻辑
+- 用户名称长度为3-10字符
+- 密码长度至少为6-20字符，并在文本框中提示
+- 保存之后写入shop集合的staffPermissions保存不完整，应该与settings中的staffPermissions一致，且默认为false
+
 #### 2. 首页
 
 ##### 2.1 首页 (pages/index/index)

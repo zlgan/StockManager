@@ -80,7 +80,6 @@
       <!-- 单据头部信息 -->
       <view class="bill-header">
         <view class="bill-number {{item.type}}">
-          <text class="bill-type-label">{{item.type === 'inbound' ? '入库单' : '出库单'}}</text>
           <text class="bill-number-text">{{item.billNumber}}</text>
         </view>
         <view class="bill-date">{{item.date}}</view>

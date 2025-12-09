@@ -6,7 +6,7 @@
       <view class="form-group">
         <view class="form-label">单据号</view>
         <view class="form-control-wrapper">
-          <input class="form-control bg-gray flex-grow" value="{{billNo}}" disabled name="billNo" />
+          <input class="form-control bg-gray flex-grow" value="{{billNo}}" disabled name="billNo" placeholder="保存后自动生成" />
         </view>
       </view>
       

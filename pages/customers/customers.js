@@ -74,7 +74,6 @@ Page({
       if (phone) list = list.filter(c => (c.phone||'').includes(phone))
       const mapped = list.map(c=>({ id: c._id, name: c.name, code: c.code, address: c.address, contactPerson: c.contactPerson, phone: c.phone, serviceMonths: c.serviceMonths, remark: c.remarks }))
       this.setData({ customers: mapped })
-      wx.showToast({ title: `找到 ${mapped.length} 个客户`, icon: 'none' })
     })
   },
 
