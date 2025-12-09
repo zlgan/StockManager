@@ -172,21 +172,21 @@ Page({
   removeProduct: function(e) {
     const { index } = e.currentTarget.dataset;
     const products = this.data.products;
-    
-    if (products.length > 1) {
-      products.splice(index, 1);
-      
-      this.setData({
-        products: products
-      });
-      
-      this.calculateTotal();
-    } else {
-      wx.showToast({
-        title: '至少需要一个产品',
-        icon: 'none'
-      });
+    if (products.length <= 1) {
+      wx.showToast({ title: '至少需要一个产品', icon: 'none' });
+      return;
     }
+    wx.showModal({
+      title: '确认删除',
+      content: '确定删除该产品吗？',
+      success: (res) => {
+        if (res.confirm) {
+          products.splice(index, 1);
+          this.setData({ products });
+          this.calculateTotal();
+        }
+      }
+    });
   },
 
   // 计算总计
@@ -404,6 +404,8 @@ Page({
     
     const products = this.data.products;
     let valid = true;
+    const ids = new Set();
+    const names = new Set();
     
     products.forEach(product => {
       if (!product.name) {
@@ -431,6 +433,15 @@ Page({
         });
         valid = false;
         return;
+      }
+      const pid=(product.productId||''); const pname=(product.name||'');
+      const key=pid||pname;
+      if(key){
+        if((pid && ids.has(pid)) || (pname && names.has(pname))){
+          wx.showToast({ title: '不允许在一次入库中提交重复产品', icon: 'none' });
+          valid=false; return;
+        }
+        if(pid) ids.add(pid); if(pname) names.add(pname);
       }
     });
     

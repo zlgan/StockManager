@@ -35,8 +35,7 @@ Page({
     if (mode === 'edit' && id) {
       this.loadSupplierData(id);
     } else if (mode === 'add') {
-      // 新增模式，生成新的供应商编号
-      this.generateSupplierCode();
+      // 新增模式，编号由用户手动填写
     }
   },
   
@@ -59,12 +58,7 @@ Page({
   /**
    * 生成供应商编号
    */
-  generateSupplierCode() {
-    const code = 'SUP' + String(Math.floor(Math.random() * 90000) + 10000);
-    this.setData({
-      'supplier.code': code
-    });
-  },
+  generateSupplierCode() {},
   
   /**
    * 表单提交
@@ -88,7 +82,6 @@ Page({
       });
       return;
     }
-    
     // 手机号格式验证（如果有填写）
     if (formData.phone && !/^1\d{10}$/.test(formData.phone)) {
       wx.showToast({
@@ -107,7 +100,7 @@ Page({
       const r=(res&&res.result)||{}
       wx.hideLoading()
       if(!(r.ok===undefined || r.ok===true)){
-        const map={ INVALID_PARAMS:'参数不完整', CODE_EXISTS:'编号已存在', NAME_EXISTS:'名称已存在', NO_SHOP:'未选择店铺', INTERNAL_ERROR:'服务器异常，请稍后重试' }
+        const map={ INVALID_PARAMS:'参数不完整',CODE_EXISTS:'供应商编号已存在', NAME_EXISTS:'供应商名称已存在', NO_SHOP:'未选择店铺', INTERNAL_ERROR:'服务器异常，请稍后重试' }
         const msg=r.message||map[r.code]||'保存失败'
         wx.showToast({ title: msg, icon:'none' })
         return

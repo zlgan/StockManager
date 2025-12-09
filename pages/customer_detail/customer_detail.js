@@ -307,14 +307,20 @@ Page({
     const user = wx.getStorageSync('currentUser') || {}
     const shopId = user.shopId || ''
     const payload = this.data.mode==='add' ? { action: 'add', shopId, data: { name: customerData.name.trim(), code: customerData.code.trim(), address: customerData.address||'', contactPerson: customerData.contactPerson||'', phone: customerData.phone||'', serviceMonths: Number(customerData.serviceMonths||0), remarks: customerData.remark||'', availableProducts: customerData.availableProducts, createdBy: user._id } } : { action: 'update', id: this.data.customerId, shopId, data: { name: customerData.name.trim(), code: customerData.code.trim(), address: customerData.address||'', contactPerson: customerData.contactPerson||'', phone: customerData.phone||'', serviceMonths: Number(customerData.serviceMonths||0), remarks: customerData.remark||'', availableProducts: customerData.availableProducts } }
-    wx.cloud.callFunction({ name: 'customerService', data: payload }).then(()=>{
+    wx.cloud.callFunction({ name: 'customerService', data: payload }).then(res=>{
+      const r=(res&&res.result)||{}
       wx.hideLoading()
+      if(!(r.ok===undefined || r.ok===true)){
+        const map={ INVALID_PARAMS:'参数不完整', CODE_EXISTS:'编号已存在', NO_SHOP:'未选择店铺', INVALID_ID:'ID无效', INTERNAL_ERROR:'服务器异常，请稍后重试' }
+        const msg=r.message||map[r.code]||'保存失败'
+        wx.showToast({ title: msg, icon:'none' })
+        return
+      }
       wx.showToast({ title: this.data.mode==='add' ? '新增成功' : '保存成功', icon:'success' })
       setTimeout(()=>{ wx.navigateBack() }, 800)
-    }).catch(err=>{
+    }).catch(()=>{
       wx.hideLoading()
-      const msg = (err && err.errMsg) || '保存失败'
-      wx.showToast({ title: msg.includes('CODE_EXISTS')? '编号已存在' : '保存失败', icon:'none' })
+      wx.showToast({ title:'网络异常或服务器错误', icon:'none' })
     })
   },
 

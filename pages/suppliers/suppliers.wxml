@@ -5,11 +5,11 @@
     <view class="card mb-4">
       <view class="search-item mb-3">
         <text class="form-label">供应商名称</text>
-        <input class="form-control input-height" placeholder="请输入供应商名称" bindinput="inputSupplierName" value="{{supplierName}}"/>
+        <input class="form-control input-height" placeholder="请输入供应商名称" placeholder-class="placeholder-text" bindinput="inputSupplierName" value="{{supplierName}}"/>
       </view>
       <view class="search-item mb-3">
         <text class="form-label">供应商编号</text>
-        <input class="form-control input-height" placeholder="请输入供应商编号" bindinput="inputSupplierCode" value="{{supplierCode}}"/>
+        <input class="form-control input-height" placeholder="请输入供应商编号" placeholder-class="placeholder-text" bindinput="inputSupplierCode" value="{{supplierCode}}"/>
       </view>
       <view class="btn-center">
         <button class="btn btn-primary" bindtap="searchSuppliers">

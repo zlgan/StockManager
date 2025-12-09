@@ -46,9 +46,7 @@
       <text class="form-label">可购买产品</text>
       <view class="form-control-wrapper">
         <view class="form-control picker-display" bindtap="showProductSelector">
-          <text wx:if="{{selectedProducts.length > 0}}" class="selected-text">
-            已选择 {{selectedProducts.length}} 个产品
-          </text>
+          <text wx:if="{{selectedProducts.length > 0}}" class="selected-text">已选择 {{selectedProducts.length}} 个产品</text>
           <text wx:else class="placeholder-text">请选择购买的产品</text>
           <text class="picker-arrow">></text>
         </view>
@@ -71,12 +69,9 @@
       <text class="form-label">售后周期</text>
       <view class="form-control-wrapper">
         <picker mode="selector" range="{{serviceMonthOptions}}" range-key="label" bindchange="selectServiceMonth" value="{{selectedServiceMonthIndex}}">
-          <view class="form-control picker-display">
-            <text wx:if="{{customerInfo.serviceMonths}}" class="selected-text">
-              {{customerInfo.serviceMonths}}个月
-            </text>
+          <view class="form-control picker-display-noarrow">
+            <text wx:if="{{customerInfo.serviceMonths}}" class="selected-text">{{customerInfo.serviceMonths}}个月</text>
             <text wx:else class="placeholder-text">请选择售后周期</text>
-            <text class="picker-arrow">></text>
           </view>
         </picker>
       </view>

@@ -188,23 +188,23 @@
 
 .float-btn {
   position: fixed;
-  right: 30rpx;
-  bottom: 140rpx;
-  width: 100rpx;
-  height: 100rpx;
+  bottom: 40rpx;
+  right: 40rpx;
+  width: 120rpx;
+  height: 120rpx;
+  background-color: #007aff;
   border-radius: 50%;
-  color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.15);
-  background-color:rgb(255, 255, 255);
-  z-index: 100;
+  box-shadow: 0 4rpx 16rpx rgba(0, 122, 255, 0.3);
+  z-index: 999;
 }
 
 .add-btn-image {
   width: 60rpx;
   height: 60rpx;
+  filter: brightness(0) invert(1);
 }
 
 .icon-add::before {

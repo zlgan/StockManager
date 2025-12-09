@@ -128,7 +128,7 @@ Page({
   
   addProduct: function() {
     const products = this.data.products;
-    products.push({
+    products.unshift({
       productId: '',
       name: '',
       stock: 0,
@@ -144,6 +144,26 @@ Page({
     
     this.setData({
       products: products
+    });
+  },
+
+  removeProduct: function(e){
+    const index = e.currentTarget.dataset.index;
+    const products = this.data.products;
+    if (products.length <= 1) {
+      wx.showToast({ title: '至少需要一个产品', icon: 'none' });
+      return;
+    }
+    wx.showModal({
+      title: '确认删除',
+      content: '确定删除该产品吗？',
+      success: (res) => {
+        if (res.confirm) {
+          products.splice(index, 1);
+          this.setData({ products });
+          this.calculateTotal();
+        }
+      }
     });
   },
   
@@ -325,6 +345,7 @@ Page({
     }
     
     let valid = true;
+    const ids=new Set(); const names=new Set();
     this.data.products.forEach((product, index) => {
       if (!product.name) {
         wx.showToast({
@@ -360,6 +381,15 @@ Page({
         });
         valid = false;
         return;
+      }
+      const pid=(product.productId||''); const pname=(product.name||'');
+      const key=pid||pname;
+      if(key){
+        if((pid && ids.has(pid)) || (pname && names.has(pname))){
+          wx.showToast({ title: '不允许在一次出库中提交重复产品', icon: 'none' });
+          valid=false; return;
+        }
+        if(pid) ids.add(pid); if(pname) names.add(pname);
       }
     });
     
