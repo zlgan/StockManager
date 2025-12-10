@@ -399,3 +399,12 @@
   width: 80rpx;
   height: 80rpx;
 }
+.input-control {
+  height: 88rpx;
+  line-height: 88rpx;
+  padding: 0 24rpx;
+}
+
+.input-control::placeholder {
+  line-height: 88rpx;
+}

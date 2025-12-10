@@ -6,7 +6,7 @@
     <view class="form-group">
       <view class="form-label">搜索</view>
       <view class="form-row">
-        <input class="form-control flex-grow" placeholder="搜索产品名称/单据号/制单人" value="{{searchKeyword}}" bindinput="inputSearchKeyword" />
+        <input class="form-control input-control flex-grow" placeholder="搜索产品名称/单据号/制单人" value="{{searchKeyword}}" bindinput="inputSearchKeyword" />
         <view class="btn-icon" bindtap="scanCode">
           <image class="scan-image" src="/images/scan.png" mode="aspectFit"></image>
         </view>
@@ -104,7 +104,7 @@
       <view class="bill-footer">
         <view class="bill-info">
           <view class="bill-type-name">{{item.billTypeName}}</view>
-          <view class="bill-supplier" wx:if="{{item.supplier}}">{{item.supplier}}</view>
+          <view class="bill-supplier" wx:if="{{item.supplier}}">-{{item.supplier}}</view>
         </view>
         <view class="bill-amount">¥{{item.totalAmount}}</view>
       </view>

@@ -32,20 +32,7 @@ Page({
     ],
     totalQuantity: 1,
     totalAmount: 0,
-    suppliers: [
-      { id: 1, name: '广州电子科技有限公司' },
-      { id: 2, name: '深圳数码配件厂' },
-      { id: 3, name: '东莞塑胶制品有限公司' }
-    ],
-    inboundTypes: [
-      { id: 1, name: '采购入库' },
-      { id: 2, name: '退货入库' },
-      { id: 3, name: '调拨入库' },
-      { id: 4, name: '增加配件出库' },
-      { id: 5, name: '折旧入库' }
-    ],
-    productList: []
-    ,
+    productList: [],
     permissions: null,
     canSubmit: true
   },
@@ -333,7 +320,20 @@ Page({
     this.setData({
       products: products
     });
-    if(value){ this.linkByModel(index, value) }
+    if(value){
+      this.linkByModel(index, value)
+    } else {
+      products[index].productId=''
+      products[index].name=''
+      products[index].price=''
+      products[index].unit=''
+      products[index].specification=''
+      products[index].imageUrl=''
+      products[index].stock=0
+      products[index].amount=0
+      this.setData({products})
+      this.calculateTotal()
+    }
   },
 
   linkByModel: function(index, code){
@@ -342,7 +342,20 @@ Page({
     const db=wx.cloud.database()
     db.collection('products').where({shopId,code}).limit(1).get().then(r=>{
       const p=(r.data&&r.data[0])
-      if(!p) return
+      if(!p){
+        const products=this.data.products
+        products[index].productId=''
+        products[index].name=''
+        products[index].price=''
+        products[index].unit=''
+        products[index].specification=''
+        products[index].imageUrl=''
+        products[index].stock=0
+        products[index].amount=0
+        this.setData({products})
+        this.calculateTotal()
+        return
+      }
       const products=this.data.products
       products[index].productId=p._id
       products[index].name=p.name||products[index].name||''
@@ -354,6 +367,7 @@ Page({
       this.setData({products})
       return db.collection('inventoryBalances').where({shopId,productId:p._id}).limit(1).get()
     }).then(rs=>{
+      console.log("aaaaaaaaaaaaaa");
       if(!rs) return
       const b=(rs.data&&rs.data[0])||{quantity:0}
       const products=this.data.products
@@ -449,7 +463,7 @@ Page({
     
     const user=wx.getStorageSync('currentUser')||{}
     const shopId=user.shopId||''
-    const createdBy=user._id||''
+    const createdBy=user.username||''
     const billType=this.data.inboundType
     const billDate=this.data.date+'T00:00:00.000Z'
     const counterparty={supplierName:this.data.supplier}

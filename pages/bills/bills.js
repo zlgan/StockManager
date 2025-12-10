@@ -10,9 +10,9 @@ Page({
     endDate: '',
     billTypes: ['全部', '入库单', '出库单'],
     billTypeIndex: 0,
-    suppliers: ['全部', '广州电子科技有限公司', '北京科技有限公司', '深圳数码配件厂'],
+    suppliers: ['全部'],
     supplierIndex: 0,
-    customers: ['全部', '深圳华强客户', '广州天河客户', '北京中关村客户'],
+    customers: ['全部'],
     customerIndex: 0,
     totalCount: 0,
     showExportSuccess: false,
@@ -29,6 +29,17 @@ Page({
    */
   onLoad: function (options) {
     this.initDateRange();
+    const user=wx.getStorageSync('currentUser')||{}
+    const shopId=user.shopId||''
+    const db=wx.cloud.database()
+    db.collection('suppliers').where({shopId,status:'active'}).field({name:true}).limit(100).get().then(r=>{
+      const list=(r.data||[]).map(x=>x.name)
+      this.setData({suppliers:['全部',...list]})
+    })
+    db.collection('customers').where({shopId,status:'active'}).field({name:true}).limit(100).get().then(r=>{
+      const list=(r.data||[]).map(x=>x.name)
+      this.setData({customers:['全部',...list]})
+    })
     this.loadBillData(true);
   },
 
@@ -220,7 +231,7 @@ Page({
    */
   bindBillTypeChange: function(e) {
     this.setData({
-      billTypeIndex: e.detail.value
+      billTypeIndex: Number(e.detail.value)
     });
   },
 
@@ -229,7 +240,7 @@ Page({
    */
   bindSupplierChange: function(e) {
     this.setData({
-      supplierIndex: e.detail.value
+      supplierIndex: Number(e.detail.value)
     });
   },
 
@@ -238,7 +249,7 @@ Page({
    */
   bindCustomerChange: function(e) {
     this.setData({
-      customerIndex: e.detail.value
+      customerIndex: Number(e.detail.value)
     });
   },
 
@@ -378,11 +389,16 @@ Page({
   ,
   applyFiltersWith: function(sourceBills){
     const { searchKeyword, startDate, endDate, billTypes, billTypeIndex, suppliers, supplierIndex, customers, customerIndex } = this.data;
+    const bIdx = Number(billTypeIndex) || 0;
+    const sIdx = Number(supplierIndex) || 0;
+    const cIdx = Number(customerIndex) || 0;
     const keyword = (searchKeyword || '').trim();
     const typeMap = { 1: 'inbound', 2: 'outbound' };
-    const selectedType = billTypeIndex === 0 ? null : typeMap[billTypeIndex];
-    const selectedSupplier = supplierIndex === 0 ? null : suppliers[supplierIndex];
-    const selectedCustomer = customerIndex === 0 ? null : customers[customerIndex];
+    const selectedType = bIdx === 0 ? null : typeMap[bIdx];
+    let selectedSupplier = sIdx === 0 ? null : suppliers[sIdx];
+    let selectedCustomer = cIdx === 0 ? null : customers[cIdx];
+    if (selectedSupplier === '全部') selectedSupplier = null;
+    if (selectedCustomer === '全部') selectedCustomer = null;
 
     const start = startDate ? new Date(startDate).getTime() : null;
     const end = endDate ? new Date(endDate).getTime() : null;
