@@ -264,7 +264,7 @@ Page({
     const user=wx.getStorageSync('currentUser')||{}
     const shopId=user.shopId||''
     const db=wx.cloud.database(); const _=db.command
-    db.collection('products').where({shopId,name:_.regex({regexp:keyword,options:'i'})}).limit(20).get().then(res=>{
+    db.collection('products').where({shopId,name:db.RegExp({regexp:keyword,options:'i'})}).limit(20).get().then(res=>{
       const filtered=(res.data||[])
       this.setData({filteredProducts:filtered,currentEditIndex:index,showSuggestions:true})
     })

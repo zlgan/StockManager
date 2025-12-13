@@ -238,7 +238,21 @@ Page({
     });
     
     // 搜索匹配产品
-    this.searchProducts(value, index);
+    if(value){
+      this.searchProducts(value, index);
+      this.linkByName(index, value)
+    }else{
+      products[index].productId=''
+      products[index].model=''
+      products[index].price=''
+      products[index].unit=''
+      products[index].specification=''
+      products[index].imageUrl=''
+      products[index].stock=0
+      products[index].amount=0
+      this.setData({products})
+      this.calculateTotal()
+    }
   },
   
   // 搜索匹配产品
@@ -255,7 +269,7 @@ Page({
     const shopId=user.shopId||''
     const db=wx.cloud.database()
     const _=db.command
-    db.collection('products').where({shopId,name:_.regex({regexp:keyword,options:'i'})}).limit(20).get().then(res=>{
+    db.collection('products').where({shopId,name:db.RegExp({regexp:keyword,options:'i'})}).limit(20).get().then(res=>{
       const filtered=(res.data||[]).map(p=>({id:p._id,name:p.name,model:p.code,price:p.inboundPrice||0,imageUrl:p.imageUrl||''}))
       this.setData({filteredProducts:filtered,currentEditIndex:index,showSuggestions:true})
     })
@@ -368,6 +382,47 @@ Page({
       return db.collection('inventoryBalances').where({shopId,productId:p._id}).limit(1).get()
     }).then(rs=>{
       console.log("aaaaaaaaaaaaaa");
+      if(!rs) return
+      const b=(rs.data&&rs.data[0])||{quantity:0}
+      const products=this.data.products
+      products[index].stock=b.quantity||0
+      this.setData({products})
+      this.calculateTotal()
+    })
+  },
+
+  linkByName: function(index, name){
+    const user=wx.getStorageSync('currentUser')||{}
+    const shopId=user.shopId||''
+    const db=wx.cloud.database()
+    db.collection('products').where({shopId,name}).limit(1).get().then(r=>{
+      const p=(r.data&&r.data[0])
+      if(!p){
+        const products=this.data.products
+        products[index].productId=''
+        products[index].model=''
+        products[index].price=''
+        products[index].unit=''
+        products[index].specification=''
+        products[index].imageUrl=''
+        products[index].stock=0
+        products[index].amount=0
+        this.setData({products})
+        this.calculateTotal()
+        return
+      }
+      const products=this.data.products
+      products[index].productId=p._id
+      products[index].name=p.name||products[index].name||''
+      products[index].model=p.code||products[index].model||''
+      products[index].price=(p.inboundPrice||products[index].price||0)
+      products[index].unit=p.unit||products[index].unit||''
+      products[index].specification=p.specification||products[index].specification||''
+      products[index].imageUrl=p.imageUrl||products[index].imageUrl||''
+      products[index].amount=(products[index].quantity||0)*(products[index].price||0)
+      this.setData({products})
+      return db.collection('inventoryBalances').where({shopId,productId:p._id}).limit(1).get()
+    }).then(rs=>{
       if(!rs) return
       const b=(rs.data&&rs.data[0])||{quantity:0}
       const products=this.data.products

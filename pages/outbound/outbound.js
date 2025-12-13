@@ -170,20 +170,20 @@ Page({
   deleteProduct: function(e) {
     const index = e.currentTarget.dataset.index;
     const products = this.data.products;
-    
     if (products.length > 1) {
-      products.splice(index, 1);
-      
-      this.setData({
-        products: products
+      wx.showModal({
+        title: '确认删除',
+        content: '确定删除该产品吗？',
+        success: (res) => {
+          if (res.confirm) {
+            products.splice(index, 1);
+            this.setData({ products });
+            this.calculateTotal();
+          }
+        }
       });
-      
-      this.calculateTotal();
     } else {
-      wx.showToast({
-        title: '至少需要一个产品',
-        icon: 'none'
-      });
+      wx.showToast({ title: '至少需要一个产品', icon: 'none' });
     }
   },
   
@@ -241,12 +241,24 @@ Page({
     const shopId=user.shopId||''
     const db=wx.cloud.database(); const _=db.command
     if(value){
-      db.collection('products').where({shopId,name:_.regex({regexp:value,options:'i'})}).limit(20).get().then(r=>{
+      db.collection('products').where({shopId,name:db.RegExp({regexp:value,options:'i'})}).limit(20).get().then(r=>{
         const list=(r.data||[])
         products[index].suggestions=list
         products[index].showSuggestions=true
         this.setData({products})
       })
+      this.linkByName(index, value)
+    } else {
+      products[index].productId=''
+      products[index].model=''
+      products[index].price=''
+      products[index].unit=''
+      products[index].specification=''
+      products[index].imageUrl=''
+      products[index].stock=0
+      products[index].amount=0
+      this.setData({products})
+      this.calculateTotal()
     }
   },
   
@@ -272,6 +284,47 @@ Page({
       const products=this.data.products
       products[index].productId=p._id
       products[index].name=p.name||products[index].name||''
+      products[index].price=(p.outboundPrice||products[index].price||0)
+      products[index].unit=p.unit||products[index].unit||''
+      products[index].specification=p.specification||products[index].specification||''
+      products[index].imageUrl=p.imageUrl||products[index].imageUrl||''
+      products[index].amount=(Number(products[index].quantity)||0)*(Number(products[index].price)||0)
+      this.setData({products})
+      return db.collection('inventoryBalances').where({shopId,productId:p._id}).limit(1).get()
+    }).then(rs=>{
+      if(!rs) return
+      const b=(rs.data&&rs.data[0])||{quantity:0}
+      const products=this.data.products
+      products[index].stock=Number(b.quantity)||0
+      this.setData({products})
+      this.calculateTotal()
+    })
+  },
+
+  linkByName: function(index, name){
+    const user=wx.getStorageSync('currentUser')||{}
+    const shopId=user.shopId||''
+    const db=wx.cloud.database()
+    db.collection('products').where({shopId,name}).limit(1).get().then(r=>{
+      const p=(r.data&&r.data[0])
+      if(!p){
+        const products=this.data.products
+        products[index].productId=''
+        products[index].model=''
+        products[index].price=''
+        products[index].unit=''
+        products[index].specification=''
+        products[index].imageUrl=''
+        products[index].stock=0
+        products[index].amount=0
+        this.setData({products})
+        this.calculateTotal()
+        return
+      }
+      const products=this.data.products
+      products[index].productId=p._id
+      products[index].name=p.name||products[index].name||''
+      products[index].model=p.code||products[index].model||''
       products[index].price=(p.outboundPrice||products[index].price||0)
       products[index].unit=p.unit||products[index].unit||''
       products[index].specification=p.specification||products[index].specification||''
@@ -397,7 +450,7 @@ Page({
     
     const user=wx.getStorageSync('currentUser')||{}
     const shopId=user.shopId||''
-    const createdBy=user._id||''
+    const createdBy=user.username||''
     const billType=this.data.typeOptions[this.data.typeIndex]
     const billDate=this.data.date+'T00:00:00.000Z'
     const counterparty={customerName:this.data.customerOptions[this.data.customerIndex]||''}

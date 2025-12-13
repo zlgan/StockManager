@@ -198,6 +198,48 @@ exports.main=async(event)=>{
     await db.collection('stockBills').doc(billId).update({data:{totals:{totalQuantity:totalQty,totalAmount:totalAmt},updatedAt:new Date()}})
     return {ok:true}
   }
+  if(action==='queryBills'){
+    const {shopId,startDate,endDate,billTypeIndex,supplierName,customerName,keyword,page,pageSize}=event
+    const base={shopId}
+    if(billTypeIndex===1) base.direction='in'
+    else if(billTypeIndex===2) base.direction='out'
+    if(startDate&&endDate){
+      const s=new Date(startDate)
+      const e=new Date(endDate)
+      e.setDate(e.getDate()+1)
+      base.billDate=_.gte(s).and(_.lt(e))
+    }
+    if(supplierName) base['counterparty.supplierName']=supplierName
+    if(customerName) base['counterparty.customerName']=customerName
+    let queryExp=base
+    if(keyword){
+      const regex=db.RegExp({regexp:keyword,options:'i'})
+      const items=await db.collection('stockItems').where({shopId,productName:regex}).field({billId:true}).limit(1000).get()
+      const billIds=(items.data||[]).map(x=>x.billId)
+      const orConds=[{billNo:regex},{createdBy:regex}]
+      if(billIds.length>0) orConds.push({_id:_.in(billIds)})
+      queryExp=_.and([base, _.or(orConds)])
+    }
+    const col=db.collection('stockBills')
+    const totalRes=await col.where(queryExp).count()
+    const p=page||0, ps=pageSize||20
+    const res=await col.where(queryExp).orderBy('billDate','desc').skip(p*ps).limit(ps).get()
+    const list=(res.data||[]).map(b=>({
+      id:b._id,
+      type:b.direction==='in'?'inbound':'outbound',
+      billNumber:b.billNo,
+      date:(b.billDate&&b.billDate.toISOString)?b.billDate.toISOString().slice(0,10):(b.billDate&&b.billDate.slice?b.billDate.slice(0,10):new Date(b.billDate).toISOString().slice(0,10)),
+      billTypeName:b.billType,
+      totalAmount:(b.totals&&b.totals.totalAmount)||0,
+      creator:b.createdBy,
+      createTime:new Date(b.createdAt).toISOString().replace('T',' ').slice(0,16),
+      supplier:b.counterparty&&b.counterparty.supplierName,
+      customer:b.counterparty&&b.counterparty.customerName,
+      products:[]
+    }))
+    const hasMore=(res.data||[]).length===ps
+    return {list,total:totalRes.total,hasMore}
+  }
   return {error:'UNKNOWN_ACTION'}
   }catch(e){
     console.error('stockService error',e)

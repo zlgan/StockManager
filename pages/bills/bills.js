@@ -40,7 +40,7 @@ Page({
       const list=(r.data||[]).map(x=>x.name)
       this.setData({customers:['全部',...list]})
     })
-    this.loadBillData(true);
+    this.fetchBills(true);
   },
 
   /**
@@ -257,17 +257,7 @@ Page({
    * 搜索单据
    */
   search: function() {
-    // 过滤 sourceBills 得到结果
-    const bills = this.applyFilters();
-    this.setData({
-      bills: bills,
-      totalCount: bills.length
-    });
-    wx.showToast({
-      title: '搜索成功',
-      icon: 'success',
-      duration: 1000
-    });
+    this.fetchBills(true)
   },
 
   /**
@@ -283,12 +273,8 @@ Page({
       supplierIndex: 0,
       customerIndex: 0
     });
-    // 恢复完整数据
-    const bills = this.applyFilters();
-    this.setData({
-      bills: bills,
-      totalCount: bills.length
-    });
+    this.initDateRange();
+    this.fetchBills(true)
   },
 
   /**
@@ -344,39 +330,12 @@ Page({
   /**
    * 加载单据数据（模拟数据）
    */
-  loadBillData: function(reset) {
-    const user=wx.getStorageSync('currentUser')||{}
-    const shopId=user.shopId||''
-    const db=wx.cloud.database()
-    let {page,pageSize}=this.data
-    if(reset){ page=0; this.setData({page:0,hasMore:true,sourceBills:[],bills:[]}) }
-    this.setData({loading:true})
-    db.collection('stockBills').where({shopId}).orderBy('billDate','desc').skip(page*pageSize).limit(pageSize).get().then(res=>{
-      const chunk=(res.data||[]).map(b=>({
-        id:b._id,
-        type:b.direction==='in'?'inbound':'outbound',
-        billNumber:b.billNo,
-        date:(b.billDate&&b.billDate.slice)?b.billDate.slice(0,10):new Date(b.billDate).toISOString().slice(0,10),
-        billTypeName:b.billType,
-        totalAmount:(b.totals&&b.totals.totalAmount||0).toFixed? (b.totals.totalAmount).toFixed(2): (b.totals&&b.totals.totalAmount)||0,
-        creator:b.createdBy,
-        createTime: new Date(b.createdAt).toISOString().replace('T',' ').slice(0,16),
-        supplier:b.counterparty&&b.counterparty.supplierName,
-        customer:b.counterparty&&b.counterparty.customerName,
-        products: []
-      }))
-      const merged=[...this.data.sourceBills,...chunk]
-      const hasMore=(chunk.length===pageSize)
-      const pageNext=page+1
-      const filtered=this.applyFiltersWith(merged)
-      this.setData({sourceBills:merged,bills:filtered,totalCount:filtered.length,hasMore,page:pageNext,loading:false})
-    })
-  },
+  loadBillData: function(reset) { this.fetchBills(reset) },
 
   
   onReachBottom: function(){
     if(this.data.loading||!this.data.hasMore) return
-    this.loadBillData(false)
+    this.fetchBills(false)
   }
   ,
   /**
@@ -387,6 +346,35 @@ Page({
     return this.applyFiltersWith(sourceBills)
   }
   ,
+  fetchBills: function(reset){
+    const user=wx.getStorageSync('currentUser')||{}
+    const shopId=user.shopId||''
+    let {page,pageSize}=this.data
+    if(reset){ page=0; this.setData({page:0,hasMore:true,bills:[],loading:true}) } else { this.setData({loading:true}) }
+    const {billTypeIndex,supplierIndex,customerIndex,suppliers,customers,startDate,endDate,searchKeyword}=this.data
+    const supplierName = supplierIndex===0? null: suppliers[supplierIndex]
+    const customerName = customerIndex===0? null: customers[customerIndex]
+    wx.cloud.callFunction({name:'stockService',data:{action:'queryBills',shopId,startDate,endDate,billTypeIndex,supplierName,customerName,keyword:searchKeyword,page,pageSize}}).then(res=>{
+      const r=(res&&res.result)||{}
+      const chunk=(r.list||[]).map(b=>({
+        id:b.id,
+        type:b.type,
+        billNumber:b.billNumber,
+        date:b.date,
+        billTypeName:b.billTypeName,
+        totalAmount:(b.totalAmount&&b.totalAmount.toFixed)? b.totalAmount.toFixed(2): b.totalAmount,
+        creator:b.creator,
+        createTime:b.createTime,
+        supplier:b.supplier,
+        customer:b.customer,
+        products:b.products||[]
+      }))
+      const merged= reset? chunk : [...this.data.bills, ...chunk]
+      const hasMore=!!r.hasMore
+      const pageNext=page+1
+      this.setData({bills:merged,totalCount:r.total||merged.length,hasMore,page:pageNext,loading:false})
+    }).catch(()=>{ this.setData({loading:false}); wx.showToast({title:'查询失败',icon:'none'}) })
+  },
   applyFiltersWith: function(sourceBills){
     const { searchKeyword, startDate, endDate, billTypes, billTypeIndex, suppliers, supplierIndex, customers, customerIndex } = this.data;
     const bIdx = Number(billTypeIndex) || 0;
