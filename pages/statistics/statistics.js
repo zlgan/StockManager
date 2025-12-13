@@ -135,6 +135,7 @@ Page({
     // 产品列表
     products: [],
     sourceProducts: [],
+    showWarningOnly: false,
     
     // 产品详情弹窗
     showProductModal: false,
@@ -219,7 +220,8 @@ Page({
         catAgg[k].count+=1
       })
       const categoryStats=Object.values(catAgg).map(c=>({category:c.category,value:c.value.toFixed(2),count:c.count}))
-      this.setData({products,sourceProducts:products,productCount,inventoryValue,categoryStats})
+      this.setData({sourceProducts:products,productCount,inventoryValue,categoryStats})
+      this.refreshInventoryView()
     })
   },
 
@@ -262,42 +264,41 @@ Page({
    * 搜索输入事件
    */
   onSearchInput: function (e) {
-    this.setData({
-      searchKeyword: e.detail.value
-    });
+    this.setData({ searchKeyword: e.detail.value });
+    this.refreshInventoryView();
   },
 
   /**
    * 搜索产品
    */
-  searchProducts: function () {
-    const keyword = (this.data.searchKeyword||'').trim();
-    if (!keyword) { this.setData({products:this.data.sourceProducts}); return; }
-    const filteredProducts = (this.data.sourceProducts||[]).filter(product => {
-      const name=(product.name||''); const code=(product.code||'');
-      return name.includes(keyword) || code.includes(keyword);
-    });
-    this.setData({ products: filteredProducts });
-  },
+  searchProducts: function () { this.refreshInventoryView() },
 
   /**
    * 显示预警库存产品
    */
-  showWarningProducts: function () {
+  showWarningProducts: function () { this.toggleWarningProducts() },
+  toggleWarningProducts: function(){
+    const next=!this.data.showWarningOnly
+    this.setData({showWarningOnly: next})
+    this.refreshInventoryView()
+    wx.showToast({title: next? '已显示预警库存' : '已显示全部库存', icon: 'none'})
+  },
+  applyWarningFilter: function(){
     const list=this.data.sourceProducts||[]
-    const warningProducts = list.filter(product => {
+    if(!this.data.showWarningOnly) return list
+    return list.filter(product => {
       const threshold = Number(product.warningStock||50)
       return Number(product.stock||0) < threshold;
-    });
-    
-    this.setData({
-      products: warningProducts
-    });
-    
-    wx.showToast({
-      title: '已显示预警库存',
-      icon: 'none'
-    });
+    })
+  },
+  refreshInventoryView: function(){
+    const base=this.applyWarningFilter()
+    const keyword=(this.data.searchKeyword||'').trim().toLowerCase()
+    const filtered=!keyword? base : base.filter(product=>{
+      const name=(product.name||'').toLowerCase(); const code=(product.code||'').toLowerCase();
+      return name.includes(keyword) || code.includes(keyword);
+    })
+    this.setData({products: filtered})
   },
 
   /**

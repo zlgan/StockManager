@@ -74,13 +74,14 @@
           <view class="inventory-title">库存盘点</view>
           <view class="inventory-summary">共 {{productCount}} 种产品，库存总额 ¥{{inventoryValue}}</view>
         </view>
-        <view class="warning-btn" bindtap="showWarningProducts">
-          <text class="iconfont icon-alert"></text> 预警库存
+        <view class="warning-btn {{showWarningOnly ? 'on' : 'off'}}" bindtap="showWarningProducts">
+          <text class="iconfont icon-alert"></text>
+          <text class="warning-text">预警库存</text>
         </view>
       </view>
       
       <view class="search-box">
-        <input type="text" class="search-input" placeholder="搜索产品名称/编码" value="{{searchKeyword}}" bindinput="onSearchInput"/>
+        <input type="text" class="search-input" placeholder="搜索产品名称/编码" value="{{searchKeyword}}" bindinput="onSearchInput" bindconfirm="searchProducts"/>
         <view class="search-btn" bindtap="searchProducts">
           <text class="iconfont icon-search"></text>
         </view>
