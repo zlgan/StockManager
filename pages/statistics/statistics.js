@@ -157,7 +157,7 @@ Page({
     const user=wx.getStorageSync('currentUser')||{}
     const shopId=user.shopId||''
     const db=wx.cloud.database()
-    db.collection('statsMonthly').where({shopId}).orderBy('year','desc').get().then(res=>{
+    const p1 = db.collection('statsMonthly').where({shopId}).orderBy('year','desc').get().then(res=>{
       const rows=res.data||[]
       const years=[...new Set(rows.map(r=>String(r.year)))].sort((a,b)=>Number(b)-Number(a))
       const selectedYear=this.data.selectedYear && years.includes(this.data.selectedYear)? this.data.selectedYear : (years[0]||String(new Date().getFullYear()))
@@ -184,7 +184,7 @@ Page({
       })
       if(this.chart){ setChartOption(this.chart, md) }
     })
-    Promise.all([
+    const p2 = Promise.all([
       db.collection('inventoryBalances').where({shopId}).get(),
       db.collection('products').where({shopId}).field({name:true,code:true,categoryName:true,imageUrl:true,warningStock:true}).get()
     ]).then(([resBal,resProd])=>{
@@ -223,6 +223,7 @@ Page({
       this.setData({sourceProducts:products,productCount,inventoryValue,categoryStats})
       this.refreshInventoryView()
     })
+    return Promise.all([p1,p2])
   },
 
   /**
@@ -399,11 +400,16 @@ Page({
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh: function () {
-    // 下拉刷新
-    this.loadStatisticsData();
-    
-    // 停止下拉刷新
-    wx.stopPullDownRefresh();
+    if(this.data.activeTab==='profit'){
+      wx.showNavigationBarLoading()
+      this.loadStatisticsData().finally(()=>{
+        wx.hideNavigationBarLoading();
+        wx.stopPullDownRefresh();
+        wx.showToast({title:'已刷新收益分析',icon:'none'})
+      })
+    }else{
+      wx.stopPullDownRefresh();
+    }
   },
 
   /**

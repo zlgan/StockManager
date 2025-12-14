@@ -60,6 +60,32 @@ Page({
     db.collection('suppliers').where({shopId,status:'active'}).field({name:true}).limit(100).get().then(r=>{
       this.setData({supplierOptions:(r.data||[]).map(x=>x.name)})
     })
+    if(options && options.productId){
+      const pid=options.productId
+      db.collection('products').doc(pid).get().then(res=>{
+        const p=res.data||{}
+        if(!p._id) return
+        const products=this.data.products
+        const idx=0
+        products[idx].productId=p._id
+        products[idx].name=p.name||products[idx].name||''
+        products[idx].model=p.code||products[idx].model||''
+        products[idx].price=(p.inboundPrice||products[idx].price||0)
+        products[idx].unit=p.unit||products[idx].unit||''
+        products[idx].specification=p.specification||products[idx].specification||''
+        products[idx].imageUrl=p.imageUrl||products[idx].imageUrl||''
+        products[idx].amount=(Number(products[idx].quantity)||0)*(Number(products[idx].price)||0)
+        this.setData({products})
+        return db.collection('inventoryBalances').where({shopId,productId:p._id}).limit(1).get()
+      }).then(rs=>{
+        if(!rs) return
+        const b=(rs.data&&rs.data[0])||{quantity:0}
+        const products=this.data.products
+        products[0].stock=Number(b.quantity)||0
+        this.setData({products})
+        this.calculateTotal()
+      })
+    }
   },
 
   // 选择入库类型
