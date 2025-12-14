@@ -91,15 +91,6 @@
       "handler": "index.main",
       "installDependency": true,
       "code": { "src": "cloudfunctions/login", "ignore": ["node_modules/**", ".git/**"] }
-    },
-    {
-      "name": "initDb",
-      "runtime": "Nodejs16.13",
-      "timeout": 60,
-      "memorySize": 256,
-      "handler": "index.main",
-      "installDependency": true,
-      "code": { "src": "cloudfunctions/initDb", "ignore": ["node_modules/**", ".git/**"] }
     }
   ]
 }

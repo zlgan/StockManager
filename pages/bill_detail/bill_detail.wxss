@@ -129,8 +129,7 @@
   height: 80rpx;
   line-height: 80rpx;
   padding: 0 24rpx;
-  display: flex;
-  align-items: center;
+  box-sizing: border-box;
 }
 
 .picker::after {
@@ -500,4 +499,12 @@
 
 .suggestion-item:last-child {
   border-bottom: none;
+}
+.price-value {
+  height: 80rpx;
+  line-height: 80rpx;
+}
+.input-placeholder {
+  line-height: 80rpx;
+  color: #999;
 }

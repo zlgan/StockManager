@@ -18,7 +18,8 @@ Page({
     originalStaffInfo: {},
     isEditMode: false,
     isAddMode: false,
-    updateTime: ''
+    updateTime: '',
+    confirmPassword: ''
   },
 
   /**
@@ -28,12 +29,10 @@ Page({
     if (options.mode === 'add') {
       this.setData({
         isAddMode: true,
-        isEditMode: false
+        isEditMode: true
       });
-      this.loadShopPermissions()
     } else if (options.id) {
       this.loadStaffDetail(options.id);
-      this.loadShopPermissions()
     }
   },
 
@@ -49,7 +48,7 @@ Page({
         staffInfo: { id: u._id, username: u.username||'', password: '', realName: u.realName||'', phone: u.phone||'', remark: u.remarks||'', canStockIn: true, canStockOut: true },
         originalStaffInfo: JSON.parse(JSON.stringify(this.data.staffInfo)),
         updateTime: currentTime,
-        isEditMode: false,
+        isEditMode: true,
         isAddMode: false
       })
     })
@@ -69,14 +68,7 @@ Page({
    * 取消编辑
    */
   cancelEdit() {
-    if (this.data.isAddMode) {
-      wx.navigateBack();
-    } else {
-      this.setData({
-        isEditMode: false,
-        staffInfo: this.data.originalStaffInfo
-      });
-    }
+    wx.navigateBack();
   },
 
   /**
@@ -99,6 +91,10 @@ Page({
         title: '请输入密码',
         icon: 'none'
       });
+      return;
+    }
+    if ((staffInfo.password||'').trim()!== (this.data.confirmPassword||'').trim()){
+      wx.showToast({ title:'两次输入的密码不一致', icon:'none' });
       return;
     }
 
@@ -160,7 +156,7 @@ Page({
           return
         }
         wx.showToast({ title: '保存成功', icon: 'success' })
-        this.setData({ isEditMode: false, updateTime: new Date().toLocaleString('zh-CN') })
+        setTimeout(()=>{ wx.navigateBack() }, 800)
       }).catch(()=>{
         wx.hideLoading()
         wx.showToast({ title:'网络异常或服务器错误', icon:'none' })
@@ -182,6 +178,7 @@ Page({
       'staffInfo.password': e.detail.value
     });
   },
+  onConfirmPasswordInput(e){ this.setData({ confirmPassword: e.detail.value }) },
 
   onRealNameInput(e) {
     this.setData({
@@ -201,41 +198,6 @@ Page({
     });
   },
 
-  /**
-   * 权限开关处理
-   */
-  onStockInChange(e) {
-    const user = wx.getStorageSync('currentUser') || {}
-    const shopId = user.shopId || ''
-    const disableInbound = e.detail.value
-    wx.cloud.callFunction({ name: 'shopService', data: { action: 'updateStaffPermissions', shopId, disableInbound, disableOutbound: !this.data.staffInfo ? false : !this.data.staffInfo.canStockOut } }).then(res=>{
-      const r=(res&&res.result)||{}
-      if(r && r.ok===false){ const msg=r.message||'更新失败'; wx.showToast({title: msg, icon:'none'}) }
-    }).catch(()=>{ wx.showToast({ title:'网络异常或服务器错误', icon:'none' }) })
-    this.setData({ 'staffInfo.canStockIn': !disableInbound })
-  },
-
-  onStockOutChange(e) {
-    const user = wx.getStorageSync('currentUser') || {}
-    const shopId = user.shopId || ''
-    const disableOutbound = e.detail.value
-    wx.cloud.callFunction({ name: 'shopService', data: { action: 'updateStaffPermissions', shopId, disableOutbound, disableInbound: !this.data.staffInfo ? false : !this.data.staffInfo.canStockIn } }).then(res=>{
-      const r=(res&&res.result)||{}
-      if(r && r.ok===false){ const msg=r.message||'更新失败'; wx.showToast({title: msg, icon:'none'}) }
-    }).catch(()=>{ wx.showToast({ title:'网络异常或服务器错误', icon:'none' }) })
-    this.setData({ 'staffInfo.canStockOut': !disableOutbound })
-  },
-
-  loadShopPermissions(){
-    const user = wx.getStorageSync('currentUser') || {}
-    const shopId = user.shopId || ''
-    wx.cloud.callFunction({ name: 'shopService', data: { action: 'getStaffPermissions', shopId } }).then(res=>{
-      const r=(res&&res.result)||{}
-      if(r && r.ok===false){ const msg=r.message||'加载失败'; wx.showToast({title: msg, icon:'none'}); return }
-      const perms = r.staffPermissions || { disableInbound:false, disableOutbound:false }
-      this.setData({ 'staffInfo.canStockIn': !perms.disableInbound, 'staffInfo.canStockOut': !perms.disableOutbound })
-    })
-  },
 
   /**
    * 生命周期函数--监听页面初次渲染完成

@@ -30,7 +30,7 @@
     <!-- 客户列表 -->
     <view class="customer-list">
       <block wx:for="{{customers}}" wx:key="id">
-        <view class="card customer-item" bindtap="navigateToDetail" data-id="{{item.id}}">
+        <view class="card customer-item" bindtap="navigateToDetail" bindlongpress="confirmDelete" data-id="{{item.id}}">
           <view class="customer-content">
             <view class="customer-info">
               <view class="customer-header">

@@ -141,4 +141,31 @@ Page({
       this.setData({ customers: mapped, originalCustomers: mapped })
     })
   }
+  ,
+  confirmDelete(e){
+    const id=e.currentTarget.dataset.id
+    if(!id) return
+    wx.showModal({
+      title:'确认删除',
+      content:'确定删除该客户吗？删除后将不在列表显示',
+      confirmText:'删除',
+      confirmColor:'#ff4d4f',
+      success:(res)=>{
+        if(res.confirm){
+          const user=wx.getStorageSync('currentUser')||{}
+          const shopId=user.shopId||''
+          wx.cloud.callFunction({name:'customerService',data:{action:'delete',id,shopId}}).then(r=>{
+            const ret=(r&&r.result)||{}
+            if(!(ret.ok===undefined||ret.ok===true)){
+              wx.showToast({title:ret.message||'删除失败',icon:'none'})
+              return
+            }
+            const list=(this.data.customers||[]).filter(c=>c.id!==id)
+            this.setData({customers:list})
+            wx.showToast({title:'删除成功',icon:'success'})
+          }).catch(()=>{ wx.showToast({title:'网络异常或服务器错误',icon:'none'}) })
+        }
+      }
+    })
+  }
 })

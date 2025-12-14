@@ -109,22 +109,23 @@
   color: #999;
 }
 
-.add-btn {
+.float-btn {
   position: fixed;
-  bottom: 100rpx;
-  right: 50rpx;
-  width: 100rpx;
-  height: 100rpx;
-  background-color: #007bff;
+  bottom: 40rpx;
+  right: 40rpx;
+  width: 120rpx;
+  height: 120rpx;
+  background-color: #007aff;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4rpx 20rpx rgba(0, 123, 255, 0.3);
+  box-shadow: 0 4rpx 16rpx rgba(0, 122, 255, 0.3);
+  z-index: 999;
 }
 
-.add-icon {
-  font-size: 48rpx;
-  color: #fff;
-  font-weight: bold;
+.add-btn-image {
+  width: 60rpx;
+  height: 60rpx;
+  filter: brightness(0) invert(1);
 }

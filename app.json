@@ -9,7 +9,6 @@
     "pages/bill_detail/bill_detail",
     "pages/inbound/inbound",
     "pages/outbound/outbound",
-    "pages/inventory/inventory",
     "pages/products/products",
     "pages/product_detail/product_detail",
     "pages/suppliers/suppliers",
@@ -19,11 +18,9 @@
     "pages/staff/staff",
     "pages/staff_detail/staff_detail",
     "pages/product_category/product_category",
-    "pages/inbound-types/inbound-types",
-    "pages/outbound-types/outbound-types",
     "pages/settings/settings",
-    "pages/about/about",
-    "pages/logs/logs"
+    "pages/about/about"
+    
   ],
   "subpackages": [],
   "subPackages": [],

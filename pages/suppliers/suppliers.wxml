@@ -26,7 +26,7 @@
     <!-- 供应商列表 -->
     <view class="supplier-list">
       <block wx:for="{{suppliers}}" wx:key="id">
-        <view class="card supplier-item" bindtap="navigateToDetail" data-id="{{item.id}}">
+        <view class="card supplier-item" bindtap="navigateToDetail" bindlongpress="confirmDelete" data-id="{{item.id}}">
           <view class="supplier-content">
             <view class="supplier-info">
               <view class="supplier-header">

@@ -3,7 +3,15 @@
   "libVersion": "3.10.1",
   "cloudfunctionRoot": "cloudfunctions/",
   "packOptions": {
-    "ignore": [],
+    "ignore": [
+      {"type":"glob","value":"docs/**"},
+      {"type":"glob","value":"prototype/**"},
+      {"type":"glob","value":"**/*.md"},
+      {"type":"glob","value":"**/*.html"},
+      {"type":"glob","value":"**/*.psd"},
+      {"type":"glob","value":"**/*.ai"},
+      {"type":"glob","value":"**/*.zip"}
+    ],
     "include": []
   },
   "setting": {

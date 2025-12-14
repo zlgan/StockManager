@@ -5,10 +5,14 @@ App({
   },
   onLaunch() {
     if (wx.cloud) {
-      wx.cloud.init({
-        traceUser: true,
-        env: "cloud1-1gb6hxc2a529122a"
-      })
+      const envConfig = {
+        develop: 'cloud1-1gb6hxc2a529122a',
+        trial: 'cloud1-1gb6hxc2a529122a',
+        release: 'cloud1-1gb6hxc2a529122a'
+      }
+      const { envVersion } = wx.getAccountInfoSync().miniProgram
+      const currentEnv = envConfig[envVersion] || envConfig.develop
+      wx.cloud.init({ traceUser: true, env: currentEnv })
     }
     // 展示本地存储能力
     const logs = wx.getStorageSync('logs') || []

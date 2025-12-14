@@ -52,5 +52,11 @@ exports.main=async(event)=>{
     await db.collection('users').doc(id).update({data:patch})
     return {ok:true}
   }
+  if(action==='delete'){
+    const id=event.id
+    if(!id)throw new Error('INVALID_ID')
+    await db.collection('users').doc(id).update({data:{status:'inactive',updatedAt:new Date()}})
+    return {ok:true}
+  }
   throw new Error('UNKNOWN_ACTION')
 }

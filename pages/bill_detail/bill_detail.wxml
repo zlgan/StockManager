@@ -130,6 +130,7 @@
                        type="digit" 
                        value="{{item.price}}" 
                        placeholder="请输入单价"
+                       placeholder-class="input-placeholder"
                        data-index="{{index}}"
                        data-field="price"
                        bindinput="updateProductField" />

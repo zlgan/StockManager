@@ -2,11 +2,6 @@
 <view class="container">
   <!-- 表单内容 -->
   <view class="form-container">
-    <!-- 员工编号 -->
-    <view class="form-row" wx:if="{{!isAddMode}}">
-      <text class="label">员工编号：</text>
-      <text class="value">{{staffInfo.id}}</text>
-    </view>
 
     <!-- 用户名 -->
     <view class="form-row">
@@ -29,6 +24,12 @@
              bindinput="onPasswordInput" 
              placeholder="请输入密码" />
       <text wx:else class="value">{{staffInfo.password}}</text>
+    </view>
+
+    <!-- 确认密码 -->
+    <view class="form-row" wx:if="{{isEditMode || isAddMode}}">
+      <text class="label">确认密码：</text>
+      <input class="input" type="password" value="{{confirmPassword}}" bindinput="onConfirmPasswordInput" placeholder="请再次输入密码" />
     </view>
 
     <!-- 姓名 -->
@@ -65,26 +66,6 @@
       <text wx:else class="value">{{staffInfo.remark || '无'}}</text>
     </view>
 
-    <!-- 权限设置 -->
-    <view class="permission-section">
-      <text class="section-title">权限设置</text>
-      
-      <view class="permission-item">
-        <text class="permission-label">禁用入库操作：</text>
-        <switch wx:if="{{isEditMode || isAddMode}}" 
-                checked="{{!staffInfo.canStockIn}}" 
-                bindchange="onStockInChange" />
-        <text wx:else class="permission-value">{{staffInfo.canStockIn ? '否' : '是'}}</text>
-      </view>
-
-      <view class="permission-item">
-        <text class="permission-label">禁用出库操作：</text>
-        <switch wx:if="{{isEditMode || isAddMode}}" 
-                checked="{{!staffInfo.canStockOut}}" 
-                bindchange="onStockOutChange" />
-        <text wx:else class="permission-value">{{staffInfo.canStockOut ? '否' : '是'}}</text>
-      </view>
-    </view>
   </view>
 
   <!-- 操作按钮 -->
