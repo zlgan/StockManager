@@ -315,12 +315,18 @@ Page({
       const shopId=user.shopId||''
       const db=wx.cloud.database()
       db.collection('stockLedger').where({shopId,productId}).orderBy('createdAt','desc').limit(20).get().then(res=>{
-        const records=(res.data||[]).map(r=>({
-          date:(new Date(r.createdAt)).toISOString().slice(0,10),
-          quantity:Number(r.quantity||0),
-          type:(r.direction==='in'?'in':'out'),
-          typeName:(r.direction==='in'?'入库':'出库')
-        }))
+        const raw=(res.data||[])
+        const filtered=raw.filter(r=>!(r.ext && r.ext.adjustType==='costAdj'))
+        const records=filtered.map(r=>{
+          const label=(r.direction==='in'?'入库':'出库')
+          const isDelta=r.ext && r.ext.adjustType==='delta'
+          return {
+            date:(new Date(r.createdAt)).toISOString().slice(0,10),
+            quantity:Number(r.quantity||0),
+            type:(r.direction==='in'?'in':'out'),
+            typeName: isDelta? `${label}（单据调整）` : label
+          }
+        })
         const lastIn=(res.data||[]).find(r=>r.direction==='in')
         const cp={...this.data.currentProduct, records, lastInbound: lastIn? (new Date(lastIn.createdAt)).toISOString().slice(0,10): (this.data.currentProduct.lastInbound||'')}
         this.setData({currentProduct:cp})

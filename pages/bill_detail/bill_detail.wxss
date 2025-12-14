@@ -127,7 +127,10 @@
 
 .input {
   height: 80rpx;
-  line-height: 1.4;
+  line-height: 80rpx;
+  padding: 0 24rpx;
+  display: flex;
+  align-items: center;
 }
 
 .picker::after {
@@ -245,6 +248,11 @@
   align-items: center;
   flex: 1;
   gap: 20rpx;
+}
+
+.price-input {
+  display: flex;
+  align-items: center;
 }
 
 .flex-grow {

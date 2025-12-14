@@ -3,16 +3,12 @@
   <!-- 页面标题 -->
   <view class="page-header">
     <view class="header-title">
-      <text wx:if="{{mode === 'view'}}">单据详情</text>
-      <text wx:elif="{{mode === 'edit'}}">编辑单据</text>
+      <text>编辑单据</text>
     </view>
   </view>
   
   <!-- 操作按钮 -->
-  <view class="header-actions" wx:if="{{mode === 'view'}}">
-    <button class="action-btn edit-btn" bindtap="editBill">编辑</button>
-    <button class="action-btn delete-btn" bindtap="deleteBill">删除</button>
-  </view>
+  
 
   <!-- 基本信息卡片 -->
   <view class="card">
@@ -42,14 +38,7 @@
     <view class="form-group">
       <view class="form-row">
         <text class="form-label">日期</text>
-        <picker wx:if="{{mode === 'edit'}}" 
-                mode="date" 
-                value="{{billData.date}}" 
-                bindchange="bindDateChange"
-                class="picker">
-          <view class="picker-text">{{billData.date || '请选择日期'}}</view>
-        </picker>
-        <view wx:else class="form-value">{{billData.date}}</view>
+        <view class="form-value">{{billData.date}}</view>
       </view>
     </view>
 
@@ -57,14 +46,7 @@
     <view class="form-group">
       <view class="form-row">
         <text class="form-label">{{billData.type === '入库单' ? '供应商' : '客户'}}</text>
-        <picker wx:if="{{mode === 'edit'}}" 
-                range="{{supplierList}}" 
-                value="{{supplierIndex}}" 
-                bindchange="bindSupplierChange"
-                class="picker">
-          <view class="picker-text">{{supplierList[supplierIndex] || '请选择' + (billData.type === '入库单' ? '供应商' : '客户')}}</view>
-        </picker>
-        <view wx:else class="form-value">{{billData.supplier}}</view>
+        <view class="form-value">{{billData.supplier}}</view>
       </view>
     </view>
   </view>
@@ -73,10 +55,6 @@
   <view class="card">
     <view class="card-header">
       <text class="card-title">产品信息</text>
-      <button wx:if="{{mode === 'edit'}}" class="btn-icon" bindtap="addProduct">
-        <image class="icon-add" src="/images/add.png" mode="aspectFit"></image>
-        <text class="btn-text">添加产品</text>
-      </button>
     </view>
 
     <!-- 产品列表 -->
@@ -89,14 +67,8 @@
         <view class="form-group">
           <view class="form-row">
             <text class="form-label">产品型号</text>
-            <view class="form-row">
-              <input wx:if="{{mode === 'edit'}}" class="input flex-grow" placeholder="请输入产品型号 / 扫一扫" value="{{item.productModel}}" data-index="{{index}}" data-field="productModel" bindinput="updateProductField" />
-              <view wx:if="{{mode === 'edit'}}" class="btn-icon" bindtap="scanModel" data-index="{{index}}">
-                <image class="scan-image" src="/images/scan.png" mode="aspectFit"></image>
-              </view>
-              <view wx:else class="form-row-content">
-                <view class="form-value">{{item.productModel}}</view>
-              </view>
+            <view class="form-row-content">
+              <view class="form-value">{{item.productModel}}</view>
             </view>
           </view>
         </view>
@@ -106,17 +78,7 @@
           <view class="form-row">
             <text class="form-label">产品名称</text>
             <view class="form-row-content">
-              <view class="form-control-wrapper">
-                <input wx:if="{{mode === 'edit'}}" class="input flex-grow" placeholder="请输入产品名称" value="{{item.productName}}" data-index="{{index}}" data-field="productName" bindinput="updateProductField" />
-                <view wx:else class="form-value">{{item.productName}}</view>
-                <view class="suggestions-container" wx:if="{{showSuggestions && currentEditIndex===index}}">
-                  <view class="suggestions-list">
-                    <block wx:for="{{filteredProducts}}" wx:key="_id" wx:for-item="p">
-                      <view class="suggestion-item" bindtap="selectProduct" data-id="{{p._id}}">{{p.name}} {{p.code ? '('+p.code+')' : ''}}</view>
-                    </block>
-                  </view>
-                </view>
-              </view>
+              <view class="form-value">{{item.productName}}</view>
             </view>
           </view>
         </view>
@@ -144,7 +106,7 @@
           <view class="form-row">
             <view class="form-label"><text>{{billData.type === '入库单' ? '入库数量' : '出库数量'}}</text><text class="required">*</text></view>
             <view class="form-row-content">
-              <input wx:if="{{mode === 'edit'}}" 
+              <input 
                      class="input" 
                      type="number" 
                      value="{{item.quantity}}" 
@@ -152,7 +114,6 @@
                      data-index="{{index}}"
                      data-field="quantity"
                      bindinput="updateProductField" />
-              <view wx:else class="form-value">{{item.quantity}}</view>
             </view>
           </view>
         </view>
@@ -164,7 +125,7 @@
             <view class="form-row-content">
               <view class="price-input">
                 <text class="price-symbol">¥</text>
-                <input wx:if="{{mode === 'edit'}}" 
+                <input 
                        class="input price-value" 
                        type="digit" 
                        value="{{item.price}}" 
@@ -172,7 +133,6 @@
                        data-index="{{index}}"
                        data-field="price"
                        bindinput="updateProductField" />
-                <view wx:else class="form-value price-value">{{item.price}}</view>
               </view>
             </view>
           </view>
@@ -187,9 +147,7 @@
         </view>
 
         <!-- 删除按钮 -->
-        <view wx:if="{{mode === 'edit'}}" class="delete-btn" bindtap="deleteProduct" data-index="{{index}}">
-          <text class="icon-delete"></text> 删除
-        </view>
+        
       </view>
     </view>
   </view>
@@ -202,13 +160,12 @@
     
     <view class="form-group">
       <view class="form-row">
-        <textarea wx:if="{{mode === 'edit'}}" 
+        <textarea 
                   class="textarea" 
                   value="{{billData.remark}}" 
                   placeholder="请输入备注信息"
                   bindinput="updateRemark"
                   maxlength="200"></textarea>
-        <view wx:else class="form-value">{{billData.remark || '无'}}</view>
       </view>
     </view>
   </view>
@@ -227,7 +184,7 @@
 
   <!-- 操作按钮区域 -->
   <view class="btn-area">
-    <button wx:if="{{mode === 'edit'}}" class="btn btn-primary" bindtap="saveBill">保存</button>
-    <button class="btn btn-default" bindtap="goBack">{{mode === 'edit' ? '取消' : '返回'}}</button>
+    <button class="btn btn-primary" bindtap="saveBill">保存</button>
+    <button class="btn btn-default" bindtap="goBack">取消</button>
   </view>
 </view>

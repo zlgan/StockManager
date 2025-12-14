@@ -51,7 +51,7 @@ async function applyInbound(shopId,item,createdBy,billRef){
   }else{
     await balCol.add({data:{shopId,productId:item.productId,productName:item.productName,quantity:newQty,avgCost:newAvg,totalCost:newTC,updatedAt:now,updatedBy:createdBy}})
   }
-  const led={shopId,productId:item.productId,productName:item.productName,direction:'in',quantity:item.quantity,unitPrice:item.unitPrice,amount:item.quantity*item.unitPrice,balanceQuantity:newQty,balanceAmount:newTC,billRef,createdAt:now,createdBy:createdBy}
+  const led={shopId,productId:item.productId,productName:item.productName,direction:'in',quantity:item.quantity,unitPrice:item.unitPrice,amount:item.quantity*item.unitPrice,balanceQuantity:newQty,balanceAmount:newTC,billRef,createdAt:now,createdBy:createdBy,ext: billRef&&billRef.extAdjust? {adjustType: billRef.extAdjust}: undefined}
   await db.collection('stockLedger').add({data:led})
   const y=now.getFullYear(),m=now.getMonth()+1
   await updateStatsMonthly(shopId,y,m,{inboundAmount:item.quantity*item.unitPrice,inboundCount:0})
@@ -72,7 +72,7 @@ async function applyOutbound(shopId,item,createdBy,billRef){
   }else{
     throw new Error('NO_STOCK')
   }
-  const led={shopId,productId:item.productId,productName:item.productName,direction:'out',quantity:item.quantity,unitPrice:item.unitPrice,amount:item.quantity*item.unitPrice,balanceQuantity:newQty,balanceAmount:newTC,billRef,createdAt:now,createdBy:createdBy}
+  const led={shopId,productId:item.productId,productName:item.productName,direction:'out',quantity:item.quantity,unitPrice:item.unitPrice,amount:item.quantity*item.unitPrice,balanceQuantity:newQty,balanceAmount:newTC,billRef,createdAt:now,createdBy:createdBy,ext: billRef&&billRef.extAdjust? {adjustType: billRef.extAdjust}: undefined}
   await db.collection('stockLedger').add({data:led})
   const y=now.getFullYear(),m=now.getMonth()+1
   await updateStatsMonthly(shopId,y,m,{outboundAmount:item.quantity*item.unitPrice,profit:item.quantity*item.unitPrice-cost,outboundCount:0})
@@ -124,7 +124,7 @@ exports.main=async(event)=>{
     return {billId,billNo}
   }
   if(action==='adjustBillDelta'){
-    const {billId,newItems,createdBy}=event
+    const {billId,newItems,createdBy,remarks}=event
     console.log('adjustBillDelta start',{billId,len:(newItems&&newItems.length)||0})
     const bill=await db.collection('stockBills').doc(billId).get()
     const shopId=bill.data.shopId
@@ -148,7 +148,7 @@ exports.main=async(event)=>{
       const deltaQty=raw.quantity-oldQty
       const deltaAmt=raw.quantity*raw.unitPrice - oldQty*oldPrice
       if(deltaQty!==0){
-        const ref={billId,billNo:bill.data.billNo,lineNo:raw.lineNo||1}
+        const ref={billId,billNo:bill.data.billNo,lineNo:raw.lineNo||1,extAdjust:'delta'}
         if(direction==='in'){
           const qty=Math.abs(deltaQty)
           const price=deltaQty>0?raw.unitPrice:oldPrice
@@ -195,7 +195,7 @@ exports.main=async(event)=>{
       }
     }
     console.log('adjustBillDelta done totals',{totalQty,totalAmt})
-    await db.collection('stockBills').doc(billId).update({data:{totals:{totalQuantity:totalQty,totalAmount:totalAmt},updatedAt:new Date()}})
+    await db.collection('stockBills').doc(billId).update({data:{totals:{totalQuantity:totalQty,totalAmount:totalAmt},remarks:remarks||bill.data.remarks||'',updatedAt:new Date()}})
     return {ok:true}
   }
   if(action==='queryBills'){
