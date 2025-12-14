@@ -266,6 +266,7 @@ Page({
         return
       }
       wx.showToast({title:'保存成功',icon:'success'})
+      setTimeout(()=>{ wx.redirectTo({url:'/pages/bills/bills'}) },800)
     }).catch(()=>{ wx.hideLoading(); wx.showToast({title:'网络异常或服务器错误',icon:'none'}) })
   },
 

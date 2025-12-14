@@ -479,8 +479,10 @@ ec-canvas {
 }
 
 .record-item {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
+  column-gap: 10rpx;
   padding: 16rpx 0;
   border-bottom: 1rpx solid #eee;
 }
@@ -488,11 +490,13 @@ ec-canvas {
 .record-date {
   font-size: 26rpx;
   color: #666;
+  text-align: left;
 }
 
 .record-quantity {
   font-size: 26rpx;
   font-weight: 500;
+  text-align: left;
 }
 
 .record-quantity.in {
@@ -506,6 +510,7 @@ ec-canvas {
 .record-type {
   font-size: 26rpx;
   color: #333;
+  text-align: left;
 }
 
 /* 操作按钮 */
