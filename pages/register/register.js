@@ -140,7 +140,7 @@ Page({
     } catch (err) {
       console.error(err)
       wx.hideLoading()
-      wx.showToast({ title: '网络异常或服务器错误1', icon: 'none' })
+      wx.showToast({ title: '网络异常或服务器错误', icon: 'none' })
     }
   },
 

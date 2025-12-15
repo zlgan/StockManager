@@ -90,57 +90,6 @@ Page({
       })
     })
   },
-
-  
-
-  /**
-   * 删除单据
-   */
-  deleteBill: function() {
-    wx.showModal({
-      title: '确认删除',
-      content: `确定要删除单据 ${this.data.billData.billNumber} 吗？此操作不可恢复。`,
-      confirmText: '删除',
-      confirmColor: '#ff4d4f',
-      success: (res) => {
-        if (res.confirm) {
-          this.performDeleteBill();
-        }
-      }
-    });
-  },
-
-  /**
-   * 执行删除单据操作
-   */
-  performDeleteBill: function() {
-    // 模拟删除操作
-    wx.showToast({
-      title: '删除成功',
-      icon: 'success'
-    });
-
-    // 延迟返回上一页
-    setTimeout(() => {
-      wx.navigateBack();
-    }, 1500);
-
-    // 实际应用中这里应该调用API删除数据
-    // wx.request({
-    //   url: '/api/bills/' + this.data.billId,
-    //   method: 'DELETE',
-    //   success: (res) => {
-    //     wx.showToast({
-    //       title: '删除成功',
-    //       icon: 'success'
-    //     });
-    //     setTimeout(() => {
-    //       wx.navigateBack();
-    //     }, 1500);
-    //   }
-    // });
-  },
-
   /**
    * 日期变更处理
    */

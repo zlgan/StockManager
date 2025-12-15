@@ -45,7 +45,7 @@ Page({
       const u = res.data || {}
       const currentTime = new Date().toLocaleString('zh-CN')
       this.setData({
-        staffInfo: { id: u._id, username: u.username||'', password: '', realName: u.realName||'', phone: u.phone||'', remark: u.remarks||'', canStockIn: true, canStockOut: true },
+        staffInfo: { id: u._id, username: u.username||'', password: '', realName: u.realName||'', phone: u.phone||'', remark: u.remarks||''},
         originalStaffInfo: JSON.parse(JSON.stringify(this.data.staffInfo)),
         updateTime: currentTime,
         isEditMode: true,
@@ -86,17 +86,24 @@ Page({
       return;
     }
 
-    if (!staffInfo.password.trim()) {
-      wx.showToast({
-        title: '请输入密码',
-        icon: 'none'
-      });
-      return;
-    }
-    if ((staffInfo.password||'').trim()!== (this.data.confirmPassword||'').trim()){
+    if(isAddMode){
+      if (!staffInfo.password.trim()) {
+        wx.showToast({
+          title: '请输入密码',
+          icon: 'none'
+        });
+        return;
+      }
+      if ((staffInfo.password||'').trim()!== (this.data.confirmPassword||'').trim()){
+        wx.showToast({ title:'两次输入的密码不一致', icon:'none' });
+        return;
+      }
+  }
+  else{
+    if((staffInfo.password.trim()||(this.data.confirmPassword||'').trim()) && (staffInfo.password||'').trim()!== (this.data.confirmPassword||'').trim())
       wx.showToast({ title:'两次输入的密码不一致', icon:'none' });
       return;
-    }
+  }
 
     if (!staffInfo.realName.trim()) {
       wx.showToast({
