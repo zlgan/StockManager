@@ -3,6 +3,7 @@
 1. https://mp.weixin.qq.com/wxamp/devprofile/get_profile?token=413127723&lang=zh_CN
 2. 腾讯云控制台 https://cloud.tencent.com/login
 3. 微信小程序管理后台 https://mp.weixin.qq.com/
+4. 微信开发者工具文档 https://developers.weixin.qq.com/minigame/dev/devtools/devtools.html
 
 ### 自动化工具
 1. Tencent CloudBase（TCB） https://docs.cloudbase.net/cli-v1/intro
@@ -114,3 +115,33 @@ const requestUrl = config.apiBaseUrl + '/user/login';
 
 add to powershll $profile:
  function global:bash { & "C:\Program Files\Git\usr\bin\bash.exe" -i -l }
+
+
+## E2E Test
+| 工具                 | 角色定位       | 在端到端测试中的作用 |
+|----------------------|----------------|----------------------|
+| 微信开发者工具       | 小程序运行环境 | 提供真实或模拟的运行环境，支持调试、预览和接口调用。`miniprogram-automator` 实际上是通过它来启动和操控小程序。 |
+| miniprogram-automator | 自动化驱动层   | 负责连接微信开发者工具，启动小程序、跳转页面、操作元素、获取数据、截图等。它是测试脚本和小程序之间的桥梁。 |
+| Jest                 | 测试框架       | 提供测试用例编写、断言、mock、测试报告等功能。测试脚本通过 Jest 执行，然后调用 `miniprogram-automator`。 |
+| Node.js 环境         | 基础运行环境   | Jest 和 automator 都运行在 Node.js 上，没有 Node.js 就无法执行测试。 |
+| CI/CD 工具（可选）   | 自动化执行平台 | 在持续集成中自动运行测试，保证每次提交代码都能跑 E2E 测试。 |
+| 报告工具（可选）     | 验证与展示层   | 生成更直观的测试报告（如 Allure、Jest reporters）。 |
+| 环境变量管理（可选） | 配置管理层     | 管理测试环境变量（API 地址、账号等），保证测试环境可控。 |
+
+
+```mermaid
+sequenceDiagram
+    participant Dev as 开发者
+    participant Jest as Jest（测试框架）
+    participant Automator as miniprogram-automator
+    participant IDE as 微信开发者工具
+    participant App as 小程序运行环境
+
+    Dev->>Jest: 编写并运行测试用例
+    Jest->>Automator: 调用自动化接口
+    Automator->>IDE: 启动并操控小程序
+    IDE->>App: 渲染页面并执行逻辑
+    App-->>Automator: 返回页面数据/状态
+    Automator-->>Jest: 提供测试结果
+    Jest-->>Dev: 断言并生成测试报告
+```
